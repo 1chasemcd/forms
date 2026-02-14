@@ -1,0 +1,39 @@
+{
+  "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+  "tasks": [
+    {
+      "name": "dotnet format",
+      "command": "dotnet",
+      "args": ["format", "--verify-no-changes"],
+      "pathMode": "absolute"
+    },
+    {
+      "name": "eslint",
+      "command": "npx",
+      "args": [
+        "--prefix",
+        "Web",
+        "eslint",
+        "--config",
+        "Web/eslint.config.mjs",
+        "${staged}"
+      ],
+      "pathMode": "absolute"
+    },
+    {
+      "name": "prettier",
+      "command": "npx",
+      "args": [
+        "--prefix",
+        "Web",
+        "prettier",
+        "--ignore-unknown",
+        "--config",
+        "Web/.prettierrc",
+        "--check",
+        "${staged}"
+      ],
+      "pathMode": "absolute"
+    }
+  ]
+}
