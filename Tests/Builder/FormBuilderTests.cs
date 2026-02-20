@@ -32,6 +32,14 @@ public class FormBuilderTests
         Assert.That(_form.View.Title, Is.EqualTo(new Constant<string>("Title")));
     }
 
+    [TestCase(nameof(TestModel.BoolProperty), 0)]
+    [TestCase(nameof(TestModel.CurrencyProperty), 1)]
+    [TestCase(nameof(TestModel.DateProperty), 2)]
+    [TestCase(nameof(TestModel.DecimalProperty), 3)]
+    [TestCase(nameof(TestModel.IntProperty), 4)]
+    [TestCase(nameof(TestModel.StringListProperty), 5)]
+    [TestCase(nameof(TestModel.StringProperty), 6)]
+    [TestCase(nameof(TestModel.TimeProperty), 7)]
     public void DataView_MaintainsFieldOrder(string propertyName, int expectedIndex)
     {
         var fields = ((CombinedView)_form.View).Views
@@ -125,6 +133,7 @@ public class FormBuilderTests
                 { m => m.BoolProperty, p => p.Width = 50 },
                 { m => m.CurrencyProperty, p => p.Disabled = true },
                 { m => m.DateProperty, p => p.MaxValue = new DateOnly(2025, 01, 01)},
+
                 { m => m.DecimalProperty, p => p.Precision = 4 },
                 { m => m.IntProperty, p => p.MinValue = new PropertyOrConstantBuilder<TestModel, int>(x => x.MinValueProperty) },
                 { m => m.StringListProperty, p => p.Hidden = true },
