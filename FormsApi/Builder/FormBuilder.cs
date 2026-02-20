@@ -1,9 +1,6 @@
-using System.Runtime.CompilerServices;
 using FormsApi.Builder.View;
 using FormsApi.Form;
 using FormsApi.Repository;
-
-[assembly: InternalsVisibleTo("Tests")]
 
 namespace FormsApi.Builder;
 
