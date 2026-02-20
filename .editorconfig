@@ -157,7 +157,7 @@ csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
 
 # Remove unnecessary usings
-dotnet_diagnostic.IDE0005.severity = warning
+dotnet_diagnostic.IDE0005.severity = suggestion
 
 # C++ Files
 [*.{cpp,h,in}]
