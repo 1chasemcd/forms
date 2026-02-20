@@ -8,7 +8,7 @@ namespace FormsApi.Builder.Field;
 public abstract class BaseFieldBuilder<TModel>
 {
     public PropertyOrConstantBuilder<TModel, string>? Label { get; set; }
-    public IEnumerable<ModelMemberBuilder<TModel, object>>? PropertiesToUpdateOnChange { get; set; }
+    public IEnumerable<ModelMemberBuilder<TModel, object>>? PropsToUpdate { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Hidden { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Disabled { get; set; }
     public FormElementSize Width { get; set; }
@@ -20,7 +20,7 @@ public abstract class BaseFieldBuilder<TModel>
         return field with
         {
             Label = Label?.Build(),
-            PropertiesToUpdateOnChange = PropertiesToUpdateOnChange?.Select(x => x.Build()),
+            PropertiesToUpdateOnChange = PropsToUpdate?.Select(x => x.Build()),
             Hidden = Hidden?.Build(),
             Disabled = Disabled?.Build(),
             Width = Width
@@ -45,7 +45,7 @@ public abstract class BaseFieldBuilder<TModel, TThis> : BaseFieldBuilder<TModel>
     }
     public TThis WithPropsToUpdate(params Expression<Func<TModel, object>>[] props)
     {
-        PropertiesToUpdateOnChange = props.Select(x => new ModelMemberBuilder<TModel, object>(x));
+        PropsToUpdate = props.Select(x => new ModelMemberBuilder<TModel, object>(x));
         return This;
     }
     public TThis WithHidden(bool hidden)
