@@ -11,7 +11,7 @@ namespace Tests.Builder;
 
 public class FormBuilderTests
 {
-    private FormModel _form = new TestFormBuilder().Build();
+    private readonly FormModel _form = new TestFormBuilder().Build();
 
     [Test]
     public void Form_Type()
@@ -52,7 +52,7 @@ public class FormBuilderTests
     [TestCase(nameof(TestModel.TimeProperty), typeof(TimeInput))]
     public void DataView_InputFieldTypesMappedCorrectly(string inputName, Type expectedInputType)
     {
-        var fields = ((CombinedView)_form.View).Views
+        List<BaseField> fields = ((CombinedView)_form.View).Views
             .Select(x => x as DataView).Where(x => x != null).ToList()[0]?.Fields.ToList()!;
 
         Assert.That(fields, Has.One.With.InstanceOf(expectedInputType)
@@ -62,7 +62,7 @@ public class FormBuilderTests
     [Test]
     public void DataView_ButtonField()
     {
-        var fields = ((CombinedView)_form.View).Views
+        List<BaseField> fields = ((CombinedView)_form.View).Views
             .Select(x => x as DataView).First(x => x != null)?.Fields.ToList()!;
 
 
@@ -74,7 +74,7 @@ public class FormBuilderTests
     [Test]
     public void DataView_FieldAugments()
     {
-        var fields = ((CombinedView)_form.View).Views
+        List<BaseField> fields = ((CombinedView)_form.View).Views
             .Select(x => x as DataView).Last(x => x != null)?.Fields.ToList()!;
 
         AssertAugmentHasValue(nameof(TestModel.BoolProperty), nameof(CheckBoxInput.Width), new FormElementSize(50));
@@ -102,7 +102,7 @@ public class FormBuilderTests
             DataViewWithAugments()
         };
 
-        private DataViewBuilder<TestModel> DataView()
+        private static DataViewBuilder<TestModel> DataView()
         {
             return new DataViewBuilder<TestModel>() {
                 { m => m.BoolProperty },
@@ -119,7 +119,7 @@ public class FormBuilderTests
             };
         }
 
-        private DataViewBuilder<TestModel> DataViewWithAugments()
+        private static DataViewBuilder<TestModel> DataViewWithAugments()
         {
             return new DataViewBuilder<TestModel>() {
                 { m => m.BoolProperty, p => p.Width = 50 },
@@ -149,7 +149,7 @@ public class FormBuilderTests
         private int _noGetterField;
         public int NoGetterProperty { set => _noGetterField = value; }
         public int IntField;
-        public int MinValueProperty => 20;
+        public int MinValueProperty { get; }
         public void ButtonAction() => IntField = 0;
         public IEnumerable<TestModelChild> EnumerableProperty { get; set; } = [];
         public class TestModelChild

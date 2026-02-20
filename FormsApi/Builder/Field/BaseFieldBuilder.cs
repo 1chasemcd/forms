@@ -13,7 +13,7 @@ public abstract class BaseFieldBuilder<TModel>
     public FormElementSize Width { get; set; }
     internal BaseField Build()
     {
-        var field = BuildImpl();
+        BaseField field = BuildImpl();
 
         return field with
         {

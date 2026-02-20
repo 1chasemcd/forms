@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace FormsApi.Repository.Service;
 
 public class RepositoryServiceBuilder
@@ -17,8 +19,8 @@ public class RepositoryServiceBuilder
     {
         Type repositoryType = type.GetRepositoryType() ?? throw new Exception("Invalid type");
         object handler = GetHandler(repositoryType) ?? throw new Exception("No repository handler for type");
-        var closedGeneric = serviceType.MakeGenericType(repositoryType);
-        var service = obj is null ?
+        Type closedGeneric = serviceType.MakeGenericType(repositoryType);
+        object? service = obj is null ?
             Activator.CreateInstance(closedGeneric, handler) :
             Activator.CreateInstance(closedGeneric, handler, obj);
         return service ?? throw new Exception("Could not construct service");
@@ -26,8 +28,8 @@ public class RepositoryServiceBuilder
 
     private object? GetHandler(Type t)
     {
-        var genericMethod = typeof(IRepositoryHandlerRegistry).GetMethod(nameof(IRepositoryHandlerRegistry.Get)) ?? throw new Exception();
-        var getMethod = genericMethod.MakeGenericMethod(t);
+        MethodInfo genericMethod = typeof(IRepositoryHandlerRegistry).GetMethod(nameof(IRepositoryHandlerRegistry.Get)) ?? throw new Exception();
+        MethodInfo getMethod = genericMethod.MakeGenericMethod(t);
         return getMethod.Invoke(registry, null);
     }
 }

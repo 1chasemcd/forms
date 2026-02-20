@@ -16,7 +16,7 @@ public sealed class DataViewBuilder<TModel> : ViewBuilder<TModel>, IFieldCollect
         Width = width;
     }
 
-    private IList<BaseFieldBuilder<TModel>> _fields = [];
+    private readonly IList<BaseFieldBuilder<TModel>> _fields = [];
     protected override DataView BuildImpl()
     {
         var view = new DataView

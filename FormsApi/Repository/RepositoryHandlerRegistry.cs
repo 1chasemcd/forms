@@ -18,6 +18,6 @@ public class RepositoryHandlerRegistry : IRepositoryHandlerRegistry
 
     public IRepositoryHandler<T>? Get<T>()
     {
-        return _registry.TryGetValue(typeof(T), out var result) ? (IRepositoryHandler<T>)result : null;
+        return _registry.TryGetValue(typeof(T), out IRepositoryHandler<object>? result) ? (IRepositoryHandler<T>)result : null;
     }
 }

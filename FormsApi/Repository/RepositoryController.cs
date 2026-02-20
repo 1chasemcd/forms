@@ -11,8 +11,8 @@ public class RepositoryController(RepositoryServiceBuilder builder) : Controller
     [HttpPost("get")]
     public async Task<ActionResult<IEnumerable<object>>> GetAsync(RepositoryType type, QueryCriteria criteria)
     {
-        var service = builder.BuildWithType(type);
-        var result = await service.GetAsync(criteria);
+        IReadableRepositoryService service = builder.BuildWithType(type);
+        IEnumerable<object>? result = await service.GetAsync(criteria);
         if (result is null)
             return NotFound();
         return Ok(result);
@@ -20,15 +20,15 @@ public class RepositoryController(RepositoryServiceBuilder builder) : Controller
     [HttpPost("getnew")]
     public async Task<ActionResult<object>> GetNewAsync(RepositoryType type)
     {
-        var service = builder.BuildWithType(type);
-        var result = await service.GetNewAsync();
+        IReadableRepositoryService service = builder.BuildWithType(type);
+        object result = await service.GetNewAsync();
         return Ok(result);
     }
 
     [HttpPost("save")]
     public async Task<ActionResult> SaveAsync(RepositoryType type, [FromBody] object obj)
     {
-        var service = builder.BuildWithTypeAndObject(type, obj);
+        IWriteableRepositoryService service = builder.BuildWithTypeAndObject(type, obj);
         await service.SaveAsync();
         return NoContent();
     }
@@ -36,7 +36,7 @@ public class RepositoryController(RepositoryServiceBuilder builder) : Controller
     [HttpPost("delete")]
     public async Task<ActionResult> DeleteAsync(RepositoryType type, object obj)
     {
-        var service = builder.BuildWithTypeAndObject(type, obj);
+        IWriteableRepositoryService service = builder.BuildWithTypeAndObject(type, obj);
         await service.DeleteAsync();
         return NoContent();
     }

@@ -4,12 +4,7 @@ namespace FormsApi.Builder;
 
 public class ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, TMember>> selector)
 {
-    public enum MemberAccessType
-    {
-        PropertyOrField,
-        Method
-    }
-    public string Build(MemberAccessType accessType = MemberAccessType.PropertyOrField)
+    public string Build()
     {
         // Handle boxing to object
         if (selector.Body is UnaryExpression unary &&

@@ -9,7 +9,7 @@ public abstract class ViewBuilder<TModel>
     public FormElementSize Width { get; set; }
     internal BaseView Build()
     {
-        var baseView = BuildImpl();
+        BaseView baseView = BuildImpl();
         return baseView with
         {
             Title = Title?.Build(),
