@@ -8,7 +8,7 @@ public class FormTests
     private readonly FormModel _form = new TestFormBuilder().Build();
 
     [Test]
-    public void Form_Type()
+    public void Build_SetsCorrectRepositoryType()
     {
         var expectedType = new RepositoryType(typeof(TestModel));
         Assert.That(_form.Type, Is.EqualTo(expectedType));

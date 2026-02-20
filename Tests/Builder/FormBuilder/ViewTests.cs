@@ -8,13 +8,13 @@ public class ViewTests
     private readonly FormModel _form = new TestFormBuilder().Build();
 
     [Test]
-    public void Form_View()
+    public void Build_SetsCorrectRootViewType()
     {
         Assert.That(_form.View, Is.InstanceOf<CombinedView>());
     }
 
     [Test]
-    public void View_Title()
+    public void Build_SetsCorrectViewTitle()
     {
         Assert.That(_form.View.Title, Is.EqualTo(new Constant<string>("Title")));
     }

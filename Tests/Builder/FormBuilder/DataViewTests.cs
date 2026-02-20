@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using FormsApi.Form;
 using FormsApi.Form.Field;
 using FormsApi.Form.View;
@@ -19,7 +16,7 @@ public class DataViewTests
     [TestCase(nameof(TestModel.StringListProperty), 5)]
     [TestCase(nameof(TestModel.StringProperty), 6)]
     [TestCase(nameof(TestModel.TimeProperty), 7)]
-    public void DataView_MaintainsFieldOrder(string propertyName, int expectedIndex)
+    public void DataView_MaintainsCorrectFieldOrder(string propertyName, int expectedIndex)
     {
         var fields = ((CombinedView)_form.View).Views
                     .Select(x => x as DataView).Where(x => x != null).ToList()[0]!.Fields.ToList();
@@ -37,7 +34,7 @@ public class DataViewTests
     [TestCase(nameof(TestModel.StringListProperty), typeof(TextAreaInput))]
     [TestCase(nameof(TestModel.StringProperty), typeof(TextInput))]
     [TestCase(nameof(TestModel.TimeProperty), typeof(TimeInput))]
-    public void DataView_InputFieldTypesMappedCorrectly(string inputName, Type expectedInputType)
+    public void DataView_MapsInputFieldTypesCorrectly(string inputName, Type expectedInputType)
     {
         List<BaseField> fields = ((CombinedView)_form.View).Views
             .Select(x => x as DataView).Where(x => x != null).ToList()[0]?.Fields.ToList()!;
@@ -47,7 +44,7 @@ public class DataViewTests
     }
 
     [Test]
-    public void DataView_ButtonField()
+    public void DataView_RendersButtonFieldCorrectly()
     {
         List<BaseField> fields = ((CombinedView)_form.View).Views
             .Select(x => x as DataView).First(x => x != null)?.Fields.ToList()!;
