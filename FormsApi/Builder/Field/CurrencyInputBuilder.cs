@@ -4,7 +4,7 @@ using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
-public class CurrencyInputBuilder<TModel>(
+public sealed class CurrencyInputBuilder<TModel>(
     ModelMemberBuilder<TModel, Currency> propertyBuilder)
     : BaseFieldBuilder<TModel, CurrencyInputBuilder<TModel>>
 {

@@ -4,7 +4,7 @@ using FormsApi.Form.View;
 
 namespace FormsApi.Builder.View;
 
-public class CombinedViewBuilder<TModel> : ViewBuilder<TModel>, IEnumerable
+public sealed class CombinedViewBuilder<TModel> : ViewBuilder<TModel>, IEnumerable
 {
     private readonly IList<ViewBuilder<TModel>> _views = [];
 

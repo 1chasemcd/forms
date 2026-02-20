@@ -4,7 +4,7 @@ using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
-public class TextInputBuilder<TModel>(
+public sealed class TextInputBuilder<TModel>(
     ModelMemberBuilder<TModel, string> propertyBuilder)
     : BaseFieldBuilder<TModel, TextInputBuilder<TModel>>
 {

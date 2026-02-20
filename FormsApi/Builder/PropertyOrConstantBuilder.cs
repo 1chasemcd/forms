@@ -3,7 +3,7 @@ using FormsApi.Form;
 
 namespace FormsApi.Builder;
 
-public class PropertyOrConstantBuilder<TModel, TMember>
+public sealed class PropertyOrConstantBuilder<TModel, TMember>
     where TMember : notnull
 {
     public PropertyOrConstantBuilder(TMember value)
@@ -28,8 +28,6 @@ public class PropertyOrConstantBuilder<TModel, TMember>
         throw new Exception("PropertyOrConstant has no value");
 
     }
-
-
 
     public Expression<Func<TModel, TMember>>? Selector { private get; set; }
     private TMember? Value { get; set; }

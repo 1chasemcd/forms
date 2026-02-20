@@ -3,7 +3,7 @@ using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
-public class TextAreaInputBuilder<TModel>(
+public sealed class TextAreaInputBuilder<TModel>(
     ModelMemberBuilder<TModel, IEnumerable<string>> propertyBuilder)
     : BaseFieldBuilder<TModel, TextAreaInputBuilder<TModel>>
 {

@@ -3,7 +3,7 @@ using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
-public class DateInputBuilder<TModel>(
+public sealed class DateInputBuilder<TModel>(
     ModelMemberBuilder<TModel, DateOnly> propertyBuilder)
     : BaseFieldBuilder<TModel, DateInputBuilder<TModel>>
 {

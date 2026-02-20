@@ -3,7 +3,7 @@ using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
-public class TimeInputBuilder<TModel>(
+public sealed class TimeInputBuilder<TModel>(
     ModelMemberBuilder<TModel, TimeOnly> propertyBuilder)
     : BaseFieldBuilder<TModel, TimeInputBuilder<TModel>>
 {

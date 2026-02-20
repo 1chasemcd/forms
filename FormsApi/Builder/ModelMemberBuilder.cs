@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 
 namespace FormsApi.Builder;
 
-public class ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, TMember>> selector)
+public sealed class ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, TMember>> selector)
 {
     public string Build()
     {

@@ -2,7 +2,7 @@ using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
-public class CheckBoxInputBuilder<TModel>(
+public sealed class CheckBoxInputBuilder<TModel>(
     ModelMemberBuilder<TModel, bool> propertyBuilder)
     : BaseFieldBuilder<TModel, CheckBoxInputBuilder<TModel>>
 {
