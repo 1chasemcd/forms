@@ -1,5 +1,3 @@
-using System;
-
 namespace FormsApi.Common.Types;
 
 public sealed record Currency
