@@ -6,7 +6,7 @@ namespace FormsApi.Builder.Field;
 
 public class ButtonBuilder<TModel>(
     Expression<Func<TModel, Action>> methodCall)
-    : BaseFieldBuilder<TModel>
+    : BaseFieldBuilder<TModel, ButtonBuilder<TModel>>
 {
     protected override Button BuildImpl()
     {

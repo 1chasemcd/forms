@@ -35,4 +35,5 @@ public class PropertyOrConstantBuilder<TModel, TMember>
     private TMember? Value { get; set; }
 
     public static implicit operator PropertyOrConstantBuilder<TModel, TMember>(TMember value) => new(value);
+    public static implicit operator PropertyOrConstantBuilder<TModel, TMember>(Expression<Func<TModel, TMember>> value) => new(value);
 }

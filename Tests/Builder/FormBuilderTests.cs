@@ -1,4 +1,5 @@
 using FormsApi.Builder;
+using FormsApi.Builder.Field;
 using FormsApi.Builder.View;
 using FormsApi.Common.Types;
 using FormsApi.Form;
@@ -129,15 +130,15 @@ public class FormBuilderTests
         private static DataViewBuilder<TestModel> DataViewWithAugments()
         {
             return new DataViewBuilder<TestModel>() {
-                { m => m.BoolProperty, p => p.Width = 50 },
-                { m => m.CurrencyProperty, p => p.Disabled = true },
-                { m => m.DateProperty, p => p.MaxValue = new DateOnly(2025, 01, 01)},
+                { m => m.BoolProperty, p => p.WithWidth(50) },
+                { m => m.CurrencyProperty, p => p.WithDisabled(true) },
+                { m => m.DateProperty, p => p.WithMaxValue(new DateOnly(2025, 01, 01)) },
 
-                { m => m.DecimalProperty, p => p.Precision = 4 },
-                { m => m.IntProperty, p => p.MinValue = new PropertyOrConstantBuilder<TestModel, int>(x => x.MinValueProperty) },
-                { m => m.StringListProperty, p => p.Hidden = true },
-                { m => m.StringProperty, p => p.Label = "Test Label" },
-                { m => m.TimeProperty, p => p.PropertiesToUpdateOnChange = [ new ModelMemberBuilder<TestModel, object>(x => x.BoolProperty)] }
+                { m => m.DecimalProperty, p => p.WithPrecision(4) },
+                { m => m.IntProperty, p => p.WithMinValue(m => m.MinValueProperty) },
+                { m => m.StringListProperty, p => p.WithHidden(true) },
+                { m => m.StringProperty, p => p.WithLabel("Test Label")},
+                { m => m.TimeProperty, p => p.WithPropsToUpdate(x => x.BoolProperty) }
             };
         }
     }

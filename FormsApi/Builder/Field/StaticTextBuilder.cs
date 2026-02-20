@@ -3,7 +3,7 @@ using FormsApi.Form.Field;
 namespace FormsApi.Builder.Field;
 
 public class StaticTextBuilder<TModel>(string text)
-    : BaseFieldBuilder<TModel>
+    : BaseFieldBuilder<TModel, StaticTextBuilder<TModel>>
 {
     protected override StaticTextField BuildImpl()
     {

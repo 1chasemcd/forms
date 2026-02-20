@@ -1,10 +1,11 @@
+using System.Linq.Expressions;
 using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
 public class TextAreaInputBuilder<TModel>(
     ModelMemberBuilder<TModel, IEnumerable<string>> propertyBuilder)
-    : BaseFieldBuilder<TModel>
+    : BaseFieldBuilder<TModel, TextAreaInputBuilder<TModel>>
 {
     public PropertyOrConstantBuilder<TModel, int>? MaxLength { get; set; }
     protected override TextAreaInput BuildImpl()
@@ -14,5 +15,16 @@ public class TextAreaInputBuilder<TModel>(
             Property = propertyBuilder.Build(),
             MaxLength = MaxLength?.Build()
         };
+    }
+
+    public TextAreaInputBuilder<TModel> WithMaxLength(int maxLength)
+    {
+        MaxLength = maxLength;
+        return This;
+    }
+    public TextAreaInputBuilder<TModel> WithMaxLength(Expression<Func<TModel, int>> maxLength)
+    {
+        MaxLength = maxLength;
+        return This;
     }
 }
