@@ -11,12 +11,7 @@ namespace Tests.Builder;
 
 public class FormBuilderTests
 {
-    private FormModel? _form;
-    [OneTimeSetUp]
-    public void BuildForm()
-    {
-        _form = new TestFormBuilder().Build();
-    }
+    private FormModel _form = new TestFormBuilder().Build();
 
     [Test]
     public void Form_Type()
