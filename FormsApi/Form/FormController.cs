@@ -1,14 +1,18 @@
+using FormsApi.Common.Registry;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FormsApi.Form;
 
 [Route("api/[controller]")]
 [ApiController]
-public sealed class FormController : ControllerBase
+public sealed class FormController(FormRegistry registry) : ControllerBase
 {
     [HttpGet]
-    public static ActionResult<FormModel> GetForm(string path)
+    public ActionResult<FormModel> GetForm(string path)
     {
-        return null!;
+        FormModel? form = registry.Get(path);
+        if (form is null)
+            return NotFound();
+        return form;
     }
 }
