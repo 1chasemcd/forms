@@ -3,7 +3,7 @@ using System.Reflection;
 namespace FormsApi.Repository.Service;
 
 public class RepositoryServiceBuilder
-(IRepositoryHandlerRegistry registry)
+(RepositoryHandlerRegistry registry)
 {
     internal IReadableRepositoryService BuildWithType(RepositoryType type)
     {
@@ -28,7 +28,7 @@ public class RepositoryServiceBuilder
 
     private object? GetHandler(Type t)
     {
-        MethodInfo genericMethod = typeof(IRepositoryHandlerRegistry).GetMethod(nameof(IRepositoryHandlerRegistry.Get)) ?? throw new Exception();
+        MethodInfo genericMethod = typeof(RepositoryHandlerRegistry).GetMethod(nameof(RepositoryHandlerRegistry.Get)) ?? throw new Exception();
         MethodInfo getMethod = genericMethod.MakeGenericMethod(t);
         return getMethod.Invoke(registry, null);
     }

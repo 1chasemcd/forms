@@ -1,25 +1,35 @@
-using System;
+using System.Collections.Generic;
 using FormsApi.Builder;
+using FormsApi.Repository;
 
 namespace FormsApi.Common.Registry;
 
 public interface IFormSetupOptions
 {
-    IFormSetupOptions Add(string path, FormBuilder<object> builder);
+    IFormSetupOptions AddForm(string path, FormBuilder<object> builder);
+    IFormSetupOptions AddRepositoryHandler<T>(IRepositoryHandler<T> handler);
 }
 internal class FormSetupOptions : IFormSetupOptions
 {
-    private readonly ICollection<KeyValuePair<string, FormBuilder<object>>> _builders = [];
-    public IFormSetupOptions Add(string path, FormBuilder<object> builder)
+    private readonly List<KeyValuePair<string, FormBuilder<object>>> _builders = [];
+    private readonly List<KeyValuePair<Type, IRepositoryHandler<object>>> _handlers = [];
+
+    public IFormSetupOptions AddForm(string path, FormBuilder<object> builder)
     {
-        _builders.Add(new KeyValuePair<string, FormBuilder<object>>(path, builder));
+        _builders.Add(new(path, builder));
         return this;
     }
-    public void Configure(FormRegistry registry)
+
+    public IFormSetupOptions AddRepositoryHandler<T>(IRepositoryHandler<T> handler)
     {
-        foreach (KeyValuePair<string, FormBuilder<object>> builder in _builders)
-        {
-            registry.Add(builder.Key, builder.Value);
-        }
+        _handlers.Add(new(typeof(T), (IRepositoryHandler<object>)handler));
+        return this;
+    }
+
+    internal void Configure(FormRegistry forms, RepositoryHandlerRegistry handlers)
+    {
+        _builders.ForEach(b => forms.Add(b.Key, b.Value));
+        _handlers.ForEach(h => handlers.Add(h.Key, h.Value));
+
     }
 }

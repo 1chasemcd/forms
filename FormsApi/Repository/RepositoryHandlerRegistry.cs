@@ -2,22 +2,18 @@ using System.Collections.Concurrent;
 
 namespace FormsApi.Repository;
 
-public interface IRepositoryHandlerRegistry
-{
-    public void Register<T>(IRepositoryHandler<T> handler);
-    internal IRepositoryHandler<T>? Get<T>();
-}
-
-public class RepositoryHandlerRegistry : IRepositoryHandlerRegistry
+public class RepositoryHandlerRegistry
 {
     private readonly ConcurrentDictionary<Type, IRepositoryHandler<object>> _registry = new();
-    public void Register<T>(IRepositoryHandler<T> handler)
+    internal void Add(Type type, IRepositoryHandler<object> handler)
     {
-        _registry[typeof(T)] = (IRepositoryHandler<object>)handler;
+        _registry[type] = handler;
     }
 
-    public IRepositoryHandler<T>? Get<T>()
+    internal IRepositoryHandler<T>? Get<T>()
     {
-        return _registry.TryGetValue(typeof(T), out IRepositoryHandler<object>? result) ? (IRepositoryHandler<T>)result : null;
+        return _registry.TryGetValue(typeof(T), out IRepositoryHandler<object>? result) ?
+            (IRepositoryHandler<T>)result :
+            null;
     }
 }
