@@ -1,3 +1,4 @@
+using FormsApi.Common.Registry;
 using FormsApi.Form;
 using FormsApi.Form.View;
 
@@ -5,7 +6,7 @@ namespace Tests.Builder.FormBuilder;
 
 public class ViewTests
 {
-    private readonly FormModel _form = new TestFormBuilder().Build();
+    private readonly FormModel _form = new TestFormBuilder().Build(new RepositoryTypeRegistry());
 
     [Test]
     public void Build_SetsCorrectRootViewType()

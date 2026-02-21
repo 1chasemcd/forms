@@ -1,15 +1,16 @@
 namespace FormsApi.Repository;
 
-public readonly struct RepositoryType
+public readonly record struct RepositoryType(string TypeId)
 {
-    public string? AssemblyQualifiedName { get; init; }
-    internal RepositoryType(Type t)
+    public static bool TryParse(string? value, out RepositoryType result)
     {
-        AssemblyQualifiedName = t.AssemblyQualifiedName;
-    }
+        if (!string.IsNullOrEmpty(value))
+        {
+            result = new RepositoryType(value);
+            return true;
+        }
 
-    internal Type? GetRepositoryType()
-    {
-        return Type.GetType(AssemblyQualifiedName ?? string.Empty);
+        result = default;
+        return false;
     }
 }

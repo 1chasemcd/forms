@@ -1,9 +1,8 @@
 using FormsApi.Common.Registry;
-using FormsApi.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FormsApi.Common;
+namespace FormsApi;
 
 public static class FormApplicationBuilderExtensions
 {
@@ -11,12 +10,13 @@ public static class FormApplicationBuilderExtensions
     {
         FormRegistry formRegistry = app.ApplicationServices.GetRequiredService<FormRegistry>();
         RepositoryHandlerRegistry handlerRegistry = app.ApplicationServices.GetRequiredService<RepositoryHandlerRegistry>();
+        RepositoryTypeRegistry repoTypeRegistry = app.ApplicationServices.GetRequiredService<RepositoryTypeRegistry>();
 
         IEnumerable<FormSetupOptions> setups = app.ApplicationServices.GetServices<FormSetupOptions>();
 
         foreach (FormSetupOptions setup in setups)
         {
-            setup.Configure(formRegistry, handlerRegistry);
+            setup.Configure(formRegistry, handlerRegistry, repoTypeRegistry);
         }
     }
 }

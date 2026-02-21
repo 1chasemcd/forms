@@ -6,15 +6,15 @@ namespace FormsApi.Common.Registry;
 
 public interface IFormSetupOptions
 {
-    IFormSetupOptions AddForm(string path, FormBuilder<object> builder);
+    public IFormSetupOptions AddForm<TModel>(string path, FormBuilder<TModel> builder);
     IFormSetupOptions AddRepositoryHandler<T>(IRepositoryHandler<T> handler);
 }
 internal class FormSetupOptions : IFormSetupOptions
 {
-    private readonly List<KeyValuePair<string, FormBuilder<object>>> _builders = [];
+    private readonly List<KeyValuePair<string, FormBuilder>> _builders = [];
     private readonly List<KeyValuePair<Type, IRepositoryHandler<object>>> _handlers = [];
 
-    public IFormSetupOptions AddForm(string path, FormBuilder<object> builder)
+    public IFormSetupOptions AddForm<TModel>(string path, FormBuilder<TModel> builder)
     {
         _builders.Add(new(path, builder));
         return this;
@@ -26,9 +26,9 @@ internal class FormSetupOptions : IFormSetupOptions
         return this;
     }
 
-    internal void Configure(FormRegistry forms, RepositoryHandlerRegistry handlers)
+    internal void Configure(FormRegistry forms, RepositoryHandlerRegistry handlers, RepositoryTypeRegistry repoTypes)
     {
-        _builders.ForEach(b => forms.Add(b.Key, b.Value));
+        _builders.ForEach(b => forms.Add(b.Key, b.Value.Build(repoTypes)));
         _handlers.ForEach(h => handlers.Add(h.Key, h.Value));
 
     }

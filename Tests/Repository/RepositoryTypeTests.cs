@@ -1,4 +1,5 @@
 using System.Text.Json;
+using FormsApi.Common.Registry;
 using FormsApi.Repository;
 
 namespace Tests.Repository;
@@ -8,20 +9,21 @@ public class RepositoryTypeTests
     [Test]
     public void TestSerialization()
     {
-        Type testType = typeof(RepositoryTypeTests);
+        var registry = new RepositoryTypeRegistry();
 
-        var type = new RepositoryType(testType);
+        RepositoryType type = registry.Add<RepositoryTypeTests>();
+
         string serialized = JsonSerializer.Serialize(type);
         RepositoryType result = JsonSerializer.Deserialize<RepositoryType>(serialized);
-        Assert.That(result.GetRepositoryType(), Is.EqualTo(testType));
+        Assert.That(result, Is.EqualTo(type));
     }
 
     [Test]
     public void TestConversion()
     {
-        Type testType = typeof(RepositoryTypeTests);
+        var registry = new RepositoryTypeRegistry();
 
-        var type = new RepositoryType(testType);
-        Assert.That(type.GetRepositoryType(), Is.EqualTo(testType));
+        RepositoryType type = registry.Add<RepositoryTypeTests>();
+        Assert.That(typeof(RepositoryTypeTests), Is.EqualTo(registry.TryGetRuntimeType(type)));
     }
 }

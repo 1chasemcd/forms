@@ -7,10 +7,10 @@ namespace FormsApi.Form;
 [ApiController]
 public sealed class FormController(FormRegistry registry) : ControllerBase
 {
-    [HttpGet]
-    public ActionResult<FormModel> GetForm(string path)
+    [HttpGet("{path}")]
+    public ActionResult<FormModel> GetForm([FromRoute] string path)
     {
-        FormModel? form = registry.Get(path);
+        FormModel? form = registry.TryGet(path);
         if (form is null)
             return NotFound();
         return form;

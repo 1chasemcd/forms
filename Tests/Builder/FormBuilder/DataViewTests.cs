@@ -1,3 +1,4 @@
+using FormsApi.Common.Registry;
 using FormsApi.Form;
 using FormsApi.Form.Field;
 using FormsApi.Form.View;
@@ -6,7 +7,7 @@ namespace Tests.Builder.FormBuilder;
 
 public class DataViewTests
 {
-    private readonly FormModel _form = new TestFormBuilder().Build();
+    private readonly FormModel _form = new TestFormBuilder().Build(new RepositoryTypeRegistry());
 
     [TestCase(nameof(TestModel.BoolProperty), 0)]
     [TestCase(nameof(TestModel.CurrencyProperty), 1)]

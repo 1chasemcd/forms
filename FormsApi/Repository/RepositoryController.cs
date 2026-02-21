@@ -8,8 +8,10 @@ namespace FormsApi.Repository;
 [Route("api/[controller]")]
 public class RepositoryController(RepositoryServiceBuilder builder) : ControllerBase
 {
-    [HttpPost("get")]
-    public async Task<ActionResult<IEnumerable<object>>> GetAsync(RepositoryType type, QueryCriteria criteria)
+    [HttpPost("get/{type}")]
+    public async Task<ActionResult<IEnumerable<object>>> GetAsync(
+        [FromRoute] RepositoryType type,
+        [FromBody] QueryCriteria criteria)
     {
         IReadableRepositoryService service = builder.BuildWithType(type);
         IEnumerable<object>? result = await service.GetAsync(criteria);
@@ -17,24 +19,26 @@ public class RepositoryController(RepositoryServiceBuilder builder) : Controller
             return NotFound();
         return Ok(result);
     }
-    [HttpPost("getnew")]
-    public async Task<ActionResult<object>> GetNewAsync(RepositoryType type)
+    [HttpPost("getnew/{type}")]
+    public async Task<ActionResult<object>> GetNewAsync([FromRoute] RepositoryType type)
     {
         IReadableRepositoryService service = builder.BuildWithType(type);
         object result = await service.GetNewAsync();
         return Ok(result);
     }
 
-    [HttpPost("save")]
-    public async Task<ActionResult> SaveAsync(RepositoryType type, [FromBody] object obj)
+    [HttpPost("save/{type}")]
+    public async Task<ActionResult> SaveAsync([FromRoute] RepositoryType type, [FromBody] object obj)
     {
         IWriteableRepositoryService service = builder.BuildWithTypeAndObject(type, obj);
         await service.SaveAsync();
         return NoContent();
     }
 
-    [HttpPost("delete")]
-    public async Task<ActionResult> DeleteAsync(RepositoryType type, object obj)
+    [HttpPost("delete/{type}")]
+    public async Task<ActionResult> DeleteAsync(
+        [FromRoute] RepositoryType type,
+        [FromBody] object obj)
     {
         IWriteableRepositoryService service = builder.BuildWithTypeAndObject(type, obj);
         await service.DeleteAsync();
