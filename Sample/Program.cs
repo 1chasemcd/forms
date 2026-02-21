@@ -1,23 +1,33 @@
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+using FormsApi;
 
-// Add services to the container.
+namespace Sample;
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-WebApplication app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+public static class Program
 {
-    app.MapOpenApi();
+    private static void Main(string[] args)
+    {
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddControllers();
+        builder.Services.AddOpenApiDocument();
+
+        builder.Services.AddForms(formsSetup => formsSetup
+            .AddForm("home", new TestForm())
+        );
+
+        WebApplication app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseOpenApi();
+            app.UseSwaggerUi();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseAuthorization();
+        app.MapControllers();
+        app.UseForms();
+
+        app.Run();
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
