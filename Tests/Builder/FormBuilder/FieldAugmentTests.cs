@@ -30,7 +30,7 @@ public class FieldAugmentTests
         Assert.That(timeField.PropertiesToUpdateOnChange, Is.EquivalentTo(new List<string>() { nameof(TestModel.BoolProperty) }));
     }
 
-    private void AssertAugmentHasValue(List<BaseField> fields, string inputName, string augmentName, object value)
+    private static void AssertAugmentHasValue(List<BaseField> fields, string inputName, string augmentName, object value)
     {
         Assert.That(fields, Has.One.With
             .Property(nameof(BaseInput.Property)).EqualTo(inputName)

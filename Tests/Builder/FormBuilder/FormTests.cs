@@ -1,20 +1,20 @@
 using FormsApi.Common.Registry;
 using FormsApi.Form;
-using FormsApi.Repository;
+using FormsApi.Form.Primitives;
 
 namespace Tests.Builder.FormBuilder;
 
 public class FormTests
 {
-    private readonly RepositoryTypeRegistry reg = new RepositoryTypeRegistry();
+    private readonly RepositoryTypeRegistry _reg = new();
 
     [Test]
     public void Build_SetsCorrectRepositoryType()
     {
-        FormModel form = new TestFormBuilder().Build(reg);
+        FormModel form = new TestFormBuilder().Build(_reg);
 
-        var expectedType = reg.TryGetRepositoryType<TestModel>();
-        var otherType = reg.Add<FormTests>();
+        RepositoryType? expectedType = _reg.TryGetRepositoryType<TestModel>();
+        RepositoryType otherType = _reg.Add<FormTests>();
 
         Assert.That(form.Type, Is.EqualTo(expectedType));
 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Linq.Expressions;
 using FormsApi.Builder.Field;
@@ -6,9 +5,11 @@ using FormsApi.Form.View;
 
 namespace FormsApi.Builder.View;
 
-public class SubPropertyGridViewBuilder<TModel, TSub> : ViewBuilder<TModel>, IFieldCollection<TSub>
+public class SubPropertyGridViewBuilder<TModel, TSub>(
+    Expression<Func<TModel, IEnumerable<TSub>>> subProperty)
+    : ViewBuilder<TModel>, IFieldCollection<TSub>
 {
-    public ModelMemberBuilder<TModel, IEnumerable<TSub>> SubProperty { get; set; }
+    public ModelMemberBuilder<TModel, IEnumerable<TSub>> SubProperty { get; set; } = subProperty;
     public PropertyOrConstantBuilder<TModel, bool>? CanAdd { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? CanEdit { get; set; }
     public PropertyOrConstantBuilder<TSub, bool>? CanEditRow { get; set; }
@@ -16,11 +17,6 @@ public class SubPropertyGridViewBuilder<TModel, TSub> : ViewBuilder<TModel>, IFi
     public PropertyOrConstantBuilder<TSub, bool>? CanDeleteRow { get; set; }
     public FormBuilder<TSub>? EditForm { get; set; }
     public IList<BaseFieldBuilder<TSub>> Fields { get; } = [];
-
-    public SubPropertyGridViewBuilder(Expression<Func<TModel, IEnumerable<TSub>>> subProperty)
-    {
-        SubProperty = subProperty;
-    }
 
     public IEnumerator GetEnumerator() => Fields.GetEnumerator();
     protected override BaseView BuildImpl()

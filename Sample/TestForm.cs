@@ -1,4 +1,3 @@
-using System;
 using FormsApi.Builder;
 using FormsApi.Builder.View;
 
@@ -12,7 +11,7 @@ public class TestForm : FormBuilder<TestModel>
         CreateMovieGridView()
     };
 
-    private ViewBuilder<TestModel> CreateDataView()
+    private static ViewBuilder<TestModel> CreateDataView()
     {
         return new DataViewBuilder<TestModel>()
         {
@@ -23,7 +22,7 @@ public class TestForm : FormBuilder<TestModel>
         };
     }
 
-    private ViewBuilder<TestModel> CreateMovieGridView()
+    private static ViewBuilder<TestModel> CreateMovieGridView()
     {
         var movieGrid = new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies)
         {
