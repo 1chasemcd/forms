@@ -1,5 +1,6 @@
 using System.Collections;
-using FormsApi.Form;
+using System.Linq.Expressions;
+using FormsApi.Form.Primitives;
 using FormsApi.Form.View;
 
 namespace FormsApi.Builder.View;
@@ -8,7 +9,13 @@ public sealed class CombinedViewBuilder<TModel> : ViewBuilder<TModel>, IEnumerab
 {
     private readonly IList<ViewBuilder<TModel>> _views = [];
 
-    public CombinedViewBuilder(PropertyOrConstantBuilder<TModel, string>? title = null, FormElementSize width = default)
+    public CombinedViewBuilder(PropertyOrConstantBuilder<TModel, string>? title = null, FormElementSize? width = null)
+    {
+        Title = title;
+        Width = width;
+    }
+
+    public CombinedViewBuilder(Expression<Func<TModel, string>> title, FormElementSize? width = null)
     {
         Title = title;
         Width = width;

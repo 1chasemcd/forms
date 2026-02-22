@@ -6,7 +6,7 @@ namespace Sample;
 
 public class TestForm : FormBuilder<TestModel>
 {
-    protected override ViewBuilder<TestModel> View => new CombinedViewBuilder<TestModel>("Test Form")
+    protected override ViewBuilder<TestModel> View => new CombinedViewBuilder<TestModel>(x => x.TextField)
     {
         CreateDataView()
     };

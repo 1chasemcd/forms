@@ -1,6 +1,7 @@
 using FormsApi.Common.Registry;
 using FormsApi.Form;
 using FormsApi.Form.Field;
+using FormsApi.Form.Primitives;
 using FormsApi.Form.View;
 
 namespace Tests.Builder.FormBuilder;
@@ -15,13 +16,13 @@ public class FieldAugmentTests
         List<BaseField> fields = ((CombinedView)_form.View).Views
             .Select(x => x as DataView).Last(x => x != null)?.Fields.ToList()!;
 
-        AssertAugmentHasValue(fields, nameof(TestModel.BoolProperty), nameof(CheckBoxInput.Width), new FormElementSize(50));
-        AssertAugmentHasValue(fields, nameof(TestModel.CurrencyProperty), nameof(CurrencyInput.Disabled), new Constant<bool>(true));
-        AssertAugmentHasValue(fields, nameof(TestModel.DateProperty), nameof(DateInput.MaxValue), new Constant<DateOnly>(new DateOnly(2025, 01, 01)));
-        AssertAugmentHasValue(fields, nameof(TestModel.DecimalProperty), nameof(NumericInput.Precision), new Constant<int>(4));
-        AssertAugmentHasValue(fields, nameof(TestModel.IntProperty), nameof(NumericInput.MinValue), new Property<int>(nameof(TestModel.MinValueProperty)));
-        AssertAugmentHasValue(fields, nameof(TestModel.StringListProperty), nameof(TextAreaInput.Hidden), new Constant<bool>(true));
-        AssertAugmentHasValue(fields, nameof(TestModel.StringProperty), nameof(TextInput.Label), new Constant<string>("Test Label"));
+        AssertAugmentHasValue(fields, nameof(TestModel.BoolProperty), nameof(CheckBoxInput.Width), new PercentSize(50));
+        AssertAugmentHasValue(fields, nameof(TestModel.CurrencyProperty), nameof(CurrencyInput.Disabled), new Constant(true));
+        AssertAugmentHasValue(fields, nameof(TestModel.DateProperty), nameof(DateInput.MaxValue), new Constant(new DateOnly(2025, 01, 01)));
+        AssertAugmentHasValue(fields, nameof(TestModel.DecimalProperty), nameof(NumericInput.Precision), new Constant(4));
+        AssertAugmentHasValue(fields, nameof(TestModel.IntProperty), nameof(NumericInput.MinValue), new Property(nameof(TestModel.MinValueProperty)));
+        AssertAugmentHasValue(fields, nameof(TestModel.StringListProperty), nameof(TextAreaInput.Hidden), new Constant(true));
+        AssertAugmentHasValue(fields, nameof(TestModel.StringProperty), nameof(TextInput.Label), new Constant("Test Label"));
 
         TimeInput timeField = fields.OfType<TimeInput>()
                                    .First(f => f.Property.Equals(nameof(TestModel.TimeProperty)));

@@ -1,6 +1,6 @@
 using System.Text.Json;
 using FormsApi.Common.Registry;
-using FormsApi.Repository;
+using FormsApi.Form.Primitives;
 
 namespace Tests.Repository;
 

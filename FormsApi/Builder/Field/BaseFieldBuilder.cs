@@ -1,7 +1,7 @@
 
 using System.Linq.Expressions;
-using FormsApi.Form;
 using FormsApi.Form.Field;
+using FormsApi.Form.Primitives;
 
 namespace FormsApi.Builder.Field;
 
@@ -11,7 +11,7 @@ public abstract class BaseFieldBuilder<TModel>
     public IEnumerable<ModelMemberBuilder<TModel, object>>? PropsToUpdate { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Hidden { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Disabled { get; set; }
-    public FormElementSize Width { get; set; }
+    public FormElementSize? Width { get; set; }
 
     internal BaseField Build()
     {

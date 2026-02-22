@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using FormsApi.Form;
+using FormsApi.Form.Primitives;
 
 namespace FormsApi.Builder;
 
@@ -16,14 +16,14 @@ public sealed class PropertyOrConstantBuilder<TModel, TMember>
         Selector = selector;
     }
 
-    internal PropertyOrConstant<TMember> Build()
+    internal PropertyOrConstant Build()
     {
         if (Selector is not null)
-            return new Property<TMember>(
+            return new Property(
                 new ModelMemberBuilder<TModel, TMember>(Selector).Build()
             );
         else if (Value is not null)
-            return new Constant<TMember>(Value);
+            return new Constant(Value);
 
         throw new Exception("PropertyOrConstant has no value");
 
