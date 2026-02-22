@@ -1,6 +1,7 @@
 using FormsApi.Builder;
 using FormsApi.Builder.View;
 using FormsApi.Common.Types;
+using FormsApi.Form.View;
 
 namespace Tests.Builder;
 
@@ -9,7 +10,8 @@ public class TestFormBuilder : FormBuilder<TestModel>
     protected override ViewBuilder<TestModel> View => new CombinedViewBuilder<TestModel>("Title", 100)
     {
         DataView(),
-        DataViewWithAugments()
+        DataViewWithAugments(),
+        SubPropertyGridView()
     };
 
     private static DataViewBuilder<TestModel> DataView()
@@ -41,6 +43,15 @@ public class TestFormBuilder : FormBuilder<TestModel>
             { m => m.StringListProperty, p => p.WithHidden(true) },
             { m => m.StringProperty, p => p.WithLabel("Test Label")},
             { m => m.TimeProperty, p => p.WithPropsToUpdate(x => x.BoolProperty) }
+        };
+    }
+
+    private static SubPropertyGridViewBuilder<TestModel, TestModel.TestModelChild> SubPropertyGridView()
+    {
+        return new SubPropertyGridViewBuilder<TestModel, TestModel.TestModelChild>(m => m.EnumerableProperty)
+        {
+            m => m.Property1,
+            m => m.Property2
         };
     }
 }
