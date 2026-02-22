@@ -8,8 +8,7 @@ public static class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers()
-            .AddApplicationPart(typeof(FormController).Assembly);
+        builder.Services.AddControllers().AddFormControllers();
 
         builder.Services.AddOpenApiDocument();
         WebApplication app = builder.Build();

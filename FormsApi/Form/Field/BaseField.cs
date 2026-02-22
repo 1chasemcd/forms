@@ -1,7 +1,18 @@
+using System.Text.Json.Serialization;
 using FormsApi.Form.Primitives;
 
 namespace FormsApi.Form.Field;
 
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[JsonDerivedType(typeof(Button), "button")]
+[JsonDerivedType(typeof(BaseInput), "baseinput")]
+[JsonDerivedType(typeof(StaticTextField), "statictextfield")]
+[JsonDerivedType(typeof(CheckBoxInput), "checkboxinput")]
+[JsonDerivedType(typeof(TextAreaInput), "textareainput")]
+[JsonDerivedType(typeof(CurrencyInput), "currencyinput")]
+[JsonDerivedType(typeof(NumericInput), "numericinput")]
+[JsonDerivedType(typeof(DateInput), "dateinput")]
+[JsonDerivedType(typeof(TimeInput), "timeinput")]
 public abstract record class BaseField
 {
     public PropertyOrConstant? Label { get; init; }

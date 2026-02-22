@@ -13,8 +13,6 @@ public static class FormServiceCollectionExtensions
         builder.AddApplicationPart(typeof(FormServiceCollectionExtensions).Assembly);
         builder.AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.TypeInfoResolverChain.Insert(0,
-                new FormPolymorphicTypeResolver());
             options.JsonSerializerOptions.DefaultIgnoreCondition =
                 System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
             options.JsonSerializerOptions.Converters.Add(new RepositoryTypeJsonConverter());
