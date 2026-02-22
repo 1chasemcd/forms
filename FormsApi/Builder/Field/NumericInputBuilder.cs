@@ -6,7 +6,7 @@ using FormsApi.Form.Field;
 namespace FormsApi.Builder.Field;
 
 public sealed class NumericInputBuilder<TModel, TInput>(
-    ModelMemberBuilder<TModel, TInput> propertyBuilder)
+    ModelMemberBuilder<TModel, TInput?> propertyBuilder)
     : BaseFieldBuilder<TModel, NumericInputBuilder<TModel, TInput>>
     where TInput : INumber<TInput>
 {

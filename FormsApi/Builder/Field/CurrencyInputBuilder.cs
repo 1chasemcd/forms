@@ -5,7 +5,7 @@ using FormsApi.Form.Field;
 namespace FormsApi.Builder.Field;
 
 public sealed class CurrencyInputBuilder<TModel>(
-    ModelMemberBuilder<TModel, Currency> propertyBuilder)
+    ModelMemberBuilder<TModel, Currency?> propertyBuilder)
     : BaseFieldBuilder<TModel, CurrencyInputBuilder<TModel>>
 {
     public PropertyOrConstantBuilder<TModel, int>? MaxValue { get; set; }

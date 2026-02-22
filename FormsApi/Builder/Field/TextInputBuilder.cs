@@ -5,7 +5,7 @@ using FormsApi.Form.Field;
 namespace FormsApi.Builder.Field;
 
 public sealed class TextInputBuilder<TModel>(
-    ModelMemberBuilder<TModel, string> propertyBuilder)
+    ModelMemberBuilder<TModel, string?> propertyBuilder)
     : BaseFieldBuilder<TModel, TextInputBuilder<TModel>>
 {
     public PropertyOrConstantBuilder<TModel, int>? MaxLength { get; set; }

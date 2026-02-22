@@ -4,7 +4,7 @@ using FormsApi.Form.Field;
 namespace FormsApi.Builder.Field;
 
 public sealed class TimeInputBuilder<TModel>(
-    ModelMemberBuilder<TModel, TimeOnly> propertyBuilder)
+    ModelMemberBuilder<TModel, TimeOnly?> propertyBuilder)
     : BaseFieldBuilder<TModel, TimeInputBuilder<TModel>>
 {
     public PropertyOrConstantBuilder<TModel, TimeOnly>? MaxValue { get; set; }
