@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="FormsApi/FormsApi.csproj" />
+  <Project Path="FormsApi.Host/FormsApi.Host.csproj" />
   <Project Path="Sample/Sample.csproj" />
   <Project Path="Tests/Tests.csproj" />
 </Solution>
