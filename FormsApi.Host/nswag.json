@@ -14,7 +14,7 @@
       "verbose": true,
       "workingDirectory": null,
       "aspNetCoreEnvironment": "NSwag",
-      "output": null,
+      "output": "schema.txt",
       "newLineBehavior": "Auto"
     }
   },
@@ -54,7 +54,7 @@
       "excludedOperationIds": [],
       "markOptionalProperties": true,
       "generateCloneMethod": false,
-      "typeStyle": "Class",
+      "typeStyle": "Interface",
       "enumStyle": "Enum",
       "useLeafType": false,
       "classTypes": [],
