@@ -15,8 +15,6 @@ public static class FormServiceCollectionExtensions
         {
             options.JsonSerializerOptions.DefaultIgnoreCondition =
                 System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
-            options.JsonSerializerOptions.Converters.Add(new RepositoryTypeJsonConverter());
-            options.JsonSerializerOptions.Converters.Add(new FormElementSizesonConverter());
         });
 
         return builder;

@@ -3,7 +3,10 @@ using FormsApi.Form.Primitives;
 
 namespace FormsApi.Form.View;
 
-[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[JsonPolymorphic(
+    TypeDiscriminatorPropertyName = "$type",
+    UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor
+)]
 [JsonDerivedType(typeof(DataView), "dataview")]
 [JsonDerivedType(typeof(CombinedView), "combinedview")]
 [JsonDerivedType(typeof(GridView), "gridview")]
