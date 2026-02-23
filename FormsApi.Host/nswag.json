@@ -1,6 +1,6 @@
 {
   "runtime": "Net100",
-  "defaultVariables": "TSOutputPath=../Web/src/app",
+  "defaultVariables": "TSOutputPath=../Web/src/app/api",
   "documentGenerator": {
     "aspNetCoreToOpenApi": {
       "project": "FormsApi.Host.csproj",
@@ -14,7 +14,7 @@
       "verbose": true,
       "workingDirectory": null,
       "aspNetCoreEnvironment": "NSwag",
-      "output": "schema.txt",
+      "output": null,
       "newLineBehavior": "Auto"
     }
   },
@@ -78,7 +78,7 @@
       "templateDirectory": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "$(TSOutputPath)/api.clients.g.ts",
+      "output": "$(TSOutputPath)/api.g.ts",
       "newLineBehavior": "Auto"
     }
   }

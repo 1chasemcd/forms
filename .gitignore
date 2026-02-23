@@ -480,3 +480,40 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Angular/ts files
+/Web/dist
+/Web/tmp
+/Web/out-tsc
+/Web/bazel-out
+
+# Node
+/Web/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Miscellaneous
+/Web/.angular/cache
+.sass-cache/
+/Web/connect.lock
+/Web/coverage
+/Web/libpeerconnection.log
+testem.log
+/Web/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Generated files
+*.g.ts

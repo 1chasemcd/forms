@@ -12,12 +12,19 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 
+[/Web/**]
+indent_size = 2
+
+# Generated code
+[*.g.ts]
+generated_code = true
+
 # Specify UTF-8 without byte-order mark
 [*.{csproj,locproj,nativeproj,proj,resx,slnx,vbproj}]
 charset = utf-8
 
 # Generated code
-[*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
+[*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs,.g.ts}]
 generated_code = true
 
 # C# files

@@ -33,6 +33,7 @@ export default defineConfig([
           style: 'kebab-case',
         },
       ],
+      '@typescript-eslint/no-extraneous-class': 'off',
     },
   },
   {

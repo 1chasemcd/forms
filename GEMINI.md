@@ -10,9 +10,9 @@ This is a full-stack web application for dynamically generating forms. It consis
 
 The backend is a .NET 10 solution (`Forms.slnx`). It contains the following projects:
 
-*   **FormsApi**: A class library containing the core logic for building and representing forms. It seems to be using a builder pattern to construct form models.
-*   **Sample**: A .NET web application that hosts the `FormsApi` and exposes it through a RESTful API. It uses OpenAPI for API documentation.
-*   **Tests**: A project for unit tests.
+- **FormsApi**: A class library containing the core logic for building and representing forms. It seems to be using a builder pattern to construct form models.
+- **Sample**: A .NET web application that hosts the `FormsApi` and exposes it through a RESTful API. It uses OpenAPI for API documentation.
+- **Tests**: A project for unit tests.
 
 The main API endpoint appears to be `/api/Form`, which likely returns a form definition based on a provided path.
 
@@ -55,12 +55,12 @@ The application will be available at `http://localhost:4200`.
 
 ### Backend
 
-*   **Code Style**: Code style is enforced on build (`<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>`).
-*   **Warnings**: Warnings are treated as errors (`<TreatWarningsAsErrors>true</TreatWarningsAsErrors>`).
-*   **Solution File**: The solution `Forms.slnx` uses the new text-based format, which is not tied to a specific Visual Studio version.
+- **Code Style**: Code style is enforced on build (`<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>`).
+- **Warnings**: Warnings are treated as errors (`<TreatWarningsAsErrors>true</TreatWarningsAsErrors>`).
+- **Solution File**: The solution `Forms.slnx` uses the new text-based format, which is not tied to a specific Visual Studio version.
 
 ### Frontend
 
-*   **Linting**: ESLint is used for linting. Run `npm run lint` in the `Web` directory to check the code.
-*   **Formatting**: Prettier is used for code formatting.
-*   **Testing**: Karma and Jasmine are used for testing. Run `npm test` in the `Web` directory to run the tests.
+- **Linting**: ESLint is used for linting. Run `npm run lint` in the `Web` directory to check the code.
+- **Formatting**: Prettier is used for code formatting.
+- **Testing**: Karma and Jasmine are used for testing. Run `npm test` in the `Web` directory to run the tests.

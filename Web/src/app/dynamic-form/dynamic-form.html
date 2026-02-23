@@ -1,0 +1,8 @@
+<div>
+  <form (ngSubmit)="onSubmit()" [formGroup]="formGroup()">
+    <app-dynamic-view
+      [group]="formGroup()"
+      [formView]="formView()"
+    ></app-dynamic-view>
+  </form>
+</div>

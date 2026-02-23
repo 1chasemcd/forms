@@ -11,6 +11,7 @@ namespace FormsApi.Form.Field;
 [JsonDerivedType(typeof(BaseInput), "baseinput")]
 [JsonDerivedType(typeof(StaticTextField), "statictextfield")]
 [JsonDerivedType(typeof(CheckBoxInput), "checkboxinput")]
+[JsonDerivedType(typeof(TextInput), "textinput")]
 [JsonDerivedType(typeof(TextAreaInput), "textareainput")]
 [JsonDerivedType(typeof(CurrencyInput), "currencyinput")]
 [JsonDerivedType(typeof(NumericInput), "numericinput")]
