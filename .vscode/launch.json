@@ -3,18 +3,30 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "ng serve",
+      "name": "ng-serve",
       "type": "chrome",
       "request": "launch",
-      "preLaunchTask": "npm: start",
-      "url": "http://localhost:4200/"
+      "url": "http://localhost:4200/",
+      "webRoot": "${workspaceFolder}/Web",
+      "sourceMaps": true
     },
     {
-      "name": "ng test",
-      "type": "chrome",
+      "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "npm: test",
-      "url": "http://localhost:9876/debug.html"
+      "preLaunchTask": "build-sample",
+      "name": "dotnet-sample",
+      "program": "${workspaceFolder}/Sample/bin/Debug/net10.0/Sample.dll",
+      "cwd": "${workspaceFolder}/Sample",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "fullstack",
+      "configurations": ["ng-serve", "dotnet-sample"]
     }
   ]
 }

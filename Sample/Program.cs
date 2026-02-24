@@ -25,8 +25,8 @@ public static class Program
             app.UseOpenApi();
             app.UseSwaggerUi();
         }
-
-        app.UseHttpsRedirection();
+        if (app.Environment.IsProduction())
+            app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();
         app.UseForms();

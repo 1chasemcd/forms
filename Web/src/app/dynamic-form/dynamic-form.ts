@@ -11,6 +11,7 @@ import { FormView } from '../api/types';
   selector: 'app-dynamic-form',
   imports: [ReactiveFormsModule, DynamicView],
   templateUrl: './dynamic-form.html',
+  providers: [FormClient, FormControlService],
 })
 export class DynamicForm implements OnInit {
   private readonly formClient = inject(FormClient);
