@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FormModel } from '../api/api.g';
 import {
-  FormCombinedView,
-  FormDataView,
-  FormField,
-  FormView,
-} from '../api/types';
+  FormModel,
+  BaseView,
+  CombinedView,
+  DataView,
+  BaseField,
+} from '../api/api.g';
 
 @Injectable()
 export class FormControlService {
   getFormGroup(form: FormModel) {
     let controls: Record<string, FormControl> = {};
-    if (form.view) controls = this.processView(form.view as FormView);
+    if (form.view) controls = this.processView(form.view);
 
     return new FormGroup(controls);
   }
 
-  private processView(view: FormView): Record<string, FormControl> {
+  private processView(view: BaseView): Record<string, FormControl> {
     switch (view.$type) {
       case 'combinedview':
         return this.processCombinedView(view);
@@ -29,21 +29,17 @@ export class FormControlService {
     }
   }
 
-  private processCombinedView(
-    view: FormCombinedView,
-  ): Record<string, FormControl> {
-    const controls =
-      view.views?.map((v) => this.processView(v as FormView)) ?? [];
+  private processCombinedView(view: CombinedView): Record<string, FormControl> {
+    const controls = view.views?.map((v) => this.processView(v)) ?? [];
     return Object.assign({}, ...controls);
   }
 
-  private processDataView(view: FormDataView): Record<string, FormControl> {
-    const fields =
-      view.fields?.map((f) => this.processField(f as FormField)) ?? [];
+  private processDataView(view: DataView): Record<string, FormControl> {
+    const fields = view.fields?.map((f) => this.processField(f)) ?? [];
     return Object.fromEntries(fields);
   }
 
-  private processField(field: FormField): [string, FormControl] {
+  private processField(field: BaseField): [string, FormControl] {
     let label: string | undefined;
     switch (field.$type) {
       case 'button':
@@ -56,7 +52,7 @@ export class FormControlService {
       case 'currencyinput':
       case 'dateinput':
       case 'numericinput':
-      case 'textarea':
+      case 'textareainput':
       case 'textinput':
       case 'timeinput':
         label = field.property;

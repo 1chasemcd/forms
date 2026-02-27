@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DataView } from './data-view';
+import { AppDataView } from './data-view';
 
-describe('DataView', () => {
-  let component: DataView;
-  let fixture: ComponentFixture<DataView>;
+describe('AppDataView', () => {
+  let component: AppDataView;
+  let fixture: ComponentFixture<AppDataView>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DataView],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DataView);
+    fixture = TestBed.createComponent(AppDataView);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

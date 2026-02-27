@@ -1,27 +1,26 @@
 import { Component, computed, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormDataView, FormView } from '../../api/types';
-import { DataView } from '../data-view/data-view';
+import { AppDataView } from '../data-view/data-view';
+import { BaseView } from '../../api/api.g';
 
 @Component({
   selector: 'app-dynamic-view',
-  imports: [DataView],
+  imports: [AppDataView],
   templateUrl: './dynamic-view.html',
 })
 export class DynamicView {
   readonly group = input<FormGroup>();
-  readonly formView = input<FormView>();
+  readonly formView = input<BaseView>();
 
   readonly combinedViews = computed(() => {
     const view = this.formView();
-    if (view?.$type == 'combinedview')
-      return view.views?.map((v) => v as FormView);
+    if (view?.$type == 'combinedview') return view.views;
     return undefined;
   });
 
   readonly dataView = computed(() => {
-    if (this.formView()?.$type == 'dataview')
-      return this.formView() as FormDataView;
+    const view = this.formView();
+    if (view?.$type == 'dataview') return view;
     return undefined;
   });
 }

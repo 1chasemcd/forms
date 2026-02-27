@@ -1,13 +1,13 @@
 import { Component, input } from '@angular/core';
-import { FormDataView } from '../../api/types';
 import { FormGroup } from '@angular/forms';
+import { DataView } from '../../api/api.g';
 
 @Component({
   selector: 'app-data-view',
   imports: [],
   templateUrl: './data-view.html',
 })
-export class DataView {
+export class AppDataView {
   readonly group = input<FormGroup>();
-  readonly formDataView = input<FormDataView>();
+  readonly formDataView = input<DataView>();
 }

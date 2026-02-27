@@ -75,7 +75,7 @@
       "inlineNamedDictionaries": false,
       "inlineNamedAny": false,
       "includeHttpContext": false,
-      "templateDirectory": null,
+      "templateDirectory": "nswag-templates",
       "serviceHost": null,
       "serviceSchemes": null,
       "output": "$(TSOutputPath)/api.g.ts",
