@@ -23,7 +23,7 @@ public static class FormServiceCollectionExtensions
     public static IServiceCollection AddForms(this IServiceCollection services, Action<IFormSetupOptions>? setupAction)
     {
         services.TryAddSingleton<FormRegistry>();
-        services.TryAddSingleton<RepositoryHandlerRegistry>();
+        services.TryAddSingleton<RepositoryRegistry>();
         services.TryAddSingleton<RepositoryServiceBuilder>();
 
         if (setupAction != null)

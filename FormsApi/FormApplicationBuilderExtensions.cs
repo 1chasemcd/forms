@@ -9,13 +9,13 @@ public static class FormApplicationBuilderExtensions
     public static void UseForms(this IApplicationBuilder app)
     {
         FormRegistry formRegistry = app.ApplicationServices.GetRequiredService<FormRegistry>();
-        RepositoryHandlerRegistry handlerRegistry = app.ApplicationServices.GetRequiredService<RepositoryHandlerRegistry>();
+        RepositoryRegistry repositoryRegistry = app.ApplicationServices.GetRequiredService<RepositoryRegistry>();
 
         IEnumerable<FormSetupOptions> setups = app.ApplicationServices.GetServices<FormSetupOptions>();
 
         foreach (FormSetupOptions setup in setups)
         {
-            setup.Configure(formRegistry, handlerRegistry);
+            setup.Configure(formRegistry, repositoryRegistry);
         }
     }
 }

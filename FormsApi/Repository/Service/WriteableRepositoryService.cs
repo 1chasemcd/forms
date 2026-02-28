@@ -8,16 +8,16 @@ internal interface IWriteableRepositoryService
 }
 
 internal sealed class WriteableRepositoryService<T>(
-    IRepositoryHandler<T> handler,
+    IRepository<T> repository,
     T obj
 ) : IWriteableRepositoryService
 {
     public async Task DeleteAsync()
     {
-        await handler.DeleteAsync(obj);
+        await repository.DeleteAsync(obj);
     }
     public async Task SaveAsync()
     {
-        await handler.SaveAsync(obj);
+        await repository.SaveAsync(obj);
     }
 }

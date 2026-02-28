@@ -5,7 +5,7 @@ using FormsApi.Form.Primitives;
 namespace FormsApi.Repository.Service;
 
 public class RepositoryServiceBuilder
-    (RepositoryHandlerRegistry handlers)
+    (RepositoryRegistry repositoryRegistry)
 {
     internal IReadableRepositoryService BuildWithType(RepositoryType type)
     {
@@ -20,18 +20,18 @@ public class RepositoryServiceBuilder
     private object BuildService(RepositoryType type, Type serviceType, object? obj = null)
     {
         Type repositoryType = type.GetRuntimeType() ?? throw new Exception("Invalid type");
-        object handler = GetHandler(repositoryType) ?? throw new Exception("No repository handler for type");
+        object repository = GetRepository(repositoryType) ?? throw new Exception("No repository for type");
         Type closedGeneric = serviceType.MakeGenericType(repositoryType);
         object? service = obj is null ?
-            Activator.CreateInstance(closedGeneric, handler) :
-            Activator.CreateInstance(closedGeneric, handler, obj);
+            Activator.CreateInstance(closedGeneric, repository) :
+            Activator.CreateInstance(closedGeneric, repository, obj);
         return service ?? throw new Exception("Could not construct service");
     }
 
-    private object? GetHandler(Type t)
+    private object? GetRepository(Type t)
     {
-        MethodInfo genericMethod = typeof(RepositoryHandlerRegistry).GetMethod(nameof(RepositoryHandlerRegistry.TryGet)) ?? throw new Exception();
+        MethodInfo genericMethod = typeof(RepositoryRegistry).GetMethod(nameof(RepositoryRegistry.TryGet)) ?? throw new Exception();
         MethodInfo getMethod = genericMethod.MakeGenericMethod(t);
-        return getMethod.Invoke(handlers, null);
+        return getMethod.Invoke(repositoryRegistry, null);
     }
 }
