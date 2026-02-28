@@ -9,21 +9,18 @@ public class RepositoryTypeTests
     [Test]
     public void TestSerialization()
     {
-        var registry = new RepositoryTypeRegistry();
 
-        RepositoryType type = registry.Add<RepositoryTypeTests>();
+        RepositoryType type = new(typeof(RepositoryTypeTests));
 
         string serialized = JsonSerializer.Serialize(type);
-        RepositoryType result = JsonSerializer.Deserialize<RepositoryType>(serialized);
+        RepositoryType? result = JsonSerializer.Deserialize<RepositoryType>(serialized);
         Assert.That(result, Is.EqualTo(type));
     }
 
     [Test]
     public void TestConversion()
     {
-        var registry = new RepositoryTypeRegistry();
-
-        RepositoryType type = registry.Add<RepositoryTypeTests>();
-        Assert.That(typeof(RepositoryTypeTests), Is.EqualTo(registry.TryGetRuntimeType(type)));
+        RepositoryType type = new(typeof(RepositoryTypeTests));
+        Assert.That(typeof(RepositoryTypeTests), Is.EqualTo(type.GetRuntimeType()));
     }
 }

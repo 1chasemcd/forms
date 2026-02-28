@@ -7,18 +7,16 @@ namespace FormsApi.Builder;
 
 public abstract class FormBuilder
 {
-    internal abstract FormModel Build(RepositoryTypeRegistry typeRegistr);
+    internal abstract FormModel Build();
 }
 
 public abstract class FormBuilder<TModel> : FormBuilder
 {
-    internal override FormModel Build(RepositoryTypeRegistry typeRegistry)
+    internal override FormModel Build()
     {
-        RepositoryType repositoryType = typeRegistry.Add<TModel>();
-
         return new FormModel()
         {
-            Type = repositoryType,
+            Type = new(typeof(TModel)),
             View = View.Build()
         };
     }

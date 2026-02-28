@@ -25,7 +25,6 @@ public static class FormServiceCollectionExtensions
         services.TryAddSingleton<FormRegistry>();
         services.TryAddSingleton<RepositoryHandlerRegistry>();
         services.TryAddSingleton<RepositoryServiceBuilder>();
-        services.TryAddSingleton<RepositoryTypeRegistry>();
 
         if (setupAction != null)
         {

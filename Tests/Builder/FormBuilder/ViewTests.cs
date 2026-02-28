@@ -7,7 +7,7 @@ namespace Tests.Builder.FormBuilder;
 
 public class ViewTests
 {
-    private readonly FormModel _form = new TestFormBuilder().Build(new RepositoryTypeRegistry());
+    private readonly FormModel _form = new TestFormBuilder().Build();
 
     [Test]
     public void Build_SetsCorrectRootViewType()

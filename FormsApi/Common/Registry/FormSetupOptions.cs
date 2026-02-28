@@ -25,9 +25,9 @@ internal class FormSetupOptions : IFormSetupOptions
         return this;
     }
 
-    internal void Configure(FormRegistry forms, RepositoryHandlerRegistry handlers, RepositoryTypeRegistry repoTypes)
+    internal void Configure(FormRegistry forms, RepositoryHandlerRegistry handlers)
     {
-        _builders.ForEach(b => forms.Add(b.Key, b.Value.Build(repoTypes)));
+        _builders.ForEach(b => forms.Add(b.Key, b.Value.Build()));
         _handlers.ForEach(h => handlers.Add(h.Key, h.Value));
 
     }

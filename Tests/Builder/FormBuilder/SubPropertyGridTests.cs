@@ -7,7 +7,7 @@ namespace Tests.Builder.FormBuilder;
 
 public class SubPropertyGridTests
 {
-    private readonly FormModel _form = new TestFormBuilder().Build(new RepositoryTypeRegistry());
+    private readonly FormModel _form = new TestFormBuilder().Build();
     private SubPropertyGridView GridView => ((CombinedView)_form.View).Views
         .Select(x => x as SubPropertyGridView).Where(x => x != null).ToList()[0]!;
 

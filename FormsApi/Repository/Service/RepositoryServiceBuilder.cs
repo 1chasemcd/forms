@@ -5,8 +5,7 @@ using FormsApi.Form.Primitives;
 namespace FormsApi.Repository.Service;
 
 public class RepositoryServiceBuilder
-    (RepositoryHandlerRegistry handlers,
-    RepositoryTypeRegistry repositoryTypes)
+    (RepositoryHandlerRegistry handlers)
 {
     internal IReadableRepositoryService BuildWithType(RepositoryType type)
     {
@@ -20,7 +19,7 @@ public class RepositoryServiceBuilder
 
     private object BuildService(RepositoryType type, Type serviceType, object? obj = null)
     {
-        Type repositoryType = repositoryTypes.TryGetRuntimeType(type) ?? throw new Exception("Invalid type");
+        Type repositoryType = type.GetRuntimeType() ?? throw new Exception("Invalid type");
         object handler = GetHandler(repositoryType) ?? throw new Exception("No repository handler for type");
         Type closedGeneric = serviceType.MakeGenericType(repositoryType);
         object? service = obj is null ?

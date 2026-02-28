@@ -7,7 +7,7 @@ namespace Tests.Builder.FormBuilder;
 
 public class DataViewTests
 {
-    private readonly FormModel _form = new TestFormBuilder().Build(new RepositoryTypeRegistry());
+    private readonly FormModel _form = new TestFormBuilder().Build();
 
     [TestCase(nameof(TestModel.BoolProperty), 0)]
     [TestCase(nameof(TestModel.CurrencyProperty), 1)]

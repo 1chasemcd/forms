@@ -4,5 +4,5 @@ namespace FormsApi.Form.View;
 
 public sealed record class RepositoryGridView : GridView
 {
-    public RepositoryType RepositoryType { get; init; }
+    public required RepositoryType RepositoryType { get; init; }
 }
