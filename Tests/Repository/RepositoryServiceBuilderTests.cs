@@ -1,96 +1,51 @@
-using System;
 using System.Text.Json;
-using FormsApi.Common.Registry;
 using FormsApi.Form.Primitives;
 using FormsApi.Repository;
 using FormsApi.Repository.Query;
 using FormsApi.Repository.Service;
-using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 
 namespace Tests.Repository;
 
-public class RepositoryServiceBuilderTests
+public class RepositoryServiceFactoryTests
 {
-    private RepositoryRegistry _registry;
-    private RepositoryServiceBuilder _builder;
+    private RepositoryServiceFactory _factory;
 
     [SetUp]
     public void SetUp()
     {
-        _registry = new RepositoryRegistry(NullLogger<RepositoryRegistry>.Instance);
-        _builder = new RepositoryServiceBuilder(_registry);
-    }
-
-    [Test]
-    public void BuildWithType_TypeWithNoDefaultConstructor_Throws()
-    {
-        var type = new RepositoryType(typeof(TestModelNoDefaultConstructor));
-        Assert.Throws<Exception>(() => _builder.BuildWithType(type));
-    }
-
-    [Test]
-    public void BuildWithType_TypeNotRegistered_ReturnsDefaultRepository()
-    {
-        var type = new RepositoryType(typeof(TestModel));
-        IReadableRepositoryService service = _builder.BuildWithType(type);
-        Assert.That(service, Is.InstanceOf<ReadableRepositoryService<TestModel>>()
-            .With.Property(nameof(ReadableRepositoryService<>.Repository))
-            .With.InstanceOf<DefaultRepository<TestModel>>());
+        var resolver = new Mock<IRepositoryResolver>();
+        resolver
+            .Setup(r => r.Resolve(typeof(TestModel)))
+            .Returns(new TestRepository());
+        _factory = new RepositoryServiceFactory(resolver.Object);
     }
 
     [Test]
     public void BuildWithType_TypeRegistered_ReturnsRegisteredRepository()
     {
-        _registry.Add(typeof(TestModel), new TestRepository());
-        var type = new RepositoryType(typeof(TestModelChild));
-        IReadableRepositoryService service = _builder.BuildWithType(type);
+        var type = new RepositoryType(typeof(TestModel));
+        IReadableRepositoryService service = _factory.BuildWithType(type);
         Assert.That(service, Is.InstanceOf<ReadableRepositoryService<TestModel>>()
             .With.Property(nameof(ReadableRepositoryService<>.Repository))
             .With.InstanceOf<TestRepository>());
     }
 
     [Test]
-    public void BuildWithTypeAndObject_TypeWithNoDefaultConstructor_Throws()
-    {
-        var type = new RepositoryType(typeof(TestModelNoDefaultConstructor));
-        JsonElement obj = JsonSerializer.SerializeToElement(new TestModelNoDefaultConstructor(0));
-        Assert.Throws<Exception>(() => _builder.BuildWithTypeAndObject(type, obj));
-    }
-
-    [Test]
-    public void BuildWithTypeAndObject_TypeNotRegistered_ReturnsDefaultRepository()
+    public void BuildWithTypeAndObject_TypeRegistered_ReturnsRegisteredRepository()
     {
         var type = new RepositoryType(typeof(TestModel));
         JsonElement obj = JsonSerializer.SerializeToElement(new TestModel());
 
-        IWriteableRepositoryService service = _builder.BuildWithTypeAndObject(type, obj);
+        IWriteableRepositoryService service = _factory.BuildWithTypeAndObject(type, obj);
         var typedService = service as WriteableRepositoryService<TestModel, TestModel>;
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(typedService, Is.Not.Null);
-            Assert.That(typedService, Has.Property(nameof(WriteableRepositoryService<,>.Repository))
-                .With.InstanceOf<DefaultRepository<TestModel>>());
-            Assert.That(typedService, Has.Property(nameof(WriteableRepositoryService<,>.Object))
-                .With.InstanceOf<TestModel>());
-        }
-    }
-
-    [Test]
-    public void BuildWithTypeAndObject_TypeRegistered_ReturnsRegisteredRepository()
-    {
-        _registry.Add(typeof(TestModel), new TestRepository());
-        var type = new RepositoryType(typeof(TestModelChild));
-        JsonElement obj = JsonSerializer.SerializeToElement(new TestModelChild());
-
-        IWriteableRepositoryService service = _builder.BuildWithTypeAndObject(type, obj);
-        var typedService = service as WriteableRepositoryService<TestModel, TestModelChild>;
         using (Assert.EnterMultipleScope())
         {
             Assert.That(typedService, Is.Not.Null);
             Assert.That(typedService, Has.Property(nameof(WriteableRepositoryService<,>.Repository))
                 .With.InstanceOf<TestRepository>());
             Assert.That(typedService, Has.Property(nameof(WriteableRepositoryService<,>.Object))
-                .With.InstanceOf<TestModelChild>());
+                .With.InstanceOf<TestModel>());
         }
     }
 
@@ -103,9 +58,4 @@ public class RepositoryServiceBuilderTests
     }
 
     private class TestModel;
-    private class TestModelChild : TestModel;
-    private class TestModelNoDefaultConstructor(int value)
-    {
-        private readonly int _value = value;
-    }
 }

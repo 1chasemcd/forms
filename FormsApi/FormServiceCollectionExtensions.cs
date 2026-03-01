@@ -1,5 +1,6 @@
 using FormsApi.Common.Registry;
 using FormsApi.Form.Json;
+using FormsApi.Repository;
 using FormsApi.Repository.Service;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -23,12 +24,13 @@ public static class FormServiceCollectionExtensions
     public static IServiceCollection AddForms(this IServiceCollection services, Action<IFormSetupOptions>? setupAction)
     {
         services.TryAddSingleton<FormRegistry>();
-        services.TryAddSingleton<RepositoryRegistry>();
-        services.TryAddSingleton<RepositoryServiceBuilder>();
+        services.TryAddSingleton<RepositoryServiceFactory>();
+        services.TryAddSingleton<RepositoryResolver>();
+        services.TryAddSingleton(typeof(DefaultRepository<>));
 
         if (setupAction != null)
         {
-            var options = new FormSetupOptions();
+            var options = new FormSetupOptions(services);
             setupAction.Invoke(options);
             services.AddSingleton(options);
         }

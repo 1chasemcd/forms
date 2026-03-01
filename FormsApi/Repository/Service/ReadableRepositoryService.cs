@@ -2,7 +2,7 @@ using FormsApi.Repository.Query;
 
 namespace FormsApi.Repository.Service;
 
-internal interface IReadableRepositoryService
+public interface IReadableRepositoryService
 {
     Task<object> GetNewAsync();
     Task<IEnumerable<object>> GetAsync(QueryCriteria criteria);

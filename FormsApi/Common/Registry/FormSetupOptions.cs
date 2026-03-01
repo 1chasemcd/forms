@@ -1,34 +1,69 @@
 using FormsApi.Builder;
+using FormsApi.Form;
 using FormsApi.Repository;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FormsApi.Common.Registry;
 
 public interface IFormSetupOptions
 {
-    public IFormSetupOptions AddForm<TModel>(string path, FormBuilder<TModel> builder);
-    IFormSetupOptions AddRepository<T>(IRepository<T> repository);
+    public IFormSetupOptions AddForm<TBuilder>(string path)
+        where TBuilder : FormBuilder;
+    IFormSetupOptions AddRepository<TRepository>(ServiceLifetime lifetime = ServiceLifetime.Singleton);
 }
-internal class FormSetupOptions : IFormSetupOptions
+internal class FormSetupOptions(IServiceCollection services) : IFormSetupOptions
 {
-    private readonly List<KeyValuePair<string, FormBuilder>> _builders = [];
-    private readonly List<KeyValuePair<Type, object>> _repositories = [];
-
-    public IFormSetupOptions AddForm<TModel>(string path, FormBuilder<TModel> builder)
+    private readonly ICollection<KeyValuePair<string, Type>> _builders = [];
+    public IFormSetupOptions AddForm<TBuilder>(string path)
+        where TBuilder : FormBuilder
     {
-        _builders.Add(new(path, builder));
+        _builders.Add(new(path, typeof(TBuilder)));
         return this;
     }
 
-    public IFormSetupOptions AddRepository<T>(IRepository<T> repository)
+    internal IEnumerable<KeyValuePair<string, FormModel>> BuildForms()
     {
-        _repositories.Add(new(typeof(T), repository));
+        foreach (KeyValuePair<string, Type> registration in _builders)
+        {
+            FormModel? form = (Activator.CreateInstance(registration.Value) as FormBuilder)?.Build();
+            if (form is not null)
+                yield return new(registration.Key, form);
+            else
+                throw new InvalidOperationException($"Unable to build form {registration.Value.Name}");
+        }
+    }
+
+    public IFormSetupOptions AddRepository<TRepository>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
+    {
+        var repoInterfaces = typeof(TRepository)
+            .GetInterfaces()
+            .Where(i =>
+                i.IsGenericType &&
+                i.GetGenericTypeDefinition() == typeof(IRepository<>))
+            .ToList();
+
+        if (repoInterfaces.Count == 0)
+            throw new InvalidOperationException(
+                $"{typeof(TRepository).Name} does not implement IRepository<T>");
+
+
+        foreach (Type repoInterface in repoInterfaces)
+        {
+            CheckAlreadyRegistered(services, repoInterface);
+            services.Add(new ServiceDescriptor(repoInterface, typeof(TRepository), lifetime));
+        }
         return this;
     }
 
-    internal void Configure(FormRegistry forms, RepositoryRegistry repositories)
+    private static void CheckAlreadyRegistered(IServiceCollection services, Type repoInterface)
     {
-        _builders.ForEach(b => forms.Add(b.Key, b.Value.Build()));
-        _repositories.ForEach(h => repositories.Add(h.Key, h.Value));
+        ServiceDescriptor? existing = services.FirstOrDefault(s => s.ServiceType == repoInterface);
 
+        if (existing == null)
+            return;
+
+        throw new InvalidOperationException(
+            $"Repository for {repoInterface} already registered: " +
+            $"{existing.ImplementationType?.Name}");
     }
 }

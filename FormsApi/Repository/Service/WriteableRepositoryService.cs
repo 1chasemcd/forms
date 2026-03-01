@@ -1,6 +1,6 @@
 namespace FormsApi.Repository.Service;
 
-internal interface IWriteableRepositoryService
+public interface IWriteableRepositoryService
 {
     Task SaveAsync();
     Task DeleteAsync();
