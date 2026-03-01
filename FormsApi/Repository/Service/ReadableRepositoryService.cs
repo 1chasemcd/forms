@@ -11,12 +11,13 @@ internal interface IReadableRepositoryService
 internal sealed class ReadableRepositoryService<T>(
     IRepository<T> repository) : IReadableRepositoryService
 {
+    internal IRepository<T> Repository { get; init; } = repository;
     public async Task<IEnumerable<object>> GetAsync(QueryCriteria criteria)
     {
-        return (IEnumerable<object>)repository.GetAsync(criteria);
+        return (IEnumerable<object>)Repository.GetAsync(criteria);
     }
     public async Task<object> GetNewAsync()
     {
-        return repository.GetNewAsync();
+        return Repository.GetNewAsync();
     }
 }

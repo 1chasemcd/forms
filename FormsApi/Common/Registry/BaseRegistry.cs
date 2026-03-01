@@ -7,13 +7,13 @@ public abstract class BaseRegistry<TKey, TValue>(ILogger<BaseRegistry<TKey, TVal
     where TKey : notnull
 {
     protected readonly ConcurrentDictionary<TKey, TValue> _registry = [];
-    internal void Add(TKey key, TValue value)
+    internal virtual void Add(TKey key, TValue value)
     {
         if (!_registry.TryAdd(key, value))
             logger.LogError("Already had a registration for key '{key}'", key);
     }
 
-    internal TValue? TryGet(TKey key)
+    internal virtual TValue? TryGet(TKey key)
     {
         _registry.TryGetValue(key, out TValue? value);
         return value;

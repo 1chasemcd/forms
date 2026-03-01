@@ -11,7 +11,7 @@ public interface IFormSetupOptions
 internal class FormSetupOptions : IFormSetupOptions
 {
     private readonly List<KeyValuePair<string, FormBuilder>> _builders = [];
-    private readonly List<KeyValuePair<Type, IRepository<object>>> _repositories = [];
+    private readonly List<KeyValuePair<Type, object>> _repositories = [];
 
     public IFormSetupOptions AddForm<TModel>(string path, FormBuilder<TModel> builder)
     {
@@ -21,7 +21,7 @@ internal class FormSetupOptions : IFormSetupOptions
 
     public IFormSetupOptions AddRepository<T>(IRepository<T> repository)
     {
-        _repositories.Add(new(typeof(T), (IRepository<object>)repository));
+        _repositories.Add(new(typeof(T), repository));
         return this;
     }
 
