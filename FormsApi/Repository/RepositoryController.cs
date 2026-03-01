@@ -1,3 +1,4 @@
+using System.Text.Json;
 using FormsApi.Form.Primitives;
 using FormsApi.Repository.Query;
 using FormsApi.Repository.Service;
@@ -29,9 +30,9 @@ public class RepositoryController(RepositoryServiceBuilder builder) : Controller
     }
 
     [HttpPost("save/{type}")]
-    public async Task<ActionResult> SaveAsync([FromRoute] RepositoryType type, [FromBody] object obj)
+    public async Task<ActionResult> SaveAsync([FromRoute] RepositoryType type, [FromBody] JsonElement body)
     {
-        IWriteableRepositoryService service = builder.BuildWithTypeAndObject(type, obj);
+        IWriteableRepositoryService service = builder.BuildWithTypeAndObject(type, body);
         await service.SaveAsync();
         return NoContent();
     }
@@ -39,9 +40,9 @@ public class RepositoryController(RepositoryServiceBuilder builder) : Controller
     [HttpPost("delete/{type}")]
     public async Task<ActionResult> DeleteAsync(
         [FromRoute] RepositoryType type,
-        [FromBody] object obj)
+        [FromBody] JsonElement body)
     {
-        IWriteableRepositoryService service = builder.BuildWithTypeAndObject(type, obj);
+        IWriteableRepositoryService service = builder.BuildWithTypeAndObject(type, body);
         await service.DeleteAsync();
         return NoContent();
     }

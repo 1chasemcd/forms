@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using FormsApi.Common.Registry;
 using FormsApi.Form.Primitives;
 using FormsApi.Repository;
@@ -52,14 +53,17 @@ public class RepositoryServiceBuilderTests
     public void BuildWithTypeAndObject_TypeWithNoDefaultConstructor_Throws()
     {
         var type = new RepositoryType(typeof(TestModelNoDefaultConstructor));
-        Assert.Throws<Exception>(() => _builder.BuildWithTypeAndObject(type, new TestModelNoDefaultConstructor(0)));
+        JsonElement obj = JsonSerializer.SerializeToElement(new TestModelNoDefaultConstructor(0));
+        Assert.Throws<Exception>(() => _builder.BuildWithTypeAndObject(type, obj));
     }
 
     [Test]
     public void BuildWithTypeAndObject_TypeNotRegistered_ReturnsDefaultRepository()
     {
         var type = new RepositoryType(typeof(TestModel));
-        IWriteableRepositoryService service = _builder.BuildWithTypeAndObject(type, new TestModel());
+        JsonElement obj = JsonSerializer.SerializeToElement(new TestModel());
+
+        IWriteableRepositoryService service = _builder.BuildWithTypeAndObject(type, obj);
         var typedService = service as WriteableRepositoryService<TestModel, TestModel>;
         using (Assert.EnterMultipleScope())
         {
@@ -76,7 +80,9 @@ public class RepositoryServiceBuilderTests
     {
         _registry.Add(typeof(TestModel), new TestRepository());
         var type = new RepositoryType(typeof(TestModelChild));
-        IWriteableRepositoryService service = _builder.BuildWithTypeAndObject(type, new TestModelChild());
+        JsonElement obj = JsonSerializer.SerializeToElement(new TestModelChild());
+
+        IWriteableRepositoryService service = _builder.BuildWithTypeAndObject(type, obj);
         var typedService = service as WriteableRepositoryService<TestModel, TestModelChild>;
         using (Assert.EnterMultipleScope())
         {
