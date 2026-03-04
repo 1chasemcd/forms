@@ -11,7 +11,7 @@ public class RepositoryServiceFactoryTests
 {
     private RepositoryServiceFactory _factory;
 
-    [SetUp]
+    [OneTimeSetUp]
     public void SetUp()
     {
         var resolver = new Mock<IRepositoryResolver>();

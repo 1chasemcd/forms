@@ -11,7 +11,6 @@ public interface IRepositoryResolver
 
 internal sealed class RepositoryResolver(IServiceProvider provider) : IRepositoryResolver
 {
-    // Cache: ModelType -> Repository instance
     private readonly ConcurrentDictionary<Type, object> _cache = new();
 
     public object Resolve(Type modelType)
