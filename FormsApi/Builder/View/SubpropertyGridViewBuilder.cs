@@ -6,10 +6,10 @@ using FormsApi.Form.View;
 namespace FormsApi.Builder.View;
 
 public class SubPropertyGridViewBuilder<TModel, TSub>(
-    Expression<Func<TModel, IEnumerable<TSub>>> subProperty)
+    Expression<Func<TModel, IEnumerable<TSub>?>> subProperty)
     : ViewBuilder<TModel>, IFieldCollection<TSub>
 {
-    public ModelMemberBuilder<TModel, IEnumerable<TSub>> SubProperty { get; set; } = subProperty;
+    public ModelMemberBuilder<TModel, IEnumerable<TSub>?> SubProperty { get; set; } = subProperty;
     public PropertyOrConstantBuilder<TModel, bool>? CanAdd { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? CanEdit { get; set; }
     public PropertyOrConstantBuilder<TSub, bool>? CanEditRow { get; set; }

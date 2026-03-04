@@ -1,4 +1,7 @@
 using FormsApi;
+using FormsApi.Form.Primitives;
+using NJsonSchema;
+using NJsonSchema.Generation.TypeMappers;
 
 namespace Sample;
 
@@ -12,10 +15,19 @@ public static class Program
             .AddControllers()
             .AddFormControllers();
 
-        builder.Services.AddOpenApiDocument();
+        builder.Services.AddOpenApiDocument(config =>
+        {
+            config.SchemaSettings.TypeMappers.Add(new PrimitiveTypeMapper(typeof(RepositoryType), schema =>
+            {
+                schema.Type = JsonObjectType.String;
+                schema.Description = "Base64-encoded assembly-qualified type name";
+            }));
+        });
+
 
         builder.Services.AddForms(formsSetup => formsSetup
-            .AddForm("home", new TestForm())
+            .AddForm<TestForm>("home")
+            .AddRepository<ModelRepository>()
         );
 
         WebApplication app = builder.Build();

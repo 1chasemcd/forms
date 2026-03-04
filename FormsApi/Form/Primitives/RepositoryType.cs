@@ -9,7 +9,7 @@ namespace FormsApi.Form.Primitives;
 public record class RepositoryType(Type type)
 {
     public override string ToString() => type is null ? string.Empty : Encode(type);
-    public static bool TryParse(string? value, out RepositoryType? result)
+    public static bool TryParse(string? value, out RepositoryType result)
     {
         if (!string.IsNullOrEmpty(value) && Decode(value) is Type t)
         {
@@ -17,7 +17,7 @@ public record class RepositoryType(Type type)
             return true;
         }
 
-        result = null;
+        result = null!;
         return false;
     }
 

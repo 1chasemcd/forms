@@ -13,6 +13,6 @@ public sealed class FormController(FormRegistry registry) : ControllerBase
         FormModel? form = registry.TryGet(path);
         if (form is null)
             return NotFound();
-        return form;
+        return Ok(form);
     }
 }

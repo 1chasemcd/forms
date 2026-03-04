@@ -16,6 +16,7 @@ public static class FormServiceCollectionExtensions
         {
             options.JsonSerializerOptions.DefaultIgnoreCondition =
                 System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+            options.JsonSerializerOptions.PropertyNamingPolicy = null;
         });
 
         return builder;
@@ -24,8 +25,8 @@ public static class FormServiceCollectionExtensions
     public static IServiceCollection AddForms(this IServiceCollection services, Action<IFormSetupOptions>? setupAction)
     {
         services.TryAddSingleton<FormRegistry>();
-        services.TryAddSingleton<RepositoryServiceFactory>();
-        services.TryAddSingleton<RepositoryResolver>();
+        services.TryAddSingleton<IRepositoryServiceFactory, RepositoryServiceFactory>();
+        services.TryAddSingleton<IRepositoryResolver, RepositoryResolver>();
         services.TryAddSingleton(typeof(DefaultRepository<>));
 
         if (setupAction != null)
