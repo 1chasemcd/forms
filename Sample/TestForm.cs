@@ -7,33 +7,37 @@ public class TestForm : FormBuilder<TestModel>
 {
     protected override ViewBuilder<TestModel> View => new CombinedViewBuilder<TestModel>("A Sample Form")
     {
-        CreateDataView(),
-        CreateMovieGridView()
+        TopLeftView(),
+        TopRightView(),
+        BottomView()
     };
 
-    private static ViewBuilder<TestModel> CreateDataView()
+    private static ViewBuilder<TestModel> TopLeftView()
     {
-        return new DataViewBuilder<TestModel>()
+        return new DataViewBuilder<TestModel>(width: 4)
         {
-            { m => m.TextField, p => p.WithWidth(50) },
-            { m => m.DateField, p => p.WithWidth(50) },
-            { m => m.NumericField, p => p.WithWidth(50) },
-            { m => m.CurrencyField, p => p.WithWidth(50) },
+            { m => m.TextField, p => p.WithWidth(6) },
+            { m => m.DateField, p => p.WithWidth(6) },
+            { m => m.ButtonToClick },
         };
     }
 
-    private static ViewBuilder<TestModel> CreateMovieGridView()
+    private static ViewBuilder<TestModel> TopRightView()
     {
-        var movieGrid = new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies)
+        return new DataViewBuilder<TestModel>(title: "Additional Fields", width: 8)
         {
-            m => m.Name,
-            m => m.DirectorName,
-            m => m.ReleaseDate,
-            m => m.MyPersonalRating
+            m => m.CurrencyField,
+            m => m.TextFieldWithInitialValue
         };
+    }
 
-        movieGrid.Title = "My Movie Ratings";
-
-        return movieGrid;
+    private static ViewBuilder<TestModel> BottomView()
+    {
+        return new DataViewBuilder<TestModel>()
+        {
+            m => m.NumericField,
+            m => m.CheckBox,
+            "A static message to display at the bottom"
+        };
     }
 }

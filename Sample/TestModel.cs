@@ -28,10 +28,16 @@ public class TestModel
         });
     }
 
-    public string TextField { get; set; } = string.Empty;
+    public void ButtonToClick()
+    {
+        return;
+    }
+    public bool CheckBox { get; set; }
+    public Currency CurrencyField { get; set; } = 0;
     public DateOnly DateField { get; set; }
     public decimal NumericField { get; set; }
-    public Currency CurrencyField { get; set; } = 0;
+    public string TextField { get; set; } = string.Empty;
+    public string TextFieldWithInitialValue { get; set; } = "Test Value";
 
     public IList<Movie> Movies { get; set; } = [];
 }
