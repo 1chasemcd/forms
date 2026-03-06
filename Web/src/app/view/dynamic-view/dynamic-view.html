@@ -1,10 +1,12 @@
-<div>
-  <p>{{ formView()?.Title }}</p>
+<h2>{{ title() }}</h2>
+<div class="grid grid-cols-12">
   @if (combinedViews(); as views) {
     @for (childView of views; track $index) {
       <app-dynamic-view [formView]="childView" [model]="model()"></app-dynamic-view>
     }
   } @else if (dataView(); as view) {
-    <app-data-view [dataView]="view" [model]="model()"></app-data-view>
+    @for (field of view.Fields; track field.Id) {
+      <app-dynamic-field [field]="field" [model]="model()"></app-dynamic-field>
+    }
   }
 </div>

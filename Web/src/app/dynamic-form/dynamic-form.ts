@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { catchError, of, throwError } from 'rxjs';
 import { DynamicView } from '../view/dynamic-view/dynamic-view';
-import { FormModel } from './form-model';
+import { FormModel } from '../utils/api-model-utils';
 
 @Component({
   selector: 'app-dynamic-form',
