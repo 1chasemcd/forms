@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {
-  FormDefinition,
-  BaseView,
-  CombinedView,
-  DataView,
-  BaseField,
-} from '../api/api.g';
+import { FormDefinition, BaseView, CombinedView, DataView, BaseField } from '../api/api.g';
 
 @Injectable()
 export class FormControlService {
@@ -44,10 +38,19 @@ export class FormControlService {
 
     const control = new FormControl();
 
-    if (field.Required?.$type == 'constant' && field.Required.Value == true)
+    if (
+      field.$type != 'statictextfield' &&
+      field.$type != 'button' &&
+      field.Required?.$type == 'constant' &&
+      field.Required.Value == true
+    )
       control.addValidators(Validators.required);
 
-    if (field.Disabled?.$type == 'constant' && field.Disabled.Value == true)
+    if (
+      field.$type != 'statictextfield' &&
+      field.Disabled?.$type == 'constant' &&
+      field.Disabled.Value == true
+    )
       control.disable();
 
     return [field.Id, control];
