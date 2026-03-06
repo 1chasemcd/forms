@@ -1,4 +1,3 @@
 @for (field of dataView()?.Fields; track field.Id) {
-<label [attr.for]="field.Label"> {{ field.Label }}</label>
-<input [id]="field.Label" />
+<app-dynamic-field [field]="field" [model]="model()"></app-dynamic-field>
 }

@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { catchError, of, throwError } from 'rxjs';
 import { DynamicView } from '../view/dynamic-view/dynamic-view';
+import { FormModel } from './form-model';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -24,7 +25,7 @@ export class DynamicForm implements OnInit {
   private readonly route = inject(ActivatedRoute);
   formGroup = signal<FormGroup>(new FormGroup({}));
   formDefinition = signal<FormDefinition>({});
-  model = signal<Record<string, unknown>>({});
+  model = signal<FormModel>({});
 
   ngOnInit() {
     const path = this.route.snapshot.paramMap.get('path');

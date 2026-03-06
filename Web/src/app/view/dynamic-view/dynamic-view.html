@@ -1,8 +1,8 @@
 <div>
   <p>{{ formView()?.Title }}</p>
   @if (combinedViews(); as views) { @for (childView of views; track $index) {
-  <app-dynamic-view [formView]="childView"></app-dynamic-view>
+  <app-dynamic-view [formView]="childView" [model]="model()"></app-dynamic-view>
   } } @else if (dataView(); as view) {
-  <app-data-view [dataView]="view"></app-data-view>
+  <app-data-view [dataView]="view" [model]="model()"></app-data-view>
   }
 </div>

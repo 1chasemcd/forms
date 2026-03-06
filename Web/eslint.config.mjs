@@ -4,17 +4,12 @@ const { configs } = pkg;
 import { defineConfig } from 'eslint/config';
 import { configs as tsconfigs } from 'typescript-eslint';
 import { configs as ngconfigs, processInlineTemplates } from 'angular-eslint';
-import eslintConfigPrettier from 'eslint-config-prettier/flat';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default defineConfig([
   {
     files: ['**/*.ts'],
-    extends: [
-      configs.recommended,
-      tsconfigs.strict,
-      tsconfigs.stylistic,
-      ngconfigs.tsRecommended,
-    ],
+    extends: [configs.recommended, tsconfigs.strict, ngconfigs.tsRecommended],
     processor: processInlineTemplates,
     rules: {
       '@angular-eslint/directive-selector': [
