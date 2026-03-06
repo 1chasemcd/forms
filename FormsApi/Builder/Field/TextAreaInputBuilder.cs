@@ -1,14 +1,15 @@
 using System.Linq.Expressions;
+using FormsApi.Common;
 using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
 public sealed class TextAreaInputBuilder<TModel>(
     ModelMemberBuilder<TModel, IEnumerable<string>?> propertyBuilder)
-    : BaseFieldBuilder<TModel, TextAreaInputBuilder<TModel>>
+    : BaseInputBuilder<TModel, TextAreaInputBuilder<TModel>>
 {
     public PropertyOrConstantBuilder<TModel, int>? MaxLength { get; set; }
-    protected override TextAreaInput BuildImpl()
+    protected override TextAreaInput BuildInput()
     {
         return new TextAreaInput()
         {
@@ -16,6 +17,8 @@ public sealed class TextAreaInputBuilder<TModel>(
             MaxLength = MaxLength?.Build()
         };
     }
+
+    protected override string GetDefaultLabel() => propertyBuilder.Build().CamelCaseToWords();
 
     public TextAreaInputBuilder<TModel> WithMaxLength(int maxLength)
     {

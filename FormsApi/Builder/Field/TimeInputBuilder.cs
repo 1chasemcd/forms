@@ -1,15 +1,16 @@
 using System.Linq.Expressions;
+using FormsApi.Common;
 using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
 public sealed class TimeInputBuilder<TModel>(
     ModelMemberBuilder<TModel, TimeOnly?> propertyBuilder)
-    : BaseFieldBuilder<TModel, TimeInputBuilder<TModel>>
+    : BaseInputBuilder<TModel, TimeInputBuilder<TModel>>
 {
     public PropertyOrConstantBuilder<TModel, TimeOnly>? MaxValue { get; set; }
     public PropertyOrConstantBuilder<TModel, TimeOnly>? MinValue { get; set; }
-    protected override TimeInput BuildImpl()
+    protected override TimeInput BuildInput()
     {
         return new TimeInput()
         {
@@ -18,6 +19,8 @@ public sealed class TimeInputBuilder<TModel>(
             MinValue = MinValue?.Build(),
         };
     }
+
+    protected override string GetDefaultLabel() => propertyBuilder.Build().CamelCaseToWords();
 
     public TimeInputBuilder<TModel> WithMaxValue(TimeOnly maxValue)
     {

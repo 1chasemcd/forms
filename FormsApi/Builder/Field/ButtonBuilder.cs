@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using System.Reflection;
-using FormsApi.Builder.Validation;
+using FormsApi.Common;
 using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
@@ -9,13 +9,15 @@ public sealed class ButtonBuilder<TModel>(
     Expression<Func<TModel, Action>> methodCall)
     : BaseFieldBuilder<TModel, ButtonBuilder<TModel>>
 {
-    protected override Button BuildImpl()
+    protected override Button BuildField()
     {
         return new Button()
         {
             MethodToRunOnChange = GetMethodName(),
         };
     }
+
+    protected override string GetDefaultLabel() => GetMethodName().CamelCaseToWords();
 
     private string GetMethodName()
     {

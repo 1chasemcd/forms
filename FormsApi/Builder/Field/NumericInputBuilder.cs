@@ -1,20 +1,21 @@
 
 using System.Linq.Expressions;
 using System.Numerics;
+using FormsApi.Common;
 using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
 public sealed class NumericInputBuilder<TModel, TInput>(
     ModelMemberBuilder<TModel, TInput?> propertyBuilder)
-    : BaseFieldBuilder<TModel, NumericInputBuilder<TModel, TInput>>
+    : BaseInputBuilder<TModel, NumericInputBuilder<TModel, TInput>>
     where TInput : INumber<TInput>
 {
     public PropertyOrConstantBuilder<TModel, int>? MaxValue { get; set; }
     public PropertyOrConstantBuilder<TModel, int>? MinValue { get; set; }
     public PropertyOrConstantBuilder<TModel, int>? Precision { get; set; }
     public PropertyOrConstantBuilder<TModel, int>? Scale { get; set; }
-    protected override NumericInput BuildImpl()
+    protected override NumericInput BuildInput()
     {
         return new NumericInput()
         {
@@ -25,6 +26,8 @@ public sealed class NumericInputBuilder<TModel, TInput>(
             Scale = Scale?.Build()
         };
     }
+
+    protected override string GetDefaultLabel() => propertyBuilder.Build().CamelCaseToWords();
 
     public NumericInputBuilder<TModel, TInput> WithMaxValue(int maxValue)
     {

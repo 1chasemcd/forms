@@ -1,15 +1,16 @@
 using System.Linq.Expressions;
+using FormsApi.Common;
 using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
 public sealed class DateInputBuilder<TModel>(
     ModelMemberBuilder<TModel, DateOnly?> propertyBuilder)
-    : BaseFieldBuilder<TModel, DateInputBuilder<TModel>>
+    : BaseInputBuilder<TModel, DateInputBuilder<TModel>>
 {
     public PropertyOrConstantBuilder<TModel, DateOnly>? MaxValue { get; set; }
     public PropertyOrConstantBuilder<TModel, DateOnly>? MinValue { get; set; }
-    protected override DateInput BuildImpl()
+    protected override DateInput BuildInput()
     {
         return new DateInput()
         {
@@ -18,6 +19,8 @@ public sealed class DateInputBuilder<TModel>(
             MinValue = MinValue?.Build(),
         };
     }
+
+    protected override string GetDefaultLabel() => propertyBuilder.Build().CamelCaseToWords();
 
     public DateInputBuilder<TModel> WithMaxValue(DateOnly maxValue)
     {

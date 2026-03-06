@@ -8,25 +8,22 @@ namespace FormsApi.Builder.Field;
 public abstract class BaseFieldBuilder<TModel>
 {
     public PropertyOrConstantBuilder<TModel, string>? Label { get; set; }
-    public IEnumerable<ModelMemberBuilder<TModel, object>>? PropsToUpdate { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Hidden { get; set; }
-    public PropertyOrConstantBuilder<TModel, bool>? Disabled { get; set; }
     public FormElementSize? Width { get; set; }
 
-    internal BaseField Build()
+    internal virtual BaseField Build()
     {
-        BaseField field = BuildImpl();
+        BaseField field = BuildField();
 
         return field with
         {
-            Label = Label?.Build(),
-            PropertiesToUpdateOnChange = PropsToUpdate?.Select(x => x.Build()),
+            Label = Label?.Build() ?? new Constant(GetDefaultLabel()),
             Hidden = Hidden?.Build(),
-            Disabled = Disabled?.Build(),
             Width = Width
         };
     }
-    protected abstract BaseField BuildImpl();
+    protected abstract BaseField BuildField();
+    protected abstract string GetDefaultLabel();
 }
 
 public abstract class BaseFieldBuilder<TModel, TThis> : BaseFieldBuilder<TModel>
@@ -43,11 +40,6 @@ public abstract class BaseFieldBuilder<TModel, TThis> : BaseFieldBuilder<TModel>
         Label = labelProperty;
         return This;
     }
-    public TThis WithPropsToUpdate(params Expression<Func<TModel, object>>[] props)
-    {
-        PropsToUpdate = props.Select(x => new ModelMemberBuilder<TModel, object>(x));
-        return This;
-    }
     public TThis WithHidden(bool hidden)
     {
         Hidden = hidden;
@@ -56,16 +48,6 @@ public abstract class BaseFieldBuilder<TModel, TThis> : BaseFieldBuilder<TModel>
     public TThis WithHidden(Expression<Func<TModel, bool>> hiddenProperty)
     {
         Hidden = hiddenProperty;
-        return This;
-    }
-    public TThis WithDisabled(bool disabled)
-    {
-        Disabled = disabled;
-        return This;
-    }
-    public TThis WithDisabled(Expression<Func<TModel, bool>> disabledProperty)
-    {
-        Disabled = disabledProperty;
         return This;
     }
     public TThis WithWidth(FormElementSize width)

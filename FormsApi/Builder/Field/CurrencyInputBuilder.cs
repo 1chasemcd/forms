@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using FormsApi.Common;
 using FormsApi.Common.Types;
 using FormsApi.Form.Field;
 
@@ -6,11 +7,11 @@ namespace FormsApi.Builder.Field;
 
 public sealed class CurrencyInputBuilder<TModel>(
     ModelMemberBuilder<TModel, Currency?> propertyBuilder)
-    : BaseFieldBuilder<TModel, CurrencyInputBuilder<TModel>>
+    : BaseInputBuilder<TModel, CurrencyInputBuilder<TModel>>
 {
     public PropertyOrConstantBuilder<TModel, int>? MaxValue { get; set; }
     public PropertyOrConstantBuilder<TModel, int>? MinValue { get; set; }
-    protected override CurrencyInput BuildImpl()
+    protected override CurrencyInput BuildInput()
     {
         return new CurrencyInput()
         {
@@ -19,6 +20,8 @@ public sealed class CurrencyInputBuilder<TModel>(
             MinValue = MinValue?.Build()
         };
     }
+    protected override string GetDefaultLabel() => propertyBuilder.Build().CamelCaseToWords();
+
 
     public CurrencyInputBuilder<TModel> WithMaxValue(int maxValue)
     {
