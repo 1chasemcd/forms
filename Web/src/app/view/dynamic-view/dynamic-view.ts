@@ -14,7 +14,7 @@ export class DynamicView {
 
   readonly combinedViews = computed(() => {
     const view = this.formView();
-    if (view?.$type == 'combinedview') return view.views;
+    if (view?.$type == 'combinedview') return view.Views;
     return undefined;
   });
 

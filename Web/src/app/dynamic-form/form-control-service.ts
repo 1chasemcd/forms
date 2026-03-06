@@ -12,7 +12,7 @@ import {
 export class FormControlService {
   getFormGroup(form: FormModel) {
     let controls: Record<string, FormControl> = {};
-    if (form.view) controls = this.processView(form.view);
+    if (form.View) controls = this.processView(form.View);
 
     return new FormGroup(controls);
   }
@@ -30,12 +30,12 @@ export class FormControlService {
   }
 
   private processCombinedView(view: CombinedView): Record<string, FormControl> {
-    const controls = view.views?.map((v) => this.processView(v)) ?? [];
+    const controls = view.Views?.map((v) => this.processView(v)) ?? [];
     return Object.assign({}, ...controls);
   }
 
   private processDataView(view: DataView): Record<string, FormControl> {
-    const fields = view.fields?.map((f) => this.processField(f)) ?? [];
+    const fields = view.Fields?.map((f) => this.processField(f)) ?? [];
     return Object.fromEntries(fields);
   }
 
@@ -43,10 +43,10 @@ export class FormControlService {
     let label: string | undefined;
     switch (field.$type) {
       case 'button':
-        label = field.methodToRunOnChange;
+        label = field.MethodToRunOnChange;
         break;
       case 'statictextfield':
-        label = field.text;
+        label = field.Text;
         break;
       case 'checkboxinput':
       case 'currencyinput':
@@ -55,7 +55,7 @@ export class FormControlService {
       case 'textareainput':
       case 'textinput':
       case 'timeinput':
-        label = field.property;
+        label = field.Property;
     }
 
     return [label ?? '', new FormControl()];

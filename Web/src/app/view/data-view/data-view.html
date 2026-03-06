@@ -1,4 +1,4 @@
-@for (field of formDataView()?.fields; track $index) {
-<label [attr.for]="field.label"> {{ field.label }}</label>
-<input [id]="field.label" />
+@for (field of formDataView()?.Fields; track $index) {
+<label [attr.for]="field.Label"> {{ field.Label }}</label>
+<input [id]="field.Label" />
 }
