@@ -1,10 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import {
-  FileResponse,
-  FormClient,
-  FormDefinition,
-  RepositoryClient,
-} from '../api/api.g';
+import { FileResponse, FormClient, FormDefinition, RepositoryClient } from '../api/api.g';
 import { FormControlService } from './form-control-service';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -54,9 +49,7 @@ export class DynamicForm implements OnInit {
     this.formDefinition.set(form);
     this.formGroup.set(this.formControlService.createFromDefinition(form));
     if (form.Type)
-      this.repositoryClient
-        .getNew(form.Type)
-        .subscribe((r) => this.handleRepositoryResponse(r));
+      this.repositoryClient.getNew(form.Type).subscribe((r) => this.handleRepositoryResponse(r));
   }
 
   private handleRepositoryResponse(resp: FileResponse) {

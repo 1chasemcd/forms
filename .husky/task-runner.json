@@ -10,14 +10,7 @@
     {
       "name": "eslint",
       "command": "npx",
-      "args": [
-        "--prefix",
-        "Web",
-        "eslint",
-        "--config",
-        "Web/eslint.config.mjs",
-        "${staged}"
-      ],
+      "args": ["--prefix", "Web", "eslint", "--config", "Web/eslint.config.mjs", "${staged}"],
       "include": ["Web/**"],
       "pathMode": "absolute"
     },
