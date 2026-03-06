@@ -1,8 +1,5 @@
 <div>
   <form (ngSubmit)="onSubmit()" [formGroup]="formGroup()">
-    <app-dynamic-view
-      [group]="formGroup()"
-      [formView]="formModel().View"
-    ></app-dynamic-view>
+    <app-dynamic-view [formView]="formDefinition().View"></app-dynamic-view>
   </form>
 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
-  FormModel,
+  FormDefinition,
   BaseView,
   CombinedView,
   DataView,
@@ -10,7 +10,7 @@ import {
 
 @Injectable()
 export class FormControlService {
-  getFormGroup(form: FormModel) {
+  createFromDefinition(form: FormDefinition) {
     let controls: Record<string, FormControl> = {};
     if (form.View) controls = this.processView(form.View);
 
@@ -40,24 +40,16 @@ export class FormControlService {
   }
 
   private processField(field: BaseField): [string, FormControl] {
-    let label: string | undefined;
-    switch (field.$type) {
-      case 'button':
-        label = field.MethodToRunOnChange;
-        break;
-      case 'statictextfield':
-        label = field.Text;
-        break;
-      case 'checkboxinput':
-      case 'currencyinput':
-      case 'dateinput':
-      case 'numericinput':
-      case 'textareainput':
-      case 'textinput':
-      case 'timeinput':
-        label = field.Property;
-    }
+    if (!field.Id) throw Error('Id unspecified');
 
-    return [label ?? '', new FormControl()];
+    const control = new FormControl();
+
+    if (field.Required?.$type == 'constant' && field.Required.Value == true)
+      control.addValidators(Validators.required);
+
+    if (field.Disabled?.$type == 'constant' && field.Disabled.Value == true)
+      control.disable();
+
+    return [field.Id, control];
   }
 }

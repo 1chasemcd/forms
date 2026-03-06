@@ -14,10 +14,10 @@ internal sealed class ReadableRepositoryService<T>(
     internal IRepository<T> Repository { get; init; } = repository;
     public async Task<IEnumerable<object>> GetAsync(QueryCriteria criteria)
     {
-        return (IEnumerable<object>)Repository.GetAsync(criteria);
+        return (await Repository.GetAsync(criteria)).Cast<object>();
     }
     public async Task<object> GetNewAsync()
     {
-        return Repository.GetNewAsync();
+        return (await Repository.GetNewAsync()) as object ?? string.Empty;
     }
 }

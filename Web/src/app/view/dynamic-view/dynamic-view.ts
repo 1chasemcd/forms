@@ -1,5 +1,4 @@
 import { Component, computed, input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { AppDataView } from '../data-view/data-view';
 import { BaseView } from '../../api/api.g';
 
@@ -9,7 +8,6 @@ import { BaseView } from '../../api/api.g';
   templateUrl: './dynamic-view.html',
 })
 export class DynamicView {
-  readonly group = input<FormGroup>();
   readonly formView = input<BaseView>();
 
   readonly combinedViews = computed(() => {

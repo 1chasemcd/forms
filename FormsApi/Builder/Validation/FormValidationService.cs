@@ -5,12 +5,12 @@ namespace FormsApi.Builder.Validation;
 
 internal interface IFormValidationService
 {
-    void Validate(FormModel form);
+    void Validate(FormDefinition form);
 }
 internal sealed class FormValidationService : IFormValidationService
 {
     internal class InvalidFormException(string message) : Exception(message);
-    public void Validate(FormModel form)
+    public void Validate(FormDefinition form)
     {
         IEnumerable<string> fieldIds = GetAllFieldIdsInView(form.View);
         var fieldCounts = fieldIds.GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count());

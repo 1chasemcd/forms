@@ -6,17 +6,17 @@ namespace FormsApi.Common.Registry;
 
 public class FormRegistry
 {
-    protected readonly Dictionary<string, FormModel> _registry = [];
+    protected readonly Dictionary<string, FormDefinition> _registry = [];
 
-    internal void AddForm(string path, FormModel form)
+    internal void AddForm(string path, FormDefinition form)
     {
         if (!_registry.TryAdd(path, form))
             throw new InvalidOperationException($"Already had a registration for path '{path}'");
     }
 
-    internal FormModel? TryGet(string path)
+    internal FormDefinition? TryGet(string path)
     {
-        _registry.TryGetValue(path, out FormModel? form);
+        _registry.TryGetValue(path, out FormDefinition? form);
         return form;
     }
 }

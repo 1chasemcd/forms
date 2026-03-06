@@ -9,7 +9,7 @@ public class FormTests
     [Test]
     public void Build_SetsCorrectRepositoryType()
     {
-        FormModel form = new TestFormBuilder().Build();
+        FormDefinition form = new TestFormBuilder().Build();
 
         RepositoryType? expectedType = new(typeof(TestModel));
 

@@ -3,7 +3,7 @@ using FormsApi.Form.View;
 
 namespace FormsApi.Form;
 
-public sealed class FormModel
+public sealed class FormDefinition
 {
     public required RepositoryType Type { get; init; }
     public required BaseView View { get; init; }
