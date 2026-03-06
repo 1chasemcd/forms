@@ -1,4 +1,4 @@
-using FormsApi.Common.Registry;
+using FormsApi.Setup;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,13 +8,8 @@ public static class FormApplicationBuilderExtensions
 {
     public static void UseForms(this IApplicationBuilder app)
     {
-        FormRegistry formRegistry = app.ApplicationServices.GetRequiredService<FormRegistry>();
-
+        FormSetupService setupService = app.ApplicationServices.GetRequiredService<FormSetupService>();
         IEnumerable<FormSetupOptions> setups = app.ApplicationServices.GetServices<FormSetupOptions>();
-
-        foreach (FormSetupOptions setup in setups)
-        {
-            formRegistry.AddForms(setup.BuildForms());
-        }
+        setupService.SetupForms(setups);
     }
 }

@@ -30,7 +30,7 @@ public class SubPropertyGridViewBuilder<TModel, TSub>(
             CanEditRow = CanEditRow?.Build(),
             CanDelete = CanDelete?.Build(),
             CanDeleteRow = CanDeleteRow?.Build(),
-            // EditForm = EditForm?.Build() TODO how to get the registry here?
+            EditForm = EditForm?.Build()
         };
     }
 }

@@ -1,3 +1,4 @@
+using FormsApi.Builder.Validation;
 using FormsApi.Builder.View;
 using FormsApi.Common.Registry;
 using FormsApi.Form;
@@ -14,11 +15,13 @@ public abstract class FormBuilder<TModel> : FormBuilder
 {
     internal override FormModel Build()
     {
-        return new FormModel()
+        var form = new FormModel()
         {
             Type = new(typeof(TModel)),
             View = View.Build()
         };
+
+        return form;
     }
 
     protected abstract ViewBuilder<TModel> View { get; }

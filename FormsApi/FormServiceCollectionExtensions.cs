@@ -1,7 +1,9 @@
+using FormsApi.Builder.Validation;
 using FormsApi.Common.Registry;
 using FormsApi.Form.Json;
 using FormsApi.Repository;
 using FormsApi.Repository.Service;
+using FormsApi.Setup;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -28,6 +30,8 @@ public static class FormServiceCollectionExtensions
         services.TryAddSingleton<IRepositoryServiceFactory, RepositoryServiceFactory>();
         services.TryAddSingleton<IRepositoryResolver, RepositoryResolver>();
         services.TryAddSingleton(typeof(DefaultRepository<>));
+        services.TryAddSingleton<FormSetupService>();
+        services.TryAddSingleton<IFormValidationService, FormValidationService>();
 
         if (setupAction != null)
         {

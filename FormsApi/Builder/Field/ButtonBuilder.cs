@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using System.Reflection;
+using FormsApi.Builder.Validation;
 using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
@@ -24,6 +25,6 @@ public sealed class ButtonBuilder<TModel>(
             constantExpression.Value is MethodInfo method)
             return method.Name;
 
-        throw new FormBuilderValidationException<TModel>(methodCall.ToString(), "Expression must be a method call.");
+        throw new InvalidOperationException($"Expression '{methodCall}' must be a method call.");
     }
 }

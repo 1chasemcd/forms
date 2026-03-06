@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using FormsApi.Builder.Validation;
 
 namespace FormsApi.Builder;
 
@@ -14,19 +15,7 @@ public sealed class ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, 
         if (selector.Body is MemberExpression member2)
             return member2.Member.Name;
 
-        throw new FormBuilderValidationException<TModel>(selector.ToString(), "Expression must be a member access");
-    }
-
-    internal MemberExpression? GetMember()
-    {
-        if (selector.Body is UnaryExpression unary &&
-            unary.Operand is MemberExpression member1)
-            return member1;
-
-        if (selector.Body is MemberExpression member2)
-            return member2;
-
-        return null;
+        throw new InvalidOperationException($"Expression '{selector}' must be a member access");
     }
 
     public static implicit operator ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, TMember>> selector) => new(selector);

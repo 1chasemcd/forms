@@ -5,6 +5,7 @@ namespace FormsApi.Form.Field;
 
 public abstract record class BaseInput : BaseField
 {
+    public override string Id => Property;
     public required string Property { get; init; }
 }
 

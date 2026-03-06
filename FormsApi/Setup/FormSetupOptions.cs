@@ -3,7 +3,7 @@ using FormsApi.Form;
 using FormsApi.Repository;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FormsApi.Common.Registry;
+namespace FormsApi.Setup;
 
 public interface IFormSetupOptions
 {
@@ -11,7 +11,7 @@ public interface IFormSetupOptions
         where TBuilder : FormBuilder;
     IFormSetupOptions AddRepository<TRepository>(ServiceLifetime lifetime = ServiceLifetime.Singleton);
 }
-internal class FormSetupOptions(IServiceCollection services) : IFormSetupOptions
+internal sealed class FormSetupOptions(IServiceCollection services) : IFormSetupOptions
 {
     private readonly ICollection<KeyValuePair<string, Type>> _builders = [];
     public IFormSetupOptions AddForm<TBuilder>(string path)
@@ -21,13 +21,13 @@ internal class FormSetupOptions(IServiceCollection services) : IFormSetupOptions
         return this;
     }
 
-    internal IEnumerable<KeyValuePair<string, FormModel>> BuildForms()
+    internal IEnumerable<KeyValuePair<string, FormBuilder>> GetFormBuilders()
     {
         foreach (KeyValuePair<string, Type> registration in _builders)
         {
-            FormModel? form = (Activator.CreateInstance(registration.Value) as FormBuilder)?.Build();
-            if (form is not null)
-                yield return new(registration.Key, form);
+            FormBuilder? builder = Activator.CreateInstance(registration.Value) as FormBuilder;
+            if (builder is not null)
+                yield return new(registration.Key, builder);
             else
                 throw new InvalidOperationException($"Unable to build form {registration.Value.Name}");
         }
