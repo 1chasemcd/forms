@@ -11,7 +11,7 @@ public class FormTests
     {
         FormDefinition form = new TestFormBuilder().Build();
 
-        RepositoryType? expectedType = new(typeof(TestModel));
+        SerializedType? expectedType = new(typeof(TestModel));
 
         Assert.That(form.Type, Is.EqualTo(expectedType));
     }

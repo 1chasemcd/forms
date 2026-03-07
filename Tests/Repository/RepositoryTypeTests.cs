@@ -10,17 +10,17 @@ public class RepositoryTypeTests
     public void TestSerialization()
     {
 
-        RepositoryType type = new(typeof(RepositoryTypeTests));
+        SerializedType type = new(typeof(RepositoryTypeTests));
 
         string serialized = JsonSerializer.Serialize(type);
-        RepositoryType? result = JsonSerializer.Deserialize<RepositoryType>(serialized);
+        SerializedType? result = JsonSerializer.Deserialize<SerializedType>(serialized);
         Assert.That(result, Is.EqualTo(type));
     }
 
     [Test]
     public void TestConversion()
     {
-        RepositoryType type = new(typeof(RepositoryTypeTests));
+        SerializedType type = new(typeof(RepositoryTypeTests));
         Assert.That(typeof(RepositoryTypeTests), Is.EqualTo(type.GetRuntimeType()));
     }
 }

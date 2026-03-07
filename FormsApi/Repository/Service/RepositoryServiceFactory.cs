@@ -5,13 +5,13 @@ namespace FormsApi.Repository.Service;
 
 public interface IRepositoryServiceFactory
 {
-    IReadableRepositoryService BuildWithType(RepositoryType type);
-    IWriteableRepositoryService BuildWithTypeAndObject(RepositoryType type, JsonElement body);
+    IReadableRepositoryService BuildWithType(SerializedType type);
+    IWriteableRepositoryService BuildWithTypeAndObject(SerializedType type, JsonElement body);
 }
 
 internal sealed class RepositoryServiceFactory(IRepositoryResolver resolver) : IRepositoryServiceFactory
 {
-    public IReadableRepositoryService BuildWithType(RepositoryType type)
+    public IReadableRepositoryService BuildWithType(SerializedType type)
     {
         Type objectType = type.GetRuntimeType();
         object repository = resolver.Resolve(objectType);
@@ -21,7 +21,7 @@ internal sealed class RepositoryServiceFactory(IRepositoryResolver resolver) : I
         return service as IReadableRepositoryService ?? throw new InvalidOperationException("Could not construct service");
     }
 
-    public IWriteableRepositoryService BuildWithTypeAndObject(RepositoryType type, JsonElement body)
+    public IWriteableRepositoryService BuildWithTypeAndObject(SerializedType type, JsonElement body)
     {
         Type objectType = type.GetRuntimeType();
         object repository = resolver.Resolve(objectType);

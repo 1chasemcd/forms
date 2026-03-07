@@ -24,7 +24,7 @@ public class RepositoryServiceFactoryTests
     [Test]
     public void BuildWithType_TypeRegistered_ReturnsRegisteredRepository()
     {
-        var type = new RepositoryType(typeof(TestModel));
+        var type = new SerializedType(typeof(TestModel));
         IReadableRepositoryService service = _factory.BuildWithType(type);
         Assert.That(service, Is.InstanceOf<ReadableRepositoryService<TestModel>>()
             .With.Property(nameof(ReadableRepositoryService<>.Repository))
@@ -34,7 +34,7 @@ public class RepositoryServiceFactoryTests
     [Test]
     public void BuildWithTypeAndObject_TypeRegistered_ReturnsRegisteredRepository()
     {
-        var type = new RepositoryType(typeof(TestModel));
+        var type = new SerializedType(typeof(TestModel));
         JsonElement obj = JsonSerializer.SerializeToElement(new TestModel());
 
         IWriteableRepositoryService service = _factory.BuildWithTypeAndObject(type, obj);

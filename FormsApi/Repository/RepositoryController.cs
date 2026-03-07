@@ -12,7 +12,7 @@ public sealed class RepositoryController(IRepositoryServiceFactory factory) : Co
 {
     [HttpPost("get/{type}")]
     public async Task<ActionResult<IEnumerable<object>>> GetAsync(
-        [FromRoute] RepositoryType type,
+        [FromRoute] SerializedType type,
         [FromBody] QueryCriteria criteria)
     {
         IReadableRepositoryService service = factory.BuildWithType(type);
@@ -22,7 +22,7 @@ public sealed class RepositoryController(IRepositoryServiceFactory factory) : Co
         return Ok(result);
     }
     [HttpPost("getnew/{type}")]
-    public async Task<ActionResult<object>> GetNewAsync([FromRoute] RepositoryType type)
+    public async Task<ActionResult<object>> GetNewAsync([FromRoute] SerializedType type)
     {
         IReadableRepositoryService service = factory.BuildWithType(type);
         object result = await service.GetNewAsync();
@@ -30,7 +30,7 @@ public sealed class RepositoryController(IRepositoryServiceFactory factory) : Co
     }
 
     [HttpPost("save/{type}")]
-    public async Task<ActionResult> SaveAsync([FromRoute] RepositoryType type, [FromBody] JsonElement body)
+    public async Task<ActionResult> SaveAsync([FromRoute] SerializedType type, [FromBody] JsonElement body)
     {
         IWriteableRepositoryService service = factory.BuildWithTypeAndObject(type, body);
         await service.SaveAsync();
@@ -39,7 +39,7 @@ public sealed class RepositoryController(IRepositoryServiceFactory factory) : Co
 
     [HttpPost("delete/{type}")]
     public async Task<ActionResult> DeleteAsync(
-        [FromRoute] RepositoryType type,
+        [FromRoute] SerializedType type,
         [FromBody] JsonElement body)
     {
         IWriteableRepositoryService service = factory.BuildWithTypeAndObject(type, body);

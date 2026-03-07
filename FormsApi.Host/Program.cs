@@ -42,7 +42,7 @@ public class RepositoryTypeSchemaProcessor : ISchemaProcessor
 {
     public void Process(SchemaProcessorContext context)
     {
-        if (context.ContextualType == typeof(RepositoryType))
+        if (context.ContextualType == typeof(SerializedType))
         {
             context.Schema.Type = JsonObjectType.String;
             context.Schema.Properties.Clear();
