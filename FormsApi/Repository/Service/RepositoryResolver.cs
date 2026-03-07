@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -44,7 +43,7 @@ internal sealed class RepositoryResolver(IServiceProvider provider) : IRepositor
 
     private object? TryResolve(Type type)
     {
-        var repoType = typeof(IRepository<>).MakeGenericType(type);
+        Type repoType = typeof(IRepository<>).MakeGenericType(type);
         return provider.GetService(repoType);
     }
 

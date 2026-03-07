@@ -1,7 +1,6 @@
 using FormsApi.Form.Primitives;
 using NJsonSchema;
 using NJsonSchema.Generation;
-using NJsonSchema.Generation.TypeMappers;
 
 namespace FormsApi.Host;
 

@@ -9,7 +9,7 @@ namespace Tests.Builder.FormBuilder;
 
 public class ButtonBuilderTests
 {
-    private FormDefinition _form = new TestBuilder().Build();
+    private readonly FormDefinition _form = new TestBuilder().Build();
     private IEnumerable<BaseField> GetFields()
     {
         return (_form.View as DataView)?.Fields ?? [];
@@ -25,13 +25,13 @@ public class ButtonBuilderTests
     {
         protected override ViewBuilder<TestModel> View => new DataViewBuilder<TestModel>()
         {
-            m => m.ThisIsAButton
+            m => TestModel.ThisIsAButton
         };
     }
 
     private class TestModel
     {
-        public void ThisIsAButton()
+        public static void ThisIsAButton()
         {
 
         }

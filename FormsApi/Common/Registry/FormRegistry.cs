@@ -1,5 +1,4 @@
 using FormsApi.Form;
-using Microsoft.Extensions.Logging;
 
 namespace FormsApi.Common.Registry;
 

@@ -2,7 +2,6 @@ using FormsApi.Repository;
 using FormsApi.Repository.Query;
 using FormsApi.Repository.Service;
 using Moq;
-using NUnit.Framework;
 
 namespace Tests.Repository;
 
@@ -10,7 +9,7 @@ namespace Tests.Repository;
 public class RepositoryResolverTests
 {
     private Mock<IServiceProvider> _providerMock = null!;
-    private IRepositoryResolver _resolver = null!;
+    private RepositoryResolver _resolver = null!;
 
     [SetUp]
     public void Setup()

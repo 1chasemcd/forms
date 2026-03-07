@@ -2,7 +2,6 @@ using System.Reflection;
 using System.Text.Json;
 using FormsApi.Form.Primitives;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace FormsApi.FormAction;
 
@@ -16,11 +15,7 @@ public class FormActionController(IServiceProvider serviceProvider) : Controller
         [FromRoute] string method,
         [FromBody] JsonElement model)
     {
-        object? serviceInstance = serviceProvider.GetService(serviceType.GetRuntimeType());
-
-        if (serviceInstance == null)
-            throw new InvalidOperationException($"Service '{serviceType}' is not registered.");
-
+        object? serviceInstance = serviceProvider.GetService(serviceType.GetRuntimeType()) ?? throw new InvalidOperationException($"Service '{serviceType}' is not registered.");
         IEnumerable<MethodInfo> methodInfos = serviceType
             .GetRuntimeType()
             .GetMethods()
