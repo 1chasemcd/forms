@@ -7,7 +7,7 @@ import { ControlContainer, FormGroupDirective } from '@angular/forms';
 @Component({
   selector: 'app-dynamic-view',
   host: {
-    '[class]': 'width()',
+    '[class]': 'width() + " grid grid-cols-12 gap-4 content-start"',
   },
   imports: [DynamicField],
   templateUrl: './dynamic-view.html',

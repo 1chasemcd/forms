@@ -20,8 +20,6 @@ export class InputField {
 
   readonly inputType = computed(() => {
     switch (this.baseInput()?.$type) {
-      case 'checkboxinput':
-        return 'checkbox';
       case 'currencyinput':
       case 'numericinput':
         return 'number';
@@ -29,7 +27,6 @@ export class InputField {
         return 'date';
       case 'timeinput':
         return 'time';
-      case 'textareainput':
       case 'textinput':
       default:
         return 'text';

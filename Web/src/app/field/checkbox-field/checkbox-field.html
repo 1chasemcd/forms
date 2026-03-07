@@ -1,0 +1,23 @@
+<label class="flex items-center gap-2 cursor-pointer">
+  <input type="checkbox" class="peer sr-only" [formControlName]="checkboxInput()?.Id ?? null" />
+
+  <div
+    class="hidden h-5 w-5 items-center justify-center rounded border bg-violet-600 border-violet-600 peer-checked:flex"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="3"
+      class="stroke-white size-6"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+    </svg>
+  </div>
+
+  <div
+    class="flex h-5 w-5 items-center justify-center rounded border border-gray-300 peer-checked:hidden"
+  ></div>
+
+  <span class="text-gray-700">{{ label() }}</span>
+</label>

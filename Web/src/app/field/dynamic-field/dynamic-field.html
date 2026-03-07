@@ -2,4 +2,6 @@
   <app-button-field [button]="button"></app-button-field>
 } @else if (inputField(); as input) {
   <app-input-field [baseInput]="input"></app-input-field>
+} @else if (checkboxField(); as checkbox) {
+  <app-checkbox-field [checkboxInput]="checkbox"></app-checkbox-field>
 }
