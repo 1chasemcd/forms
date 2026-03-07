@@ -2,6 +2,7 @@ import { Component, computed, input } from '@angular/core';
 import { BaseView } from '../../api/api.g';
 import { computedPropertyOrConstant, widthToCss, FormModel } from '../../utils/api-model-utils';
 import { DynamicField } from '../../field/dynamic-field/dynamic-field';
+import { ControlContainer, FormGroupDirective } from '@angular/forms';
 
 @Component({
   selector: 'app-dynamic-view',
@@ -10,6 +11,7 @@ import { DynamicField } from '../../field/dynamic-field/dynamic-field';
   },
   imports: [DynamicField],
   templateUrl: './dynamic-view.html',
+  viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class DynamicView {
   readonly formView = input<BaseView>();

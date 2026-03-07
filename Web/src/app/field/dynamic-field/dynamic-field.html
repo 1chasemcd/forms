@@ -1,2 +1,5 @@
-<label [attr.for]="field()?.Id"> {{ label() }}</label>
-<input [id]="field()?.Id" />
+@if (buttonField(); as button) {
+  <app-button-field [button]="button"></app-button-field>
+} @else if (inputField(); as input) {
+  <app-input-field [baseInput]="input"></app-input-field>
+}

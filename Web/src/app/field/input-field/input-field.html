@@ -1,0 +1,16 @@
+<div class="relative bg-white">
+  <input
+    [id]="baseInput()?.Id"
+    [formControlName]="baseInput()?.Id ?? null"
+    [type]="inputType()"
+    [placeholder]="label()"
+    autocomplete="off"
+    class="peer bg-white !important h-10 w-full rounded-lg placeholder-transparent ring-1 px-3 ring-gray-400 focus:ring-sky-600 focus:outline-none"
+  />
+  <label
+    [attr.for]="baseInput()?.Id"
+    class="absolute cursor-text left-0 -top-3 text-sm text-gray-500 bg-inherit mx-2 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all"
+  >
+    {{ label() }}
+  </label>
+</div>

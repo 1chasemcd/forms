@@ -1,12 +1,12 @@
 import { computed, Signal } from '@angular/core';
-import { PropertyOrConstant } from '../api/api.g';
+import { BaseField, BaseInput, PropertyOrConstant } from '../api/api.g';
 
 export type FormModel = Record<string, unknown>;
 
-export function computedPropertyOrConstant(
+export function computedPropertyOrConstant<T>(
   pc: Signal<PropertyOrConstant | undefined>,
   model: Signal<FormModel | undefined>,
-): Signal<string | unknown> {
+): Signal<T | undefined> {
   return computed(() => {
     const val = pc();
     if (val?.$type == 'constant') return val.Value;
@@ -36,4 +36,19 @@ const colSpanMap: Record<number, string> = {
 export function widthToCss(width?: number): string {
   if (!width || width < 1 || width > 12) width = 12;
   return colSpanMap[width];
+}
+
+type BaseInputType = BaseInput['$type'];
+const baseInputTypes: Record<BaseInputType, true> = {
+  checkboxinput: true,
+  textinput: true,
+  textareainput: true,
+  currencyinput: true,
+  numericinput: true,
+  dateinput: true,
+  timeinput: true,
+};
+
+export function isBaseInput(field?: BaseField): field is BaseInput {
+  return field != undefined && field.$type in baseInputTypes;
 }
