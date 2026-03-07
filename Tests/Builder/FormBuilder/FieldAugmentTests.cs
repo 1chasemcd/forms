@@ -7,7 +7,7 @@ namespace Tests.Builder.FormBuilder;
 
 public class FieldAugmentTests
 {
-    private readonly FormDefinition _form = new TestFormBuilder().Build();
+    private readonly BaseForm _form = new TestFormBuilder().Build();
 
     [Test]
     public void FieldAugments_AreAppliedCorrectly()

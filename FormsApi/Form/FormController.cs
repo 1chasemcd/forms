@@ -8,9 +8,9 @@ namespace FormsApi.Form;
 public sealed class FormController(FormRegistry registry) : ControllerBase
 {
     [HttpGet("{path}")]
-    public ActionResult<FormDefinition> GetForm([FromRoute] string path)
+    public ActionResult<BaseForm> GetForm([FromRoute] string path)
     {
-        FormDefinition? form = registry.TryGet(path);
+        BaseForm? form = registry.TryGet(path);
         if (form is null)
             return NotFound();
         return Ok(form);

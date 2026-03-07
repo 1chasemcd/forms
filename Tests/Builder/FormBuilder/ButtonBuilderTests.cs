@@ -9,7 +9,7 @@ namespace Tests.Builder.FormBuilder;
 
 public class ButtonBuilderTests
 {
-    private readonly FormDefinition _form = new TestBuilder().Build();
+    private readonly BaseForm _form = new TestBuilder().Build();
     private IEnumerable<BaseField> GetFields()
     {
         return (_form.View as DataView)?.Fields ?? [];

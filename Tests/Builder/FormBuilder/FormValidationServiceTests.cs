@@ -19,7 +19,7 @@ public class FormValidationServiceTests
         Assert.That(exception.Message, Does.Not.Contain("Property2"));
     }
 
-    private readonly FormDefinition _form = new()
+    private readonly BaseForm _form = new()
     {
         Type = new(typeof(FormValidationServiceTests)),
         View = new CombinedView

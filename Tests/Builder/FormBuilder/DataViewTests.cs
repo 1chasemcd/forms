@@ -6,7 +6,7 @@ namespace Tests.Builder.FormBuilder;
 
 public class DataViewTests
 {
-    private readonly FormDefinition _form = new TestFormBuilder().Build();
+    private readonly BaseForm _form = new TestFormBuilder().Build();
 
     [TestCase(nameof(TestModel.BoolProperty), 0)]
     [TestCase(nameof(TestModel.CurrencyProperty), 1)]

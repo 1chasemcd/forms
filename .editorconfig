@@ -166,6 +166,10 @@ csharp_space_between_square_brackets = false
 # Remove unnecessary usings
 dotnet_diagnostic.IDE0005.severity = suggestion
 
+# Match namespace to folder structure
+dotnet_diagnostic.IDE0130.severity = error
+
+
 # C++ Files
 [*.{cpp,h,in}]
 curly_bracket_next_line = true
