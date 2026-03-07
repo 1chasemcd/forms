@@ -1,8 +1,8 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FileResponse, FormClient, FormDefinition, RepositoryClient } from '../api/api.g';
 import { FormControlService } from './form-control-service';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { catchError, of, throwError } from 'rxjs';
 import { DynamicView } from '../view/dynamic-view/dynamic-view';
 import { FormModel } from '../utils/api-model-utils';
@@ -18,9 +18,11 @@ export class DynamicForm implements OnInit {
   private readonly repositoryClient = inject(RepositoryClient);
   private readonly formControlService = inject(FormControlService);
   private readonly route = inject(ActivatedRoute);
-  formGroup = signal<FormGroup>(new FormGroup({}));
   formDefinition = signal<FormDefinition>({});
   model = signal<FormModel>({});
+  readonly formGroup = computed(() =>
+    this.formControlService.createFromDefinition(this.formDefinition(), this.model()),
+  );
 
   ngOnInit() {
     const path = this.route.snapshot.paramMap.get('path');
@@ -47,7 +49,6 @@ export class DynamicForm implements OnInit {
   private handleFormResponse(form: FormDefinition | null) {
     if (form == null) return;
     this.formDefinition.set(form);
-    this.formGroup.set(this.formControlService.createFromDefinition(form));
     if (form.Type)
       this.repositoryClient.getNew(form.Type).subscribe((r) => this.handleRepositoryResponse(r));
   }
