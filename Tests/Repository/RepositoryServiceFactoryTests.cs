@@ -9,7 +9,7 @@ namespace Tests.Repository;
 
 public class RepositoryServiceFactoryTests
 {
-    private RepositoryServiceFactory? _factory;
+    private RepositoryServiceFactory _factory;
 
     [OneTimeSetUp]
     public void SetUp()

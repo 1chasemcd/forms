@@ -7,7 +7,7 @@ namespace FormsApi.Form.Field;
     TypeDiscriminatorPropertyName = "$type",
     UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor
 )]
-[JsonDerivedType(typeof(Button), "button")]
+[JsonDerivedType(typeof(ButtonField), "button")]
 [JsonDerivedType(typeof(BaseInput), "baseinput")]
 [JsonDerivedType(typeof(StaticTextField), "statictextfield")]
 [JsonDerivedType(typeof(CheckBoxInput), "checkboxinput")]

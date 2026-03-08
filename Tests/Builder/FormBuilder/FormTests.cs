@@ -8,7 +8,7 @@ public class FormTests
     [Test]
     public void Build_SetsCorrectRepositoryType()
     {
-        BaseForm form = new TestFormBuilder().Build();
+        FormDefinition form = new TestFormBuilder().Build();
 
         SerializedType? expectedType = new(typeof(TestModel));
 

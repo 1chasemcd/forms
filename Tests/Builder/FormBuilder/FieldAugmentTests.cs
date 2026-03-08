@@ -7,7 +7,7 @@ namespace Tests.Builder.FormBuilder;
 
 public class FieldAugmentTests
 {
-    private readonly BaseForm _form = new TestFormBuilder().Build();
+    private readonly FormDefinition _form = new TestFormBuilder().Build();
 
     [Test]
     public void FieldAugments_AreAppliedCorrectly()
@@ -26,7 +26,7 @@ public class FieldAugmentTests
         TimeInput timeField = fields.OfType<TimeInput>()
                                    .First(f => f.Property.Equals(nameof(TestModel.TimeProperty)));
 
-        Assert.That(timeField.PropertiesToUpdateOnChange, Is.EquivalentTo(new List<string>() { nameof(TestModel.BoolProperty) }));
+        Assert.That(timeField.OnChange?.PropertiesToUpdate, Is.EquivalentTo(new List<string>() { nameof(TestModel.BoolProperty) }));
     }
 
     private static void AssertAugmentHasValue(List<BaseField> fields, string inputName, string augmentName, object value)

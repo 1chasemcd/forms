@@ -13,7 +13,7 @@ internal sealed class FormSetupService(
     {
         foreach (KeyValuePair<string, FormBuilder> builder in setups.SelectMany(s => s.GetFormBuilders()))
         {
-            BaseForm form = builder.Value.Build();
+            FormDefinition form = builder.Value.Build();
             validationService.Validate(form);
             formRegistry.AddForm(builder.Key, form);
         }

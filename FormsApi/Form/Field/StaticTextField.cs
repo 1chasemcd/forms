@@ -2,5 +2,6 @@ namespace FormsApi.Form.Field;
 
 public sealed record class StaticTextField : BaseField
 {
-    public override string Id => Guid.NewGuid().ToString();
+    private readonly string _id = Guid.NewGuid().ToString();
+    public override string Id => _id;
 }

@@ -1,6 +1,8 @@
 using FormsApi.Builder;
+using FormsApi.Builder.Field;
 using FormsApi.Builder.View;
 using FormsApi.Common.Types;
+using FormsApi.FormAction;
 
 namespace Tests.Builder;
 
@@ -25,7 +27,7 @@ public class TestFormBuilder : FormBuilder<TestModel>
             { m => m.StringProperty },
             { m => m.TimeProperty },
 
-            { m => m.ButtonAction },
+            { m => Button.Build(m).WithActionOnChange<TestService>(s => s.PerformAction) },
             { "Static Text" },
         };
     }
@@ -78,4 +80,9 @@ public class TestModel
         public int Property1 { get; set; }
         public int Property2 { get; set; }
     }
+}
+
+public class TestService
+{
+    public FormActionResult PerformAction(TestModel model) => null!;
 }

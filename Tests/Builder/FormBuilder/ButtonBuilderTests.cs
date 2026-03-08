@@ -1,15 +1,17 @@
 using FormsApi.Builder;
+using FormsApi.Builder.Field;
 using FormsApi.Builder.View;
 using FormsApi.Form;
 using FormsApi.Form.Field;
 using FormsApi.Form.Primitives;
 using FormsApi.Form.View;
+using FormsApi.FormAction;
 
 namespace Tests.Builder.FormBuilder;
 
 public class ButtonBuilderTests
 {
-    private readonly BaseForm _form = new TestBuilder().Build();
+    private readonly FormDefinition _form = new TestBuilder().Build();
     private IEnumerable<BaseField> GetFields()
     {
         return (_form.View as DataView)?.Fields ?? [];
@@ -25,15 +27,16 @@ public class ButtonBuilderTests
     {
         protected override ViewBuilder<TestModel> View => new DataViewBuilder<TestModel>()
         {
-            m => TestModel.ThisIsAButton
+            m => Button.Build(m).WithActionOnChange<TestService>(s => s.ThisIsAButton)
         };
     }
 
     private class TestModel
     {
-        public static void ThisIsAButton()
-        {
+    }
 
-        }
+    private class TestService
+    {
+        public FormActionResult ThisIsAButton(TestModel model) => null!;
     }
 }

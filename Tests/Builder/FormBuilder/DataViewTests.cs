@@ -1,12 +1,13 @@
 using FormsApi.Form;
 using FormsApi.Form.Field;
+using FormsApi.Form.Primitives;
 using FormsApi.Form.View;
 
 namespace Tests.Builder.FormBuilder;
 
 public class DataViewTests
 {
-    private readonly BaseForm _form = new TestFormBuilder().Build();
+    private readonly FormDefinition _form = new TestFormBuilder().Build();
 
     [TestCase(nameof(TestModel.BoolProperty), 0)]
     [TestCase(nameof(TestModel.CurrencyProperty), 1)]
@@ -46,12 +47,18 @@ public class DataViewTests
     [Test]
     public void DataView_RendersButtonFieldCorrectly()
     {
-        List<BaseField> fields = ((CombinedView)_form.View).Views
-            .Select(x => x as DataView).First(x => x != null)?.Fields.ToList()!;
+        ButtonField? button = ((CombinedView)_form.View).Views
+            .Select(x => x as DataView).First(x => x != null)?.Fields.SingleOrDefault(f => f is ButtonField) as ButtonField;
 
 
-        Assert.That(fields, Has.One.With.InstanceOf<Button>()
-            .With.Property(nameof(Button.MethodToRunOnChange))
-            .EqualTo(nameof(TestModel.ButtonAction)));
+        Assert.That(button, Has.Property(nameof(ButtonField.OnChange))
+            .With.Property(nameof(OnChangeEvent.FormAction))
+            .With.Property(nameof(FormAction.Service))
+            .EqualTo(new SerializedType(typeof(TestService))));
+
+        Assert.That(button, Has.Property(nameof(ButtonField.OnChange))
+            .With.Property(nameof(OnChangeEvent.FormAction))
+            .With.Property(nameof(FormAction.Method))
+            .EqualTo(nameof(TestService.PerformAction)));
     }
 }

@@ -1,12 +1,14 @@
 using System.Linq.Expressions;
 using FormsApi.Form.Field;
 using FormsApi.Form.Primitives;
+using FormsApi.FormAction;
 
 namespace FormsApi.Builder.Field;
 
 public abstract class BaseInputBuilder<TModel> : BaseFieldBuilder<TModel>
 {
     public IEnumerable<ModelMemberBuilder<TModel, object>>? PropsToUpdate { get; set; }
+    public IFormActionBuilder<TModel>? FormActionBuilder { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Disabled { get; set; }
 
     protected override BaseField BuildField()
@@ -14,8 +16,19 @@ public abstract class BaseInputBuilder<TModel> : BaseFieldBuilder<TModel>
         BaseInput input = BuildInput();
         return input with
         {
-            PropertiesToUpdateOnChange = PropsToUpdate?.Select(x => x.Build()),
+            OnChange = BuildOnChangeEvent(),
             Disabled = Disabled?.Build(),
+        };
+    }
+
+    private OnChangeEvent? BuildOnChangeEvent()
+    {
+        if (PropsToUpdate is null && FormActionBuilder is null)
+            return null;
+        return new OnChangeEvent()
+        {
+            PropertiesToUpdate = PropsToUpdate?.Select(p => p.Build()),
+            FormAction = FormActionBuilder?.Build()
         };
     }
 
@@ -57,6 +70,19 @@ public abstract class BaseInputBuilder<TModel, TThis> : BaseInputBuilder<TModel>
         PropsToUpdate = props.Select(x => new ModelMemberBuilder<TModel, object>(x));
         return This;
     }
+
+    public TThis WithActionOnChange<TService>(Expression<Func<TService, Func<TModel, FormActionResult>>> serviceMethod)
+    {
+        FormActionBuilder = new FormActionBuilder<TService, TModel>(serviceMethod);
+        return This;
+    }
+
+    public TThis WithActionOnChange<TService>(Expression<Func<TService, Func<FormActionResult>>> serviceMethod)
+    {
+        FormActionBuilder = new FormActionBuilder<TService, TModel>(serviceMethod);
+        return This;
+    }
+
     public TThis WithDisabled(bool disabled)
     {
         Disabled = disabled;

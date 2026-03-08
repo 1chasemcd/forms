@@ -31,6 +31,8 @@ public static class Program
             .AddRepository<ModelRepository>()
         );
 
+        builder.Services.AddSingleton<TestService>();
+
         WebApplication app = builder.Build();
 
         if (app.Environment.IsDevelopment())

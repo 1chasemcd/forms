@@ -13,7 +13,7 @@ public class FormActionController(IServiceProvider serviceProvider) : Controller
     public FormActionResult PerformAction(
         [FromRoute] SerializedType serviceType,
         [FromRoute] string method,
-        [FromBody] JsonElement model)
+        [FromBody] JsonElement body)
     {
         object? serviceInstance = serviceProvider.GetService(serviceType.GetRuntimeType()) ?? throw new InvalidOperationException($"Service '{serviceType}' is not registered.");
         IEnumerable<MethodInfo> methodInfos = serviceType
@@ -38,9 +38,10 @@ public class FormActionController(IServiceProvider serviceProvider) : Controller
 
         object?[] args = new object?[parameters.Length];
         if (parameters.SingleOrDefault() is { } parameter)
-            args[0] = model.Deserialize(parameter.ParameterType);
+            args[0] = body.Deserialize(parameter.ParameterType);
 
         object? result = methodToUse.Invoke(serviceInstance, args);
+
 
         return (FormActionResult)result!;
     }

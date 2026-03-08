@@ -5,14 +5,14 @@ namespace FormsApi.Builder;
 
 public abstract class FormBuilder
 {
-    internal abstract BaseForm Build();
+    internal abstract FormDefinition Build();
 }
 
 public abstract class FormBuilder<TModel> : FormBuilder
 {
-    internal override BaseForm Build()
+    internal override FormDefinition Build()
     {
-        var form = new BaseForm()
+        var form = new FormDefinition()
         {
             Type = new(typeof(TModel)),
             View = View.Build()

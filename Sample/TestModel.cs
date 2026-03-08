@@ -27,11 +27,6 @@ public class TestModel
             ReleaseDate = new DateOnly(1977, 05, 25)
         });
     }
-
-    public void ButtonToClick()
-    {
-        return;
-    }
     public bool CheckBox { get; set; }
     public Currency CurrencyField { get; set; } = 0;
     public DateOnly DateField { get; set; }

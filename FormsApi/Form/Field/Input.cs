@@ -5,8 +5,7 @@ namespace FormsApi.Form.Field;
 public abstract record class BaseInput : BaseField
 {
     public override string Id => Property;
-    public IEnumerable<string>? PropertiesToUpdateOnChange { get; init; }
-    public string? MethodToRunOnChange { get; init; }
+    public OnChangeEvent? OnChange { get; init; }
     public PropertyOrConstant? Required { get; init; }
     public required string Property { get; init; }
     public PropertyOrConstant? Disabled { get; init; }

@@ -1,4 +1,5 @@
 using FormsApi.Builder;
+using FormsApi.Builder.Field;
 using FormsApi.Builder.View;
 
 namespace Sample;
@@ -18,7 +19,8 @@ public class TestForm : FormBuilder<TestModel>
         {
             { m => m.TextField, p => p.WithWidth(6) },
             { m => m.DateField, p => p.WithWidth(6) },
-            { m => m.ButtonToClick },
+            { m => Button.Build(m).WithActionOnChange<TestService>(s => s.ResetForm) },
+            { m => Button.Build(m).WithActionOnChange<TestService>(s => s.SetNumericValue) },
         };
     }
 

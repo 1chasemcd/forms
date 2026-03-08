@@ -7,11 +7,12 @@ namespace FormsApi.Builder.View;
 
 public static class FieldCollectionExtensions
 {
-    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, Action>> selector, Action<ButtonBuilder<TModel>>? augment = null)
+    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Func<TModel, ButtonBuilder<TModel>> builderSelector, Action<ButtonBuilder<TModel>>? augment = null)
     {
-        var field = new ButtonBuilder<TModel>(selector);
-        augment?.Invoke(field);
-        fieldCollection.Fields.Add(field);
+        TModel? inst = Activator.CreateInstance<TModel>();
+        ButtonBuilder<TModel> builder = builderSelector.Invoke(inst);
+        augment?.Invoke(builder);
+        fieldCollection.Fields.Add(builder);
     }
 
     public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, bool?>> selector, Action<CheckBoxInputBuilder<TModel>>? augment = null)

@@ -11,5 +11,5 @@ public abstract record class GridView : BaseView
     public PropertyOrConstant? CanEditRow { get; init; }
     public PropertyOrConstant? CanDelete { get; init; }
     public PropertyOrConstant? CanDeleteRow { get; init; }
-    public BaseForm? EditForm { get; init; }
+    public FormDefinition? EditForm { get; init; }
 }
