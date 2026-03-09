@@ -1,5 +1,5 @@
 using FormsApi.Builder;
-using FormsApi.Repository;
+using FormsApi.Repository.Handler;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FormsApi.Setup;
@@ -34,16 +34,23 @@ internal sealed class FormSetupOptions(IServiceCollection services) : IFormSetup
 
     public IFormSetupOptions AddRepository<TRepository>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
+        Type[] repositoryOptions = [
+            typeof(IRepositoryCreateHandler<>),
+            typeof(IRepositorySaveHandler<>),
+            typeof(IRepositoryDeleteHandler<>),
+            typeof(IRepositoryQueryHandler<>)
+            ];
+
         var repoInterfaces = typeof(TRepository)
             .GetInterfaces()
             .Where(i =>
                 i.IsGenericType &&
-                i.GetGenericTypeDefinition() == typeof(IRepository<>))
+                repositoryOptions.Contains(i.GetGenericTypeDefinition()))
             .ToList();
 
         if (repoInterfaces.Count == 0)
             throw new InvalidOperationException(
-                $"{typeof(TRepository).Name} does not implement IRepository<T>");
+                $"{typeof(TRepository).Name} does not implement any of {repositoryOptions}");
 
 
         foreach (Type repoInterface in repoInterfaces)

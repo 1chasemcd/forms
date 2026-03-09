@@ -15,25 +15,25 @@ public sealed class RepositoryController(IRepositoryServiceFactory factory) : Co
         [FromRoute] SerializedType type,
         [FromBody] QueryCriteria criteria)
     {
-        IReadableRepositoryService service = factory.BuildWithType(type);
-        IEnumerable<object>? result = await service.GetAsync(criteria);
-        if (result is null)
+        IRepositoryCallable service = factory.BuildQueryService(type, criteria);
+        if (await service.Invoke() is not IEnumerable<object> result)
             return NotFound();
         return Ok(result);
     }
     [HttpPost("getnew/{type}")]
-    public async Task<ActionResult<object>> GetNewAsync([FromRoute] SerializedType type)
+    public async Task<ActionResult<object>> CreateAsync([FromRoute] SerializedType type)
     {
-        IReadableRepositoryService service = factory.BuildWithType(type);
-        object result = await service.GetNewAsync();
+        IRepositoryCallable service = factory.BuildCreateService(type);
+        object result = await service.Invoke();
         return Ok(result);
     }
 
     [HttpPost("save/{type}")]
     public async Task<ActionResult> SaveAsync([FromRoute] SerializedType type, [FromBody] JsonElement body)
     {
-        IWriteableRepositoryService service = factory.BuildWithTypeAndObject(type, body);
-        await service.SaveAsync();
+        object obj = body.Deserialize(type.GetRuntimeType()) ?? throw new InvalidOperationException("Could not deserialize to type");
+        IRepositoryCallable service = factory.BuildSaveService(type, obj);
+        await service.Invoke();
         return NoContent();
     }
 
@@ -42,8 +42,9 @@ public sealed class RepositoryController(IRepositoryServiceFactory factory) : Co
         [FromRoute] SerializedType type,
         [FromBody] JsonElement body)
     {
-        IWriteableRepositoryService service = factory.BuildWithTypeAndObject(type, body);
-        await service.DeleteAsync();
+        object obj = body.Deserialize(type.GetRuntimeType()) ?? throw new InvalidOperationException("Could not deserialize to type");
+        IRepositoryCallable service = factory.BuildDeleteService(type, obj);
+        await service.Invoke();
         return NoContent();
     }
 }

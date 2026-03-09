@@ -1,6 +1,7 @@
 using System.Text.Json;
 using FormsApi.Form.Primitives;
 using FormsApi.Repository;
+using FormsApi.Repository.Handler;
 using FormsApi.Repository.Query;
 using FormsApi.Repository.Service;
 using Moq;
@@ -10,52 +11,77 @@ namespace Tests.Repository;
 public class RepositoryServiceFactoryTests
 {
     private RepositoryServiceFactory _factory;
+    private Mock<IRepositoryCreateHandler<TestModel>> _repoMock;
 
     [OneTimeSetUp]
     public void SetUp()
     {
+        _repoMock = new Mock<IRepositoryCreateHandler<TestModel>>();
+        _repoMock
+            .Setup(r => r.CreateAsync())
+            .ReturnsAsync(new TestModel());
+        _repoMock.As<IRepositorySaveHandler<TestModel>>()
+            .Setup(r => r.SaveAsync(It.IsAny<TestModel>()));
+
+        _repoMock.As<IRepositoryQueryHandler<TestModel>>()
+            .Setup(r => r.QueryAsync(It.IsAny<QueryCriteria>()))
+            .ReturnsAsync(new List<TestModel>());
+        _repoMock.As<IRepositoryDeleteHandler<TestModel>>()
+            .Setup(r => r.DeleteAsync(It.IsAny<TestModel>()));
+
         var resolver = new Mock<IRepositoryResolver>();
         resolver
-            .Setup(r => r.Resolve(typeof(TestModel)))
-            .Returns(new TestRepository());
+            .Setup(r => r.Resolve(It.IsAny<Type>(), typeof(TestModel)))
+            .Returns(_repoMock.Object);
+
         _factory = new RepositoryServiceFactory(resolver.Object);
     }
 
     [Test]
-    public void BuildWithType_TypeRegistered_ReturnsRegisteredRepository()
+    public void BuildCreateService_ReturnsCreateService()
     {
         var type = new SerializedType(typeof(TestModel));
-        IReadableRepositoryService service = _factory.BuildWithType(type);
-        Assert.That(service, Is.InstanceOf<ReadableRepositoryService<TestModel>>()
-            .With.Property(nameof(ReadableRepositoryService<>.Repository))
-            .With.InstanceOf<TestRepository>());
+        IRepositoryCallable service = _factory.BuildCreateService(type);
+        Assert.That(service, Is.InstanceOf<RepositoryCreateService<TestModel>>());
+
+        service.Invoke();
+        _repoMock.Verify(r => r.CreateAsync(), Times.Once);
     }
 
     [Test]
-    public void BuildWithTypeAndObject_TypeRegistered_ReturnsRegisteredRepository()
+    public void BuildQueryService_ReturnsQueryService()
     {
         var type = new SerializedType(typeof(TestModel));
-        JsonElement obj = JsonSerializer.SerializeToElement(new TestModel());
+        var criteria = new QueryCriteria();
+        IRepositoryCallable service = _factory.BuildQueryService(type, criteria);
+        Assert.That(service, Is.InstanceOf<RepositoryQueryService<TestModel>>());
 
-        IWriteableRepositoryService service = _factory.BuildWithTypeAndObject(type, obj);
-        var typedService = service as WriteableRepositoryService<TestModel, TestModel>;
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(typedService, Is.Not.Null);
-            Assert.That(typedService, Has.Property(nameof(WriteableRepositoryService<,>.Repository))
-                .With.InstanceOf<TestRepository>());
-            Assert.That(typedService, Has.Property(nameof(WriteableRepositoryService<,>.Object))
-                .With.InstanceOf<TestModel>());
-        }
+        service.Invoke();
+        _repoMock.As<IRepositoryQueryHandler<TestModel>>().Verify(r => r.QueryAsync(criteria), Times.Once);
     }
 
-    private class TestRepository : IRepository<TestModel>
+    [Test]
+    public void BuildDeleteService_ReturnsDeleteService()
     {
-        public Task DeleteAsync(TestModel toDelete) => throw new NotImplementedException();
-        public Task<IEnumerable<TestModel>> GetAsync(QueryCriteria criteria) => throw new NotImplementedException();
-        public Task<TestModel> GetNewAsync() => throw new NotImplementedException();
-        public Task SaveAsync(TestModel toSave) => throw new NotImplementedException();
+        var type = new SerializedType(typeof(TestModel));
+        TestModel model = new();
+        IRepositoryCallable service = _factory.BuildDeleteService(type, model);
+        Assert.That(service, Is.InstanceOf<RepositoryDeleteService<TestModel>>());
+
+        service.Invoke();
+        _repoMock.As<IRepositoryDeleteHandler<TestModel>>().Verify(r => r.DeleteAsync(model), Times.Once);
     }
 
-    private class TestModel;
+    [Test]
+    public void BuildSaveService_ReturnsSaveService()
+    {
+        var type = new SerializedType(typeof(TestModel));
+        TestModel model = new();
+        IRepositoryCallable service = _factory.BuildSaveService(type, model);
+        Assert.That(service, Is.InstanceOf<RepositorySaveService<TestModel>>());
+
+        service.Invoke();
+        _repoMock.As<IRepositorySaveHandler<TestModel>>().Verify(r => r.SaveAsync(model), Times.Once);
+    }
+    public class TestModel;
 }
