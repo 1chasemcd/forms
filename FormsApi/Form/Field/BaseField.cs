@@ -7,9 +7,9 @@ namespace FormsApi.Form.Field;
     TypeDiscriminatorPropertyName = "$type",
     UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor
 )]
-[JsonDerivedType(typeof(ButtonField), "button")]
 [JsonDerivedType(typeof(BaseInput), "baseinput")]
 [JsonDerivedType(typeof(StaticTextField), "statictextfield")]
+[JsonDerivedType(typeof(ButtonInput), "buttoninput")]
 [JsonDerivedType(typeof(CheckBoxInput), "checkboxinput")]
 [JsonDerivedType(typeof(TextInput), "textinput")]
 [JsonDerivedType(typeof(TextAreaInput), "textareainput")]
@@ -20,7 +20,6 @@ namespace FormsApi.Form.Field;
 public abstract record class BaseField
 {
     public abstract string Id { get; }
-    public PropertyOrConstant? Label { get; init; }
     public PropertyOrConstant? Hidden { get; init; }
     public FormElementSize? Width { get; init; }
 }

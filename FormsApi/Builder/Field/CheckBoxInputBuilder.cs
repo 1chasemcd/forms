@@ -14,5 +14,4 @@ public sealed class CheckBoxInputBuilder<TModel>(
             Property = propertyBuilder.Build(),
         };
     }
-    protected override string GetDefaultLabel() => propertyBuilder.Build().CamelCaseToWords();
 }

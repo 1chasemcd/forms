@@ -18,8 +18,6 @@ public sealed class TextAreaInputBuilder<TModel>(
         };
     }
 
-    protected override string GetDefaultLabel() => propertyBuilder.Build().CamelCaseToWords();
-
     public TextAreaInputBuilder<TModel> WithMaxLength(int maxLength)
     {
         MaxLength = maxLength;

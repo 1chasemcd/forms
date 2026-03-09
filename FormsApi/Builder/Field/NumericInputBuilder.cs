@@ -27,7 +27,6 @@ public sealed class NumericInputBuilder<TModel, TInput>(
         };
     }
 
-    protected override string GetDefaultLabel() => propertyBuilder.Build().CamelCaseToWords();
 
     public NumericInputBuilder<TModel, TInput> WithMaxValue(int maxValue)
     {

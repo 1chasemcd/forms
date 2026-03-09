@@ -20,8 +20,6 @@ public sealed class DateInputBuilder<TModel>(
         };
     }
 
-    protected override string GetDefaultLabel() => propertyBuilder.Build().CamelCaseToWords();
-
     public DateInputBuilder<TModel> WithMaxValue(DateOnly maxValue)
     {
         MaxValue = maxValue;

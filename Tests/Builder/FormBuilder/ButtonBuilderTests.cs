@@ -1,6 +1,7 @@
 using FormsApi.Builder;
 using FormsApi.Builder.Field;
 using FormsApi.Builder.View;
+using FormsApi.Common.Types;
 using FormsApi.Form;
 using FormsApi.Form.Field;
 using FormsApi.Form.Primitives;
@@ -19,7 +20,7 @@ public class ButtonBuilderTests
     [Test]
     public void Build_NoLabelSpecified_UsesMethodName()
     {
-        IEnumerable<PropertyOrConstant?> labels = GetFields().Select(f => f.Label);
+        IEnumerable<PropertyOrConstant?> labels = GetFields().Select(f => (f as BaseInput)?.Label);
         Assert.That(labels, Has.One.With.Property(nameof(Constant.Value)).EqualTo("This Is A Button"));
     }
 
@@ -27,12 +28,13 @@ public class ButtonBuilderTests
     {
         protected override ViewBuilder<TestModel> View => new DataViewBuilder<TestModel>()
         {
-            m => Button.Build(m).WithActionOnChange<TestService>(s => s.ThisIsAButton)
+            {m => m.ThisIsAButton }
         };
     }
 
     private class TestModel
     {
+        public Button ThisIsAButton { get; set; }
     }
 
     private class TestService

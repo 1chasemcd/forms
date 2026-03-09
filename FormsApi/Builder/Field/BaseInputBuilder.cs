@@ -1,14 +1,18 @@
 using System.Linq.Expressions;
+using FormsApi.Common;
 using FormsApi.Form.Field;
 using FormsApi.Form.Primitives;
 using FormsApi.FormAction;
 
 namespace FormsApi.Builder.Field;
 
-public abstract class BaseInputBuilder<TModel> : BaseFieldBuilder<TModel>
+public abstract class BaseInputBuilder<TModel, TThis> : BaseFieldBuilder<TModel, TThis>
+    where TThis : BaseInputBuilder<TModel, TThis>
 {
+    public PropertyOrConstantBuilder<TModel, string>? Label { get; set; }
     public IEnumerable<ModelMemberBuilder<TModel, object>>? PropsToUpdate { get; set; }
     public IFormActionBuilder<TModel>? FormActionBuilder { get; set; }
+    public PropertyOrConstantBuilder<TModel, bool>? Required { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Disabled { get; set; }
 
     protected override BaseField BuildField()
@@ -16,9 +20,16 @@ public abstract class BaseInputBuilder<TModel> : BaseFieldBuilder<TModel>
         BaseInput input = BuildInput();
         return input with
         {
+            Label = Label?.Build() ?? BuildDefaultLabel(input),
             OnChange = BuildOnChangeEvent(),
+            Required = Required?.Build(),
             Disabled = Disabled?.Build(),
         };
+    }
+
+    private static Constant BuildDefaultLabel(BaseInput input)
+    {
+        return new Constant(input.Property.CamelCaseToWords());
     }
 
     private OnChangeEvent? BuildOnChangeEvent()
@@ -33,12 +44,7 @@ public abstract class BaseInputBuilder<TModel> : BaseFieldBuilder<TModel>
     }
 
     protected abstract BaseInput BuildInput();
-}
 
-public abstract class BaseInputBuilder<TModel, TThis> : BaseInputBuilder<TModel>
-    where TThis : BaseInputBuilder<TModel, TThis>
-{
-    internal TThis This => (TThis)this;
     public TThis WithLabel(string label)
     {
         Label = label;
@@ -47,21 +53,6 @@ public abstract class BaseInputBuilder<TModel, TThis> : BaseInputBuilder<TModel>
     public TThis WithLabel(Expression<Func<TModel, string>> labelProperty)
     {
         Label = labelProperty;
-        return This;
-    }
-    public TThis WithHidden(bool hidden)
-    {
-        Hidden = hidden;
-        return This;
-    }
-    public TThis WithHidden(Expression<Func<TModel, bool>> hiddenProperty)
-    {
-        Hidden = hiddenProperty;
-        return This;
-    }
-    public TThis WithWidth(FormElementSize width)
-    {
-        Width = width;
         return This;
     }
 
@@ -80,6 +71,17 @@ public abstract class BaseInputBuilder<TModel, TThis> : BaseInputBuilder<TModel>
     public TThis WithActionOnChange<TService>(Expression<Func<TService, Func<FormActionResult>>> serviceMethod)
     {
         FormActionBuilder = new FormActionBuilder<TService, TModel>(serviceMethod);
+        return This;
+    }
+
+    public TThis WithRequired(bool required)
+    {
+        Required = required;
+        return This;
+    }
+    public TThis WithRequired(Expression<Func<TModel, bool>> requiredProperty)
+    {
+        Required = requiredProperty;
         return This;
     }
 

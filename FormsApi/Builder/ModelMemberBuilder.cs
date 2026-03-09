@@ -6,7 +6,6 @@ public sealed class ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, 
 {
     public string Build()
     {
-        // Handle boxing to object
         if (selector.Body is UnaryExpression unary &&
             unary.Operand is MemberExpression member1)
             return member1.Member.Name;

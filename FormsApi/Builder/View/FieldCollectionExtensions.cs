@@ -2,17 +2,17 @@ using System.Linq.Expressions;
 using System.Numerics;
 using FormsApi.Builder.Field;
 using FormsApi.Common.Types;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace FormsApi.Builder.View;
 
 public static class FieldCollectionExtensions
 {
-    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Func<TModel, ButtonBuilder<TModel>> builderSelector, Action<ButtonBuilder<TModel>>? augment = null)
+    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, Button?>> selector, Action<ButtonInputBuilder<TModel>>? augment = null)
     {
-        TModel? inst = Activator.CreateInstance<TModel>();
-        ButtonBuilder<TModel> builder = builderSelector.Invoke(inst);
-        augment?.Invoke(builder);
-        fieldCollection.Fields.Add(builder);
+        var field = new ButtonInputBuilder<TModel>(selector);
+        augment?.Invoke(field);
+        fieldCollection.Fields.Add(field);
     }
 
     public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, bool?>> selector, Action<CheckBoxInputBuilder<TModel>>? augment = null)

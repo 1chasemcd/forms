@@ -20,8 +20,6 @@ public sealed class CurrencyInputBuilder<TModel>(
             MinValue = MinValue?.Build()
         };
     }
-    protected override string GetDefaultLabel() => propertyBuilder.Build().CamelCaseToWords();
-
 
     public CurrencyInputBuilder<TModel> WithMaxValue(int maxValue)
     {

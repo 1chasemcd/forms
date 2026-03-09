@@ -10,10 +10,8 @@ public sealed class StaticTextBuilder<TModel>(string text)
     {
         return new StaticTextField()
         {
-            Label = new Constant(text)
+            Text = new Constant(text)
         };
     }
-
-    protected override string GetDefaultLabel() => string.Empty;
 }
 

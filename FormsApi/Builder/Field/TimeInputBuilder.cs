@@ -20,8 +20,6 @@ public sealed class TimeInputBuilder<TModel>(
         };
     }
 
-    protected override string GetDefaultLabel() => propertyBuilder.Build().CamelCaseToWords();
-
     public TimeInputBuilder<TModel> WithMaxValue(TimeOnly maxValue)
     {
         MaxValue = maxValue;
