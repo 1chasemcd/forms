@@ -42,7 +42,6 @@ export class FormControlService {
 
     if (
       field.$type != 'statictextfield' &&
-      field.$type != 'button' &&
       field.Required?.$type == 'constant' &&
       field.Required.Value == true
     )

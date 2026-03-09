@@ -1,5 +1,5 @@
 import { Component, computed, input } from '@angular/core';
-import { Button } from '../../api/api.g';
+import { ButtonInput } from '../../api/api.g';
 import { computedPropertyOrConstant, FormModel } from '../../utils/api-model-utils';
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
 
@@ -10,7 +10,7 @@ import { ControlContainer, FormGroupDirective } from '@angular/forms';
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class ButtonField {
-  readonly button = input<Button>();
+  readonly button = input<ButtonInput>();
   readonly model = input<FormModel>();
 
   readonly label = computedPropertyOrConstant<string>(
@@ -19,6 +19,6 @@ export class ButtonField {
   );
 
   onClick() {
-    console.log('Button clicked, perform action ' + this.button()?.MethodToRunOnChange);
+    console.log('Button clicked, perform action');
   }
 }

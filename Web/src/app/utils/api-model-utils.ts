@@ -47,6 +47,7 @@ const baseInputTypes: Record<BaseInputType, true> = {
   numericinput: true,
   dateinput: true,
   timeinput: true,
+  buttoninput: true,
 };
 
 export function isBaseInput(field?: BaseField): field is BaseInput {

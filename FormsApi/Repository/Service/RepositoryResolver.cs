@@ -37,17 +37,17 @@ internal sealed class RepositoryResolver(IServiceProvider provider) : IRepositor
 
         while (current != null)
         {
-            matches = matches.Concat(TryResolve(current));
+            matches = matches.Union(TryResolve(current).ToHashSet());
             current = current.BaseType;
         }
 
         foreach (Type iface in modelType.GetInterfaces())
-            matches = matches.Concat(TryResolve(iface));
+            matches = matches.Union(TryResolve(iface));
 
         if (!AlreadyHasCreateHandler(matches) && CreateDefaultRepository(modelType) is { } dr)
             matches = matches.Append(dr);
 
-        return matches;
+        return matches.DistinctBy(r => r.GetType().AssemblyQualifiedName);
     }
 
     private IEnumerable<object> TryResolve(Type type)

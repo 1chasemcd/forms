@@ -50,7 +50,7 @@ export class DynamicForm implements OnInit {
     if (form == null) return;
     this.formDefinition.set(form);
     if (form.Type)
-      this.repositoryClient.getNew(form.Type).subscribe((r) => this.handleRepositoryResponse(r));
+      this.repositoryClient.create(form.Type).subscribe((r) => this.handleRepositoryResponse(r));
   }
 
   private handleRepositoryResponse(resp: FileResponse) {

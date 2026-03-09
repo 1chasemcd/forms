@@ -23,7 +23,7 @@ export class DynamicField {
 
   readonly buttonField = computed(() => {
     const f = this.field();
-    if (f?.$type == 'button') return f;
+    if (f?.$type == 'buttoninput') return f;
     return undefined;
   });
 
