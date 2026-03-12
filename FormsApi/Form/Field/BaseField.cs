@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using FormsApi.Form.Primitives;
 
@@ -19,6 +20,7 @@ namespace FormsApi.Form.Field;
 [JsonDerivedType(typeof(TimeInput), "timeinput")]
 public abstract record class BaseField
 {
+    [Required]
     public abstract string Id { get; }
     public PropertyOrConstant? Hidden { get; init; }
     public FormElementSize? Width { get; init; }

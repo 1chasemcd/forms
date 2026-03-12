@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using FormsApi.Form.Field;
 using FormsApi.Form.Primitives;
 
@@ -5,6 +6,7 @@ namespace FormsApi.Form.View;
 
 public abstract record class GridView : BaseView
 {
+    [Required]
     public required IEnumerable<BaseField> Columns { get; init; }
     public PropertyOrConstant? CanAdd { get; init; }
     public PropertyOrConstant? CanEdit { get; init; }
