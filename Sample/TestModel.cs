@@ -34,6 +34,7 @@ public class TestModel
     public string TextField { get; set; } = string.Empty;
     public string TextFieldWithInitialValue { get; set; } = "Test Value";
     public StaticText AdditionalMessage => "Another static message";
+    public string SetTheLabelOnAnotherField { get; set; } = "Text Field";
     public IList<Movie> Movies { get; set; } = [];
 }
 

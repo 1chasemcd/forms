@@ -17,7 +17,7 @@ public class TestForm : FormBuilder<TestModel>
     {
         return new DataViewBuilder<TestModel>(width: 4)
         {
-            { m => m.TextField, p => p.WithWidth(6) },
+            { m => m.TextField, p => p.WithWidth(6).WithLabel(m => m.SetTheLabelOnAnotherField) },
             { m => m.DateField, p => p.WithWidth(6) },
             { m => Button.Build(m).WithActionOnChange<TestService>(s => s.ResetForm) },
             { m => Button.Build(m).WithActionOnChange<TestService>(s => s.SetNumericValue) },
@@ -28,7 +28,7 @@ public class TestForm : FormBuilder<TestModel>
     {
         return new DataViewBuilder<TestModel>(title: "Additional Fields", width: 8)
         {
-            m => m.CurrencyField,
+            {m => m.CurrencyField, p => p.WithRequired() },
             m => m.TextFieldWithInitialValue
         };
     }
@@ -40,7 +40,8 @@ public class TestForm : FormBuilder<TestModel>
             m => m.NumericField,
             m => m.CheckBox,
             "A static message to display at the bottom",
-            m => m.AdditionalMessage
+            m => m.AdditionalMessage,
+            {m => m.SetTheLabelOnAnotherField, p => p.WithDisabled(m => m.CheckBox)}
         };
     }
 }
