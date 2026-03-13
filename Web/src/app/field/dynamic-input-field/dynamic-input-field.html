@@ -1,0 +1,5 @@
+@if (baseInput().$type === 'checkboxinput') {
+  <app-checkbox-field [label]="label()" [formControl]="control()"></app-checkbox-field>
+} @else {
+  <app-input-field [baseInput]="baseInput()" [model]="model()"></app-input-field>
+}

@@ -1,7 +1,9 @@
-@if (buttonField(); as button) {
-  <app-button-field [button]="button" [model]="model()"></app-button-field>
-} @else if (inputField(); as input) {
-  <app-input-field [baseInput]="input" [model]="model()"></app-input-field>
-} @else if (checkboxField(); as checkbox) {
-  <app-checkbox-field [checkboxInput]="checkbox" [model]="model()"></app-checkbox-field>
+@if (!field().Hidden) {
+  @if (buttonField(); as button) {
+    <app-button-field [button]="button" [model]="model()"></app-button-field>
+  } @else if (inputField(); as input) {
+    <app-dynamic-input-field [baseInput]="input" [model]="model()"></app-dynamic-input-field>
+  } @else if (staticTextField(); as statictext) {
+    <!-- TODO -->
+  }
 }
