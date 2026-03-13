@@ -1,13 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {
-  FormDefinition,
-  BaseView,
-  CombinedView,
-  DataView,
-  BaseField,
-  StaticTextField,
-} from '../api/api.g';
+import { FormDefinition, BaseView, CombinedView, DataView, BaseField } from '../api/api.g';
 import { FormModel } from './form-model';
 
 @Injectable()
@@ -38,14 +31,13 @@ export class FormControlService {
 
   private processDataView(view: DataView, model: FormModel): Record<string, FormControl> {
     const fields = view.Fields?.map((f) => this.processField(f, model)) ?? [];
-    return Object.fromEntries(fields);
+    return Object.fromEntries(fields.filter((v): v is [string, FormControl] => v !== null));
   }
 
-  private processField(field: BaseField, model: FormModel): [string, FormControl] {
+  private processField(field: BaseField, model: FormModel): [string, FormControl] | null {
+    if (field.$type == 'statictextfield' || field.$type == 'buttonfield') return null;
+
     const control = new FormControl();
-
-    if (field.$type === 'statictextfield') return this.processStaticText(field, control, model);
-
     control.valueChanges.subscribe((value) => {
       model.set(field.Property, value);
     });
@@ -64,15 +56,6 @@ export class FormControlService {
       else control.enable();
     });
 
-    return [field.Id, control];
-  }
-
-  private processStaticText(
-    field: StaticTextField,
-    control: FormControl,
-    model: FormModel,
-  ): [string, FormControl] {
-    model.registerPocDependency(field.Text, (value) => control.setValue(value));
     return [field.Id, control];
   }
 }

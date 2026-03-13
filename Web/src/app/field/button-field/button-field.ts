@@ -1,5 +1,5 @@
 import { Component, input, OnInit, signal } from '@angular/core';
-import { ButtonInput } from '../../api/api.g';
+import { ButtonField } from '../../api/api.g';
 import { FormModel } from '../../dynamic-form/form-model';
 
 @Component({
@@ -7,8 +7,8 @@ import { FormModel } from '../../dynamic-form/form-model';
   imports: [],
   templateUrl: './button-field.html',
 })
-export class ButtonField implements OnInit {
-  readonly button = input.required<ButtonInput>();
+export class ButtonComponent implements OnInit {
+  readonly button = input.required<ButtonField>();
   readonly model = input.required<FormModel>();
   readonly label = signal('');
 
