@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { FormDefinition, BaseView, CombinedView, DataView, BaseField } from '../api/api.g';
-import { FormModel } from '../utils/api-model-utils';
+import {
+  FormDefinition,
+  BaseView,
+  CombinedView,
+  DataView,
+  BaseField,
+  StaticTextField,
+} from '../api/api.g';
+import { FormModel } from './form-model';
 
 @Injectable()
 export class FormControlService {
@@ -35,25 +42,37 @@ export class FormControlService {
   }
 
   private processField(field: BaseField, model: FormModel): [string, FormControl] {
-    if (!field.Id) throw Error('Id unspecified');
-
     const control = new FormControl();
-    control.setValue(model[field.Id]);
 
-    if (
-      field.$type != 'statictextfield' &&
-      field.Required?.$type == 'constant' &&
-      field.Required.Value == true
-    )
-      control.addValidators(Validators.required);
+    if (field.$type === 'statictextfield') return this.processStaticText(field, control, model);
 
-    if (
-      field.$type != 'statictextfield' &&
-      field.Disabled?.$type == 'constant' &&
-      field.Disabled.Value == true
-    )
-      control.disable();
+    control.valueChanges.subscribe((value) => {
+      model.set(field.Property, value);
+    });
 
+    model.registerDependency(field.Property, (value) => {
+      control.setValue(value);
+    });
+
+    model.registerPocDependency(field.Required, (required) => {
+      if (required) control.addValidators(Validators.required);
+      else control.removeValidators(Validators.required);
+    });
+
+    model.registerPocDependency(field.Disabled, (disabled) => {
+      if (disabled) control.disable();
+      else control.enable();
+    });
+
+    return [field.Id, control];
+  }
+
+  private processStaticText(
+    field: StaticTextField,
+    control: FormControl,
+    model: FormModel,
+  ): [string, FormControl] {
+    model.registerPocDependency(field.Text, (value) => control.setValue(value));
     return [field.Id, control];
   }
 }

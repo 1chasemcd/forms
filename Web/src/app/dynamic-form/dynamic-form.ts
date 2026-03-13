@@ -1,11 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FileResponse, FormClient, FormDefinition, RepositoryClient } from '../api/api.g';
 import { FormControlService } from './form-control-service';
 import { ActivatedRoute } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { catchError, of, throwError } from 'rxjs';
 import { DynamicView } from '../view/dynamic-view/dynamic-view';
-import { FormModel } from '../utils/api-model-utils';
+import { FormModel } from './form-model';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -18,11 +18,9 @@ export class DynamicForm implements OnInit {
   private readonly repositoryClient = inject(RepositoryClient);
   private readonly formControlService = inject(FormControlService);
   private readonly route = inject(ActivatedRoute);
-  formDefinition = signal<FormDefinition>({});
-  model = signal<FormModel>({});
-  readonly formGroup = computed(() =>
-    this.formControlService.createFromDefinition(this.formDefinition(), this.model()),
-  );
+  formDefinition?: FormDefinition;
+  model: FormModel = new FormModel();
+  formGroup?: FormGroup;
 
   ngOnInit() {
     const path = this.route.snapshot.paramMap.get('path');
@@ -48,13 +46,14 @@ export class DynamicForm implements OnInit {
 
   private handleFormResponse(form: FormDefinition | null) {
     if (form == null) return;
-    this.formDefinition.set(form);
+    this.formDefinition = form;
+    this.formGroup = this.formControlService.createFromDefinition(form, this.model);
     if (form.Type)
       this.repositoryClient.create(form.Type).subscribe((r) => this.handleRepositoryResponse(r));
   }
 
   private handleRepositoryResponse(resp: FileResponse) {
-    resp.data.text().then((text) => this.model.set(JSON.parse(text)));
+    resp.data.text().then((text) => this.model.patch(JSON.parse(text)));
   }
 
   onSubmit() {

@@ -1,7 +1,7 @@
 @if (buttonField(); as button) {
-  <app-button-field [button]="button"></app-button-field>
+  <app-button-field [button]="button" [model]="model()"></app-button-field>
 } @else if (inputField(); as input) {
-  <app-input-field [baseInput]="input"></app-input-field>
+  <app-input-field [baseInput]="input" [model]="model()"></app-input-field>
 } @else if (checkboxField(); as checkbox) {
-  <app-checkbox-field [checkboxInput]="checkbox"></app-checkbox-field>
+  <app-checkbox-field [checkboxInput]="checkbox" [model]="model()"></app-checkbox-field>
 }

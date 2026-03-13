@@ -1,7 +1,7 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, input, OnInit, signal } from '@angular/core';
 import { CheckBoxInput } from '../../api/api.g';
-import { computedPropertyOrConstant, FormModel } from '../../utils/api-model-utils';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
+import { FormModel } from '../../dynamic-form/form-model';
 
 @Component({
   selector: 'app-checkbox-field',
@@ -9,12 +9,13 @@ import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angu
   templateUrl: './checkbox-field.html',
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
-export class CheckboxField {
-  readonly checkboxInput = input<CheckBoxInput>();
-  readonly model = input<FormModel>();
+export class CheckboxField implements OnInit {
+  readonly checkboxInput = input.required<CheckBoxInput>();
+  readonly model = input.required<FormModel>();
 
-  readonly label = computedPropertyOrConstant(
-    computed(() => this.checkboxInput()?.Label),
-    this.model,
-  );
+  readonly label = signal('');
+
+  ngOnInit(): void {
+    this.model().registerPocDependency(this.checkboxInput().Label, this.label.set);
+  }
 }

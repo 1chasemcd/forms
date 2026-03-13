@@ -1,8 +1,9 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, OnInit, signal } from '@angular/core';
 import { BaseView } from '../../api/api.g';
-import { computedPropertyOrConstant, widthToCss, FormModel } from '../../utils/api-model-utils';
+import { widthToCss } from '../../utils/width-utils';
 import { DynamicField } from '../../field/dynamic-field/dynamic-field';
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
+import { FormModel } from '../../dynamic-form/form-model';
 
 @Component({
   selector: 'app-dynamic-view',
@@ -13,26 +14,23 @@ import { ControlContainer, FormGroupDirective } from '@angular/forms';
   templateUrl: './dynamic-view.html',
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
-export class DynamicView {
-  readonly formView = input<BaseView>();
-  readonly model = input<FormModel>();
+export class DynamicView implements OnInit {
+  readonly formView = input.required<BaseView>();
+  readonly model = input.required<FormModel>();
+  title = signal('');
 
-  readonly title = computedPropertyOrConstant(
-    computed(() => this.formView()?.Title),
-    this.model,
-  );
+  ngOnInit(): void {
+    this.model().registerPocDependency<string>(this.formView().Title, this.title.set);
+  }
 
   readonly combinedViews = computed(() => {
     const view = this.formView();
-    if (view?.$type == 'combinedview') return view.Views;
-    return undefined;
+    return view.$type === 'combinedview' ? view.Views : null;
   });
 
   readonly dataView = computed(() => {
     const view = this.formView();
-    if (view?.$type == 'dataview') return view;
-    return undefined;
+    return view.$type === 'dataview' ? view : null;
   });
-
-  readonly width = computed(() => widthToCss(this.formView()?.Width));
+  readonly width = computed(() => widthToCss(this.formView().Width));
 }

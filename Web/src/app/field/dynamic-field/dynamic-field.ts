@@ -1,10 +1,11 @@
 import { Component, computed, input } from '@angular/core';
 import { BaseField } from '../../api/api.g';
-import { FormModel, widthToCss } from '../../utils/api-model-utils';
+import { widthToCss } from '../../utils/width-utils';
 import { ButtonField } from '../button-field/button-field';
 import { InputField } from '../input-field/input-field';
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
 import { CheckboxField } from '../checkbox-field/checkbox-field';
+import { FormModel } from '../../dynamic-form/form-model';
 
 @Component({
   selector: 'app-dynamic-field',
@@ -16,20 +17,19 @@ import { CheckboxField } from '../checkbox-field/checkbox-field';
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class DynamicField {
-  readonly field = input<BaseField>();
-  readonly model = input<FormModel>();
+  readonly field = input.required<BaseField>();
+  readonly model = input.required<FormModel>();
 
-  readonly width = computed(() => widthToCss(this.field()?.Width));
+  readonly width = computed(() => widthToCss(this.field().Width));
 
   readonly buttonField = computed(() => {
     const f = this.field();
-    if (f?.$type == 'buttoninput') return f;
-    return undefined;
+    return f.$type === 'buttoninput' ? f : null;
   });
 
   readonly inputField = computed(() => {
     const f = this.field();
-    switch (f?.$type) {
+    switch (f.$type) {
       case 'currencyinput':
       case 'dateinput':
       case 'timeinput':
@@ -37,13 +37,12 @@ export class DynamicField {
       case 'textinput':
         return f;
       default:
-        return undefined;
+        return null;
     }
   });
 
   readonly checkboxField = computed(() => {
     const f = this.field();
-    if (f?.$type == 'checkboxinput') return f;
-    return undefined;
+    return f.$type == 'checkboxinput' ? f : null;
   });
 }

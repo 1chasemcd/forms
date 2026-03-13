@@ -1,7 +1,7 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, OnInit, signal } from '@angular/core';
 import { BaseInput } from '../../api/api.g';
-import { computedPropertyOrConstant, FormModel } from '../../utils/api-model-utils';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
+import { FormModel } from '../../dynamic-form/form-model';
 
 @Component({
   selector: 'app-input-field',
@@ -9,17 +9,18 @@ import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angu
   templateUrl: './input-field.html',
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
-export class InputField {
-  readonly baseInput = input<BaseInput>();
-  readonly model = input<FormModel>();
+export class InputField implements OnInit {
+  readonly baseInput = input.required<BaseInput>();
+  readonly model = input.required<FormModel>();
 
-  readonly label = computedPropertyOrConstant(
-    computed(() => this.baseInput()?.Label),
-    this.model,
-  );
+  readonly label = signal('');
+
+  ngOnInit(): void {
+    this.model().registerPocDependency(this.baseInput().Label, this.label.set);
+  }
 
   readonly inputType = computed(() => {
-    switch (this.baseInput()?.$type) {
+    switch (this.baseInput().$type) {
       case 'currencyinput':
       case 'numericinput':
         return 'number';
