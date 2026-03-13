@@ -18,7 +18,7 @@ export class DynamicInputField implements OnInit {
 
   readonly label = signal('');
   readonly control = computed(
-    () => this.parentForm.control.get(this.baseInput().Id) as FormControl,
+    () => this.parentForm.control.get(this.baseInput().Property) as FormControl,
   );
 
   ngOnInit(): void {

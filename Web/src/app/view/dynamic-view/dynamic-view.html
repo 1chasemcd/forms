@@ -6,7 +6,7 @@
     <app-dynamic-view [formView]="childView" [model]="model()"></app-dynamic-view>
   }
 } @else if (dataView(); as view) {
-  @for (field of view.Fields; track field.Id) {
+  @for (field of view.Fields; track $index) {
     <app-dynamic-field [field]="field" [model]="model()"></app-dynamic-field>
   }
 }

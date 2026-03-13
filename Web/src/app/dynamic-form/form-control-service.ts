@@ -56,6 +56,6 @@ export class FormControlService {
       else control.enable();
     });
 
-    return [field.Id, control];
+    return [field.Property, control];
   }
 }
