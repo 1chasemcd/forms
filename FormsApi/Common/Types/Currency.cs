@@ -1,5 +1,9 @@
+using System.Text.Json.Serialization;
+using FormsApi.Json;
+
 namespace FormsApi.Common.Types;
 
+[JsonConverter(typeof(CurrencyJsonConverter))]
 public sealed record Currency
 {
     public Currency() { _value = 0; }

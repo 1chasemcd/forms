@@ -2,9 +2,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using FormsApi.Form.Primitives;
 
-namespace FormsApi.Form.Json;
+namespace FormsApi.Json;
 
-public class SerializedTypeJsonConverter : JsonConverter<SerializedType>
+internal sealed class SerializedTypeJsonConverter : JsonConverter<SerializedType>
 {
     public override SerializedType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

@@ -1,5 +1,9 @@
+using System.Text.Json.Serialization;
+using FormsApi.Json;
+
 namespace FormsApi.Common.Types;
 
+[JsonConverter(typeof(StaticTextJsonConverter))]
 public sealed record StaticText
 {
     private readonly string _text;

@@ -2,9 +2,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using FormsApi.Form.Primitives;
 
-namespace FormsApi.Form.Json;
+namespace FormsApi.Json;
 
-public class FormElementSizeJsonConverter : JsonConverter<FormElementSize>
+internal sealed class FormElementSizeJsonConverter : JsonConverter<FormElementSize>
 {
     public const int AutoSize = -1;
     public override FormElementSize Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

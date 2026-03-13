@@ -20,8 +20,6 @@ namespace FormsApi.Form.Field;
 [JsonDerivedType(typeof(TimeInput), "timeinput")]
 public abstract record class BaseField
 {
-    [Required]
-    public abstract string Id { get; }
     public PropertyOrConstant? Label { get; init; }
     public PropertyOrConstant? Hidden { get; init; }
     public FormElementSize? Width { get; init; }
