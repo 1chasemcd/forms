@@ -47,16 +47,16 @@ public class DataViewTests
     [Test]
     public void DataView_RendersButtonFieldCorrectly()
     {
-        ButtonInput? button = ((CombinedView)_form.View).Views
-            .Select(x => x as DataView).First(x => x != null)?.Fields.SingleOrDefault(f => f is ButtonInput) as ButtonInput;
+        ButtonField? button = ((CombinedView)_form.View).Views
+            .Select(x => x as DataView).First(x => x != null)?.Fields.SingleOrDefault(f => f is ButtonField) as ButtonField;
 
 
-        Assert.That(button, Has.Property(nameof(ButtonInput.OnChange))
+        Assert.That(button, Has.Property(nameof(ButtonField.OnChange))
             .With.Property(nameof(OnChangeEvent.FormAction))
             .With.Property(nameof(FormAction.Service))
             .EqualTo(new SerializedType(typeof(TestService))));
 
-        Assert.That(button, Has.Property(nameof(ButtonInput.OnChange))
+        Assert.That(button, Has.Property(nameof(ButtonField.OnChange))
             .With.Property(nameof(OnChangeEvent.FormAction))
             .With.Property(nameof(FormAction.Method))
             .EqualTo(nameof(TestService.PerformAction)));

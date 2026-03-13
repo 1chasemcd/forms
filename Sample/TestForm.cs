@@ -19,8 +19,8 @@ public class TestForm : FormBuilder<TestModel>
         {
             { m => m.TextField, p => p.WithWidth(6) },
             { m => m.DateField, p => p.WithWidth(6) },
-            { m => m.ResetForm, p => p.WithActionOnChange<TestService>(s => s.ResetForm) },
-            { m => m.UpdateNumber, p => p.WithActionOnChange<TestService>(s => s.SetNumericValue) },
+            { m => Button.Build(m).WithActionOnChange<TestService>(s => s.ResetForm) },
+            { m => Button.Build(m).WithActionOnChange<TestService>(s => s.SetNumericValue) },
         };
     }
 
@@ -39,7 +39,8 @@ public class TestForm : FormBuilder<TestModel>
         {
             m => m.NumericField,
             m => m.CheckBox,
-            "A static message to display at the bottom"
+            "A static message to display at the bottom",
+            m => m.AdditionalMessage
         };
     }
 }

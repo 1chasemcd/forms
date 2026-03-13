@@ -9,13 +9,10 @@ public abstract record class BaseInput : BaseField
     public override string Id => Property;
     [Required]
     public required string Property { get; init; }
-    public PropertyOrConstant? Label { get; init; }
     public OnChangeEvent? OnChange { get; init; }
     public PropertyOrConstant? Required { get; init; }
     public PropertyOrConstant? Disabled { get; init; }
 }
-
-public sealed record class ButtonInput : BaseInput;
 
 public sealed record class CheckBoxInput : BaseInput;
 

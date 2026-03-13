@@ -33,9 +33,7 @@ public class TestModel
     public decimal NumericField { get; set; }
     public string TextField { get; set; } = string.Empty;
     public string TextFieldWithInitialValue { get; set; } = "Test Value";
-    public Button ResetForm;
-    public Button UpdateNumber;
-
+    public StaticText AdditionalMessage => "Another static message";
     public IList<Movie> Movies { get; set; } = [];
 }
 

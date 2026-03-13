@@ -8,11 +8,12 @@ namespace FormsApi.Builder.View;
 
 public static class FieldCollectionExtensions
 {
-    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, Button?>> selector, Action<ButtonInputBuilder<TModel>>? augment = null)
+    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Func<TModel, ButtonFieldBuilder<TModel>> builderSelector, Action<ButtonFieldBuilder<TModel>>? augment = null)
     {
-        var field = new ButtonInputBuilder<TModel>(selector);
-        augment?.Invoke(field);
-        fieldCollection.Fields.Add(field);
+        TModel? inst = Activator.CreateInstance<TModel>();
+        ButtonFieldBuilder<TModel> builder = builderSelector.Invoke(inst);
+        augment?.Invoke(builder);
+        fieldCollection.Fields.Add(builder);
     }
 
     public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, bool?>> selector, Action<CheckBoxInputBuilder<TModel>>? augment = null)
@@ -47,6 +48,13 @@ public static class FieldCollectionExtensions
     public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, string text, Action<StaticTextBuilder<TModel>>? augment = null)
     {
         var field = new StaticTextBuilder<TModel>(text);
+        augment?.Invoke(field);
+        fieldCollection.Fields.Add(field);
+    }
+
+    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, StaticText>> selector, Action<StaticTextBuilder<TModel>>? augment = null)
+    {
+        var field = new StaticTextBuilder<TModel>(selector);
         augment?.Invoke(field);
         fieldCollection.Fields.Add(field);
     }

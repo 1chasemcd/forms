@@ -9,9 +9,8 @@ namespace FormsApi.Builder.Field;
 public abstract class BaseInputBuilder<TModel, TThis> : BaseFieldBuilder<TModel, TThis>
     where TThis : BaseInputBuilder<TModel, TThis>
 {
-    public PropertyOrConstantBuilder<TModel, string>? Label { get; set; }
     public IEnumerable<ModelMemberBuilder<TModel, object>>? PropsToUpdate { get; set; }
-    public IFormActionBuilder<TModel>? FormActionBuilder { get; set; }
+    public IFormActionBuilder<TModel>? Action { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Required { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Disabled { get; set; }
 
@@ -20,41 +19,25 @@ public abstract class BaseInputBuilder<TModel, TThis> : BaseFieldBuilder<TModel,
         BaseInput input = BuildInput();
         return input with
         {
-            Label = Label?.Build() ?? BuildDefaultLabel(input),
+            Label = new Constant(input.Property.CamelCaseToWords()),
             OnChange = BuildOnChangeEvent(),
             Required = Required?.Build(),
             Disabled = Disabled?.Build(),
         };
     }
 
-    private static Constant BuildDefaultLabel(BaseInput input)
-    {
-        return new Constant(input.Property.CamelCaseToWords());
-    }
-
     private OnChangeEvent? BuildOnChangeEvent()
     {
-        if (PropsToUpdate is null && FormActionBuilder is null)
+        if (PropsToUpdate is null && Action is null)
             return null;
         return new OnChangeEvent()
         {
             PropertiesToUpdate = PropsToUpdate?.Select(p => p.Build()),
-            FormAction = FormActionBuilder?.Build()
+            FormAction = Action?.Build()
         };
     }
 
     protected abstract BaseInput BuildInput();
-
-    public TThis WithLabel(string label)
-    {
-        Label = label;
-        return This;
-    }
-    public TThis WithLabel(Expression<Func<TModel, string>> labelProperty)
-    {
-        Label = labelProperty;
-        return This;
-    }
 
     public TThis WithPropsToUpdate(params Expression<Func<TModel, object>>[] props)
     {
@@ -64,17 +47,17 @@ public abstract class BaseInputBuilder<TModel, TThis> : BaseFieldBuilder<TModel,
 
     public TThis WithActionOnChange<TService>(Expression<Func<TService, Func<TModel, FormActionResult>>> serviceMethod)
     {
-        FormActionBuilder = new FormActionBuilder<TService, TModel>(serviceMethod);
+        Action = new FormActionBuilder<TService, TModel>(serviceMethod);
         return This;
     }
 
     public TThis WithActionOnChange<TService>(Expression<Func<TService, Func<FormActionResult>>> serviceMethod)
     {
-        FormActionBuilder = new FormActionBuilder<TService, TModel>(serviceMethod);
+        Action = new FormActionBuilder<TService, TModel>(serviceMethod);
         return This;
     }
 
-    public TThis WithRequired(bool required)
+    public TThis WithRequired(bool required = true)
     {
         Required = required;
         return This;
@@ -85,7 +68,7 @@ public abstract class BaseInputBuilder<TModel, TThis> : BaseFieldBuilder<TModel,
         return This;
     }
 
-    public TThis WithDisabled(bool disabled)
+    public TThis WithDisabled(bool disabled = true)
     {
         Disabled = disabled;
         return This;

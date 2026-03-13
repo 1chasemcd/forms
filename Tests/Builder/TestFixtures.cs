@@ -27,7 +27,7 @@ public class TestFormBuilder : FormBuilder<TestModel>
             { m => m.StringProperty },
             { m => m.TimeProperty },
 
-            { m => m.PerformAction, p => p.WithActionOnChange<TestService>(s => s.PerformAction) },
+            { m => Button.Build(m), p => p.WithActionOnChange<TestService>(s => s.PerformAction) },
             { "Static Text" },
         };
     }
@@ -73,7 +73,6 @@ public class TestModel
     public int NoGetterProperty { set => _noGetterField = value; }
     public int IntField;
     public int MinValueProperty { get; }
-    public Button PerformAction;
     public IEnumerable<TestModelChild> EnumerableProperty { get; set; } = [];
     public class TestModelChild
     {
