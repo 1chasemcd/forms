@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, OnInit, signal } from '@angular/core';
 import { BaseField } from '../../api/api.g';
 import { widthToCss } from '../../utils/width-utils';
 import { ButtonComponent } from '../button-field/button-field';
@@ -6,6 +6,7 @@ import { ControlContainer, FormGroupDirective } from '@angular/forms';
 import { FormModel } from '../../dynamic-form/form-model';
 import { DynamicInputField } from '../dynamic-input-field/dynamic-input-field';
 import { isBaseInput } from '../../utils/api-utils';
+import { StaticTextField } from '../static-text-field/static-text-field';
 
 @Component({
   selector: 'app-dynamic-field',
@@ -13,14 +14,19 @@ import { isBaseInput } from '../../utils/api-utils';
     '[class]': 'width() + " h-10 content-center"',
   },
   templateUrl: './dynamic-field.html',
-  imports: [ButtonComponent, DynamicInputField],
+  imports: [ButtonComponent, DynamicInputField, StaticTextField],
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
-export class DynamicField {
+export class DynamicField implements OnInit {
   readonly field = input.required<BaseField>();
   readonly model = input.required<FormModel>();
 
   readonly width = computed(() => widthToCss(this.field().Width));
+  readonly label = signal('');
+
+  ngOnInit() {
+    this.model().registerPocDependency(this.field().Label, this.label.set);
+  }
 
   readonly buttonField = computed(() => {
     const f = this.field();
