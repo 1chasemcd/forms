@@ -1,7 +1,7 @@
 import { Component, computed, input, OnInit, signal } from '@angular/core';
 import { BaseView } from '../../api/api.g';
 import { widthToCss } from '../../utils/width-utils';
-import { DynamicField } from '../../field/dynamic-field/dynamic-field';
+import { DynamicField } from '../../dynamic-field/dynamic-field/dynamic-field';
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
 import { FormModel } from '../../dynamic-form/form-model';
 

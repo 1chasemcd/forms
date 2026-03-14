@@ -1,22 +1,12 @@
-import { Component, input, OnInit, signal } from '@angular/core';
-import { ButtonField } from '../../api/api.g';
-import { FormModel } from '../../dynamic-form/form-model';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-button-field',
   imports: [],
   templateUrl: './button-field.html',
 })
-export class ButtonComponent implements OnInit {
-  readonly button = input.required<ButtonField>();
-  readonly model = input.required<FormModel>();
-  readonly label = signal('');
-
-  ngOnInit(): void {
-    this.model().registerPocDependency(this.button().Label, this.label.set);
-  }
-
-  onClick() {
-    console.log('Button clicked, perform action');
-  }
+export class ButtonComponent {
+  readonly label = input.required<string>();
+  readonly disabled = input<boolean>();
+  readonly onClick = input.required<() => void>();
 }

@@ -2,7 +2,7 @@ import { Component, computed, inject, input, OnInit, signal } from '@angular/cor
 import { BaseInput } from '../../api/api.g';
 import { FormModel } from '../../dynamic-form/form-model';
 import { ControlContainer, FormControl, FormGroupDirective } from '@angular/forms';
-import { CheckboxField } from '../checkbox-field/checkbox-field';
+import { CheckboxField } from '../../field/checkbox-field/checkbox-field';
 import { InputField } from '../input-field/input-field';
 
 @Component({
