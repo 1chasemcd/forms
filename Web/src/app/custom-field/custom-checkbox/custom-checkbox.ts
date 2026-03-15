@@ -1,12 +1,21 @@
 import { Component, input } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CustomInputComponent } from '../../field-resolution/custom-field-registration';
 
 @Component({
   selector: 'app-custom-checkbox',
   imports: [ReactiveFormsModule],
   templateUrl: './custom-checkbox.html',
 })
-export class CustomCheckbox {
+export class CustomCheckbox implements CustomInputComponent {
   readonly label = input.required<string>();
-  readonly control = input.required<FormControl>();
+  readonly formControl = input.required<FormControl>();
+
+  get required() {
+    return this.formControl().hasValidator(Validators.required);
+  }
+
+  get disabled() {
+    return this.formControl().disabled;
+  }
 }

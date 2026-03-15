@@ -1,7 +1,8 @@
 import { BaseField, BaseInput } from '../api/api.g';
 
-type BaseInputType = BaseInput['$type'];
-const baseInputTypes: Record<BaseInputType, true> = {
+export type BaseFieldType = BaseField['$type'];
+export type BaseInputType = BaseInput['$type'];
+export const baseInputTypes: Record<BaseInputType, true> = {
   checkboxinput: true,
   textinput: true,
   textareainput: true,

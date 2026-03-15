@@ -1,18 +1,19 @@
 import { Component, input, output } from '@angular/core';
-import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-custom-input',
   imports: [ReactiveFormsModule],
   templateUrl: './custom-input.html',
-  viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class CustomInput {
   readonly label = input.required<string>();
   readonly displayValue = input.required<string>();
-  readonly isDisabled = input.required<boolean>();
+  readonly isDisabled = input<boolean>();
+  readonly isRequired = input<boolean>();
   readonly valueChange = output<string>();
-  readonly focusLost = output();
+  readonly focusOn = output();
+  readonly focusOff = output();
 
   private static nextId = 0;
   readonly id = `input-${CustomInput.nextId++}`;

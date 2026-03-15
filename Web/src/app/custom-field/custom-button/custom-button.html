@@ -1,7 +1,7 @@
 <button
   class="w-full rounded-lg h-10 font-medium bg-violet-600 text-white disabled:opacity-20 disabled:cursor-not-allowed"
   type="button"
-  (click)="onClick()"
+  (click)="clicked.emit()"
 >
   {{ label() }}
 </button>
