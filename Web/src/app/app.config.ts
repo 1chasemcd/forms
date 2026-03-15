@@ -11,7 +11,7 @@ import {
   provideCustomInput,
   provideCustomStaticText,
 } from './field-resolution/custom-field-provider';
-import { CustomText } from './custom-field/custom-text/custom-text';
+import { CustomStaticText } from './custom-field/custom-static-text/custom-static-text';
 import { CustomButton } from './custom-field/custom-button/custom-button';
 import { CustomCheckbox } from './custom-field/custom-checkbox/custom-checkbox';
 
@@ -21,7 +21,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(),
-    provideCustomStaticText(CustomText),
+    provideCustomStaticText(CustomStaticText),
     provideCustomButton(CustomButton),
     provideCustomInput('checkboxinput', CustomCheckbox),
   ],
