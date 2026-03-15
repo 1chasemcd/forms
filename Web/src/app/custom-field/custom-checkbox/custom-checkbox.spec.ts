@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StaticTextField } from './static-text-field';
+import { CustomCheckbox } from './custom-checkbox';
 
-describe('StaticTextField', () => {
-  let component: StaticTextField;
-  let fixture: ComponentFixture<StaticTextField>;
+describe('CustomCheckbox', () => {
+  let component: CustomCheckbox;
+  let fixture: ComponentFixture<CustomCheckbox>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StaticTextField],
+      imports: [CustomCheckbox],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(StaticTextField);
+    fixture = TestBed.createComponent(CustomCheckbox);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

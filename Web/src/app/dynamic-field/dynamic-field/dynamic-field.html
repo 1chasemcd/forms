@@ -4,6 +4,6 @@
   } @else if (inputField(); as input) {
     <app-dynamic-input-field [baseInput]="input" [model]="model()"></app-dynamic-input-field>
   } @else if (staticTextField(); as statictext) {
-    <app-static-text-field [text]="label()"></app-static-text-field>
+    <app-custom-text [text]="label()"></app-custom-text>
   }
 }

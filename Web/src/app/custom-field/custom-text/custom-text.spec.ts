@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ObsoleteInputField } from './input-field';
+import { CustomText } from './custom-text';
 
-describe('InputField', () => {
-  let component: ObsoleteInputField;
-  let fixture: ComponentFixture<ObsoleteInputField>;
+describe('StaticTextField', () => {
+  let component: CustomText;
+  let fixture: ComponentFixture<CustomText>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ObsoleteInputField],
+      imports: [CustomText],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ObsoleteInputField);
+    fixture = TestBed.createComponent(CustomText);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

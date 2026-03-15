@@ -1,16 +1,16 @@
 import { Component, input, OnInit, signal } from '@angular/core';
 import { ButtonField } from '../../api/api.g';
 import { FormModel } from '../../dynamic-form/form-model';
-import { ButtonComponent } from '../../field/button-field/button-field';
+import { CustomButton } from '../../custom-field/custom-button/custom-button';
 
 @Component({
   selector: 'app-dynamic-button-field',
-  imports: [ButtonComponent],
-  template: `<app-button-field
+  imports: [CustomButton],
+  template: `<app-custom-button
     [label]="label()"
     [disabled]="disabled()"
     [onClick]="onClick"
-  ></app-button-field>`,
+  ></app-custom-button>`,
 })
 export class DynamicButtonField implements OnInit {
   readonly button = input.required<ButtonField>();

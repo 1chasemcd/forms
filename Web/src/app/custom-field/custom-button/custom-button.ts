@@ -1,11 +1,11 @@
 import { Component, input } from '@angular/core';
 
 @Component({
-  selector: 'app-button-field',
+  selector: 'app-custom-button',
   imports: [],
-  templateUrl: './button-field.html',
+  templateUrl: './custom-button.html',
 })
-export class ButtonComponent {
+export class CustomButton {
   readonly label = input.required<string>();
   readonly disabled = input<boolean>();
   readonly onClick = input.required<() => void>();

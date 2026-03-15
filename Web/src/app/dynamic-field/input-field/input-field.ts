@@ -4,12 +4,12 @@ import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angu
 import { FormModel } from '../../dynamic-form/form-model';
 
 @Component({
-  selector: 'app-input-field',
+  selector: 'app-obsolete-input-field',
   imports: [ReactiveFormsModule],
   templateUrl: './input-field.html',
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
-export class InputField implements OnInit {
+export class ObsoleteInputField implements OnInit {
   readonly baseInput = input.required<BaseInput>();
   readonly model = input.required<FormModel>();
 

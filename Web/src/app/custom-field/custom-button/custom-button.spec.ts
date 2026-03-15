@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CheckboxField } from './checkbox-field';
+import { CustomButton } from './custom-button';
 
-describe('CheckboxField', () => {
-  let component: CheckboxField;
-  let fixture: ComponentFixture<CheckboxField>;
+describe('CustomButton', () => {
+  let component: CustomButton;
+  let fixture: ComponentFixture<CustomButton>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CheckboxField],
+      imports: [CustomButton],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CheckboxField);
+    fixture = TestBed.createComponent(CustomButton);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

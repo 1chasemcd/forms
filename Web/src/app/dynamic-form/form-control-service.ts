@@ -56,6 +56,36 @@ export class FormControlService {
       else control.enable();
     });
 
+    if (
+      field.$type === 'numericinput' ||
+      field.$type === 'currencyinput' ||
+      field.$type === 'dateinput' ||
+      field.$type === 'timeinput'
+    ) {
+      model.registerPocDependency(field.MaxValue, (value: number) => {
+        control.addValidators(Validators.max(value));
+      });
+      model.registerPocDependency(field.MinValue, (value: number) => {
+        control.addValidators(Validators.min(value));
+      });
+    }
+
+    if (field.$type === 'textareainput' || field.$type === 'textinput') {
+      model.registerPocDependency(field.MaxLength, (value: number) => {
+        control.addValidators(Validators.maxLength(value));
+      });
+    }
+
+    if (field.$type === 'numericinput') {
+      // TODO
+      // model.registerPocDependency(field.Precision, (value: number) => {
+      //   control.addValidators(precisionScaleValidator());
+      // });
+      // model.registerPocDependency(field.Scale, (value: number) => {
+      //   control.addValidators(precisionScaleValidator());
+      // });
+    }
+
     return [field.Property, control];
   }
 }

@@ -1,10 +1,10 @@
 import { Component, input } from '@angular/core';
 
 @Component({
-  selector: 'app-static-text-field',
+  selector: 'app-custom-text',
   imports: [],
-  templateUrl: './static-text-field.html',
+  templateUrl: './custom-text.html',
 })
-export class StaticTextField {
+export class CustomText {
   readonly text = input.required<string>();
 }

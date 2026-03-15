@@ -5,7 +5,7 @@ import { ControlContainer, FormGroupDirective } from '@angular/forms';
 import { FormModel } from '../../dynamic-form/form-model';
 import { DynamicInputField } from '../dynamic-input-field/dynamic-input-field';
 import { isBaseInput } from '../../utils/api-utils';
-import { StaticTextField } from '../../field/static-text-field/static-text-field';
+import { CustomText } from '../../custom-field/custom-text/custom-text';
 import { DynamicButtonField } from '../dynamic-button-field/dynamic-button-field';
 
 @Component({
@@ -14,7 +14,7 @@ import { DynamicButtonField } from '../dynamic-button-field/dynamic-button-field
     '[class]': 'width() + " h-10 content-center"',
   },
   templateUrl: './dynamic-field.html',
-  imports: [DynamicInputField, StaticTextField, DynamicButtonField],
+  imports: [DynamicInputField, CustomText, DynamicButtonField],
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class DynamicField implements OnInit {
