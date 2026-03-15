@@ -50,13 +50,8 @@ export class DynamicButtonField implements OnInit, AfterViewInit {
     this.vcr.clear();
     const ref = this.vcr.createComponent(comp);
 
-    effect(
-      () => {
-        ref.setInput('label', this.label());
-        ref.setInput('disabled', this.disabled());
-      },
-      { injector: this.injector },
-    );
+    effect(() => ref.setInput('label', this.label()), { injector: this.injector });
+    effect(() => ref.setInput('disabled', this.disabled()), { injector: this.injector });
 
     ref.instance.clicked.subscribe(() => {
       this.onClick();
