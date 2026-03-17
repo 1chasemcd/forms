@@ -1,5 +1,5 @@
 @if (title(); as title) {
-  <h2 class="h-10 text-lg font-bold col-span-12 content-center">{{ title }}</h2>
+  <h2 class="text-lg font-bold col-span-12 content-center">{{ title }}</h2>
 }
 @if (combinedViews(); as views) {
   @for (childView of views; track $index) {

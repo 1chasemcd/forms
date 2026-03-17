@@ -14,6 +14,7 @@ import {
 import { CustomStaticText } from './custom-field/custom-static-text/custom-static-text';
 import { CustomButton } from './custom-field/custom-button/custom-button';
 import { CustomCheckbox } from './custom-field/custom-checkbox/custom-checkbox';
+import { CustomTextInput } from './custom-field/custom-text-input/custom-text-input';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,5 +25,6 @@ export const appConfig: ApplicationConfig = {
     provideCustomStaticText(CustomStaticText),
     provideCustomButton(CustomButton),
     provideCustomInput('checkboxinput', CustomCheckbox),
+    provideCustomInput('textinput', CustomTextInput),
   ],
 };

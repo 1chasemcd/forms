@@ -10,7 +10,7 @@ import { DynamicTextField } from '../dynamic-text-field/dynamic-text-field';
 @Component({
   selector: 'app-dynamic-field',
   host: {
-    '[class]': 'width() + " h-10 content-center"',
+    '[class]': 'width() + " content-center"',
   },
   templateUrl: './dynamic-field.html',
   imports: [DynamicInputField, DynamicButtonField, DynamicTextField],
