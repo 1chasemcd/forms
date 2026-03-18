@@ -13,6 +13,7 @@
     [formControl]="displayControl"
     (focus)="handleFocus()"
     (blur)="handleBlur()"
+    (input)="handleInput($event)"
     type="text"
     autocomplete="off"
     class="peer w-full bg-transparent text-base text-black outline-none disabled:text-gray-500"

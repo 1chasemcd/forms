@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, computed, forwardRef, input, OnInit } from '@angular/core';
+import { Component, computed, forwardRef, input } from '@angular/core';
 import {
   ControlValueAccessor,
   FormControl,
@@ -19,7 +19,7 @@ import {
     },
   ],
 })
-export class CustomInput<T> implements ControlValueAccessor, OnInit {
+export class CustomInput<T> implements ControlValueAccessor {
   readonly label = input.required<string>();
   readonly isRequired = input<boolean>();
   readonly textAlign = input<'left' | 'right'>();
@@ -60,18 +60,36 @@ export class CustomInput<T> implements ControlValueAccessor, OnInit {
     else this.displayControl.enable();
   }
 
-  handleInput(value: string) {
-    let transformed = value;
+  handleInput(event: Event) {
+    console.log(event);
+    const input = event.target as HTMLInputElement;
+
+    const rawValue = input.value;
+    let newValue = rawValue;
+    const cursor = input.selectionStart ?? rawValue.length;
+
     const changeTransform = this.transformDisplayOnChange();
     if (changeTransform) {
-      transformed = changeTransform(value);
-      this.displayControl.setValue(transformed, { emitEvent: false });
+      newValue = changeTransform(rawValue);
+      this.displayControl.setValue(newValue, { emitEvent: false });
+      const newCursor = this.getNewCursorPosition(cursor, rawValue, newValue);
+      requestAnimationFrame(() => input.setSelectionRange(newCursor, newCursor));
     }
 
+    this.updateControl(newValue);
+  }
+
+  private getNewCursorPosition(
+    originalCursorPosition: number,
+    originalValue: string,
+    newValue: string,
+  ): number {
+    return originalCursorPosition + (newValue.length - originalValue.length);
+  }
+
+  private updateControl(newValue: string) {
     const displayToControl = this.displayToControl();
-    const controlValue = displayToControl
-      ? displayToControl(transformed)
-      : (transformed as unknown as T);
+    const controlValue = displayToControl ? displayToControl(newValue) : (newValue as unknown as T);
 
     this.inputInProgress = true;
     this._onChange(controlValue);
@@ -89,9 +107,5 @@ export class CustomInput<T> implements ControlValueAccessor, OnInit {
     if (!transform) return;
     this.displayControl.setValue(transform(this.displayControl.value), { emitEvent: false });
     this._onTouched();
-  }
-
-  ngOnInit() {
-    this.displayControl.valueChanges.subscribe((value) => this.handleInput(value));
   }
 }
