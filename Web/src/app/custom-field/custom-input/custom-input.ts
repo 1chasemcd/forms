@@ -1,6 +1,11 @@
 import { NgClass } from '@angular/common';
-import { Component, computed, forwardRef, input, signal } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { Component, computed, forwardRef, input, OnInit } from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-custom-input',
@@ -14,7 +19,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@a
     },
   ],
 })
-export class CustomInput<T> implements ControlValueAccessor {
+export class CustomInput<T> implements ControlValueAccessor, OnInit {
   readonly label = input.required<string>();
   readonly isRequired = input<boolean>();
   readonly textAlign = input<'left' | 'right'>();
@@ -25,8 +30,7 @@ export class CustomInput<T> implements ControlValueAccessor {
   readonly controlToDisplay = input<(value: T) => string>();
   readonly displayToControl = input<(value: string) => T>();
 
-  readonly displayValue = signal<string>('');
-  readonly isDisabled = signal<boolean>(false);
+  readonly displayControl = new FormControl<string>('', { nonNullable: true });
 
   readonly requiredMark = computed(() => (this.isRequired() ? '*' : ''));
 
@@ -37,10 +41,13 @@ export class CustomInput<T> implements ControlValueAccessor {
   private static _nextId = 0;
   readonly id = `input-${CustomInput._nextId++}`;
 
+  private inputInProgress = false;
+
   writeValue(value: T): void {
+    if (this.inputInProgress) return;
     const transform = this.controlToDisplay();
-    if (transform) this.displayValue.set(transform(value));
-    else this.displayValue.set(value as string);
+    const display = transform ? transform(value) : (value as unknown as string);
+    this.displayControl.setValue(display, { emitEvent: false });
   }
   registerOnChange(fn: (value: unknown) => void): void {
     this._onChange = fn;
@@ -49,28 +56,42 @@ export class CustomInput<T> implements ControlValueAccessor {
     this._onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    if (isDisabled) this.displayControl.disable();
+    else this.displayControl.enable();
   }
 
-  handleInput(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-
-    const transform = this.transformDisplayOnChange();
-    if (transform) this.displayValue.set(transform(value));
+  handleInput(value: string) {
+    let transformed = value;
+    const changeTransform = this.transformDisplayOnChange();
+    if (changeTransform) {
+      transformed = changeTransform(value);
+      this.displayControl.setValue(transformed, { emitEvent: false });
+    }
 
     const displayToControl = this.displayToControl();
-    if (displayToControl) this._onChange(displayToControl(this.displayValue()));
-    else this._onChange(value as T);
+    const controlValue = displayToControl
+      ? displayToControl(transformed)
+      : (transformed as unknown as T);
+
+    this.inputInProgress = true;
+    this._onChange(controlValue);
+    this.inputInProgress = false;
   }
 
   handleFocus() {
     const transform = this.transformDisplayOnFocus();
-    if (transform) this.displayValue.set(transform(this.displayValue()));
+    if (!transform) return;
+    this.displayControl.setValue(transform(this.displayControl.value), { emitEvent: false });
   }
 
   handleBlur() {
     const transform = this.transformDisplayOnBlur();
-    if (transform) this.displayValue.set(transform(this.displayValue()));
+    if (!transform) return;
+    this.displayControl.setValue(transform(this.displayControl.value), { emitEvent: false });
     this._onTouched();
+  }
+
+  ngOnInit() {
+    this.displayControl.valueChanges.subscribe((value) => this.handleInput(value));
   }
 }
