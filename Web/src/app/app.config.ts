@@ -28,5 +28,6 @@ export const appConfig: ApplicationConfig = {
     provideCustomInput('checkboxinput', CustomCheckbox),
     provideCustomInput('textinput', CustomTextInput),
     provideCustomInput('numericinput', CustomNumberInput),
+    provideCustomInput('currencyinput', CustomNumberInput),
   ],
 };

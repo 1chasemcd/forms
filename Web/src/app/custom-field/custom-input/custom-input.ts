@@ -32,7 +32,7 @@ export class CustomInput<T> implements ControlValueAccessor {
 
   readonly displayControl = new FormControl<string>('', { nonNullable: true });
 
-  readonly requiredMark = computed(() => (this.isRequired() ? '*' : ''));
+  readonly requiredMark = computed(() => (this.isRequired() ? ' *' : ''));
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private _onChange = (_: T) => {};
@@ -61,7 +61,6 @@ export class CustomInput<T> implements ControlValueAccessor {
   }
 
   handleInput(event: Event) {
-    console.log(event);
     const input = event.target as HTMLInputElement;
 
     const rawValue = input.value;
