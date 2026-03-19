@@ -29,7 +29,7 @@ public class TestModel
     }
     public bool CheckBox { get; set; }
     public Currency CurrencyField { get; set; } = 0;
-    public DateOnly DateField { get; set; }
+    public DateOnly? DateField { get; set; } = new DateOnly(2016, 01, 05);
     public decimal NumericField { get; set; }
     public string TextField { get; set; } = string.Empty;
     public string TextFieldWithInitialValue { get; set; } = "Test Value";

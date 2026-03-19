@@ -16,6 +16,7 @@ import { CustomButton } from './custom-field/custom-button/custom-button';
 import { CustomCheckbox } from './custom-field/custom-checkbox/custom-checkbox';
 import { CustomTextInput } from './custom-field/custom-text-input/custom-text-input';
 import { CustomNumberInput } from './custom-field/custom-number-input/custom-number-input';
+import { CustomDateInput } from './custom-field/custom-date-input/custom-date-input';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,5 +30,6 @@ export const appConfig: ApplicationConfig = {
     provideCustomInput('textinput', CustomTextInput),
     provideCustomInput('numericinput', CustomNumberInput),
     provideCustomInput('currencyinput', CustomNumberInput),
+    provideCustomInput('dateinput', CustomDateInput),
   ],
 };

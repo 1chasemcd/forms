@@ -61,7 +61,9 @@ export class CustomInput<T> implements ControlValueAccessor {
   }
 
   handleInput(event: Event) {
+    console.log(event);
     const input = event.target as HTMLInputElement;
+    const inputType = (event as InputEvent).inputType;
 
     const rawValue = input.value;
     let newValue = rawValue;
@@ -71,7 +73,7 @@ export class CustomInput<T> implements ControlValueAccessor {
     if (changeTransform) {
       newValue = changeTransform(rawValue);
       this.displayControl.setValue(newValue, { emitEvent: false });
-      const newCursor = this.getNewCursorPosition(cursor, rawValue, newValue);
+      const newCursor = this.getNewCursorPosition(cursor, inputType, rawValue, newValue);
       requestAnimationFrame(() => input.setSelectionRange(newCursor, newCursor));
     }
 
@@ -80,9 +82,12 @@ export class CustomInput<T> implements ControlValueAccessor {
 
   private getNewCursorPosition(
     originalCursorPosition: number,
+    inputEventType: string,
     originalValue: string,
     newValue: string,
   ): number {
+    if (inputEventType === 'insertText' && newValue.length < originalValue.length)
+      originalCursorPosition += 1;
     return originalCursorPosition + (newValue.length - originalValue.length);
   }
 

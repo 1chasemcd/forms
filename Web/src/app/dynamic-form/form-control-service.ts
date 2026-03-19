@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormDefinition, BaseView, CombinedView, DataView, BaseField } from '../api/api.g';
 import { FormModel } from './form-model';
+import {
+  createMaxLengthValidator,
+  createPrecisionScaleValidator,
+  createRangeValidator,
+} from '../utils/validators';
 
 @Injectable()
 export class FormControlService {
@@ -62,28 +67,33 @@ export class FormControlService {
       field.$type === 'dateinput' ||
       field.$type === 'timeinput'
     ) {
+      const rangeValidator = createRangeValidator();
+      control.addValidators(rangeValidator.validator);
       model.registerPocDependency(field.MaxValue, (value: number) => {
-        control.addValidators(Validators.max(value));
+        rangeValidator.setMax(value);
       });
       model.registerPocDependency(field.MinValue, (value: number) => {
-        control.addValidators(Validators.min(value));
+        rangeValidator.setMin(value);
       });
     }
 
     if (field.$type === 'textareainput' || field.$type === 'textinput') {
+      const maxLengthValidator = createMaxLengthValidator();
+      control.addValidators(maxLengthValidator.validator);
       model.registerPocDependency(field.MaxLength, (value: number) => {
-        control.addValidators(Validators.maxLength(value));
+        maxLengthValidator.setMaxLength(value);
       });
     }
 
     if (field.$type === 'numericinput') {
-      // TODO
-      // model.registerPocDependency(field.Precision, (value: number) => {
-      //   control.addValidators(precisionScaleValidator());
-      // });
-      // model.registerPocDependency(field.Scale, (value: number) => {
-      //   control.addValidators(precisionScaleValidator());
-      // });
+      const psValidator = createPrecisionScaleValidator();
+      control.addValidators(psValidator.validator);
+      model.registerPocDependency(field.Precision, (value: number) => {
+        psValidator.setPrecision(value);
+      });
+      model.registerPocDependency(field.Scale, (value: number) => {
+        psValidator.setScale(value);
+      });
     }
 
     return [field.Property, control];
