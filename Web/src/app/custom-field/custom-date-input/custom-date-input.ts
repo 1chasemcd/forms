@@ -1,54 +1,19 @@
 import { Component, computed, input } from '@angular/core';
 import { CustomInputComponent } from '../../field-resolution/custom-field-registration';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CustomInput } from '../custom-input/custom-input';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-custom-date-input',
-  imports: [CustomInput, ReactiveFormsModule],
-  template: `
-    <app-custom-input
-      [label]="label()"
-      [isRequired]="isRequired()"
-      [formControl]="formControl()"
-      [controlToDisplay]="controlToDisplay"
-      [displayToControl]="displayToControl"
-      [transformDisplayOnChange]="onInput"
-    ></app-custom-input>
-  `,
+  imports: [ReactiveFormsModule],
+  templateUrl: './custom-date-input.html',
 })
 export class CustomDateInput implements CustomInputComponent {
-  label = input.required<string>();
-  formControl = input.required<FormControl<number | null>>();
+  formControl = input.required<FormControl>();
+  readonly label = input.required<string>();
+  readonly isRequired = input<boolean>();
 
-  readonly isRequired = computed(() => this.formControl().hasValidator(Validators.required));
+  readonly requiredMark = computed(() => (this.isRequired() ? ' *' : ''));
 
-  controlToDisplay = (value: string | null): string => {
-    if (value === null || value === undefined) return '';
-    value = value.replace(/-/g, '').padEnd(8);
-    return value.substring(4, 6) + '/' + value.substring(6, 8) + '/' + value.substring(0, 4);
-  };
-
-  displayToControl = (value: string): string | null => {
-    if (value === null || value || '') return null;
-    let result = '';
-    const parts = value.split('/');
-    if (parts.length >= 3) result += parts[3];
-    result.padEnd(4);
-    result += '-';
-    if (parts.length >= 1) result += parts[1];
-    result.padEnd(7);
-    result += '-';
-    if (parts.length >= 2) result += parts[2];
-    result.padEnd(10);
-
-    return result;
-  };
-
-  onInput = (value: string): string => {
-    let result = value.replace(/[^\d]/g, '');
-    if (result.length > 2) result = result.substring(0, 2) + '/' + result.substring(2);
-    if (result.length > 5) result = result.substring(0, 5) + '/' + result.substring(5);
-    return result.substring(0, 10);
-  };
+  private static _nextId = 0;
+  readonly id = `date-input-${CustomDateInput._nextId++}`;
 }

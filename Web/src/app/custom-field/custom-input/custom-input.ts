@@ -61,7 +61,6 @@ export class CustomInput<T> implements ControlValueAccessor {
   }
 
   handleInput(event: Event) {
-    console.log(event);
     const input = event.target as HTMLInputElement;
     const inputType = (event as InputEvent).inputType;
 
