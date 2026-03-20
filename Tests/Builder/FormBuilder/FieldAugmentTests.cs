@@ -20,7 +20,7 @@ public class FieldAugmentTests
         AssertAugmentHasValue(fields, nameof(TestModel.DateProperty), nameof(DateInput.MaxValue), new Constant(new DateOnly(2025, 01, 01)));
         AssertAugmentHasValue(fields, nameof(TestModel.DecimalProperty), nameof(NumericInput.Precision), new Constant(4));
         AssertAugmentHasValue(fields, nameof(TestModel.IntProperty), nameof(NumericInput.MinValue), new Property(nameof(TestModel.MinValueProperty)));
-        AssertAugmentHasValue(fields, nameof(TestModel.StringListProperty), nameof(TextAreaInput.Hidden), new Constant(true));
+        AssertAugmentHasValue(fields, nameof(TestModel.TextAreaProperty), nameof(TextAreaInput.Hidden), new Constant(true));
         AssertAugmentHasValue(fields, nameof(TestModel.StringProperty), nameof(TextInput.Label), new Constant("Test Label"));
 
         TimeInput timeField = fields.OfType<TimeInput>()

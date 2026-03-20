@@ -23,7 +23,7 @@ public class TestFormBuilder : FormBuilder<TestModel>
             { m => m.DateProperty },
             { m => m.DecimalProperty },
             { m => m.IntProperty },
-            { m => m.StringListProperty },
+            { m => m.TextAreaProperty },
             { m => m.StringProperty },
             { m => m.TimeProperty },
 
@@ -41,7 +41,7 @@ public class TestFormBuilder : FormBuilder<TestModel>
 
             { m => m.DecimalProperty, p => p.WithPrecision(4) },
             { m => m.IntProperty, p => p.WithMinValue(m => m.MinValueProperty) },
-            { m => m.StringListProperty, p => p.WithHidden(true) },
+            { m => m.TextAreaProperty, p => p.WithHidden(true) },
             { m => m.StringProperty, p => p.WithLabel("Test Label")},
             { m => m.TimeProperty, p => p.WithPropsToUpdate(x => x.BoolProperty) }
         };
@@ -60,7 +60,7 @@ public class TestFormBuilder : FormBuilder<TestModel>
 public class TestModel
 {
     public string StringProperty { get; set; } = "";
-    public required IList<string> StringListProperty { get; set; }
+    public required TextArea TextAreaProperty { get; set; }
     public required Currency CurrencyProperty { get; set; }
     public decimal DecimalProperty { get; set; }
     public int IntProperty { get; set; }

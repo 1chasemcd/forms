@@ -14,7 +14,7 @@ internal static class StringExtensions
         if (string.IsNullOrEmpty(input))
             return input;
 
-        List<string> words = [""];
+        List<string> words = [];
 
         for (int i = 0; i < input.Length; i++)
         {

@@ -1,10 +1,11 @@
 using System.Linq.Expressions;
+using FormsApi.Common.Types;
 using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Field;
 
 public sealed class TextAreaInputBuilder<TModel>(
-    ModelMemberBuilder<TModel, IEnumerable<string>?> propertyBuilder)
+    ModelMemberBuilder<TModel, TextArea?> propertyBuilder)
     : BaseInputBuilder<TModel, TextAreaInputBuilder<TModel>>
 {
     public PropertyOrConstantBuilder<TModel, int>? MaxLength { get; set; }

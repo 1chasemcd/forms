@@ -41,7 +41,9 @@ public class TestForm : FormBuilder<TestModel>
             m => m.CheckBox,
             "A static message to display at the bottom",
             m => m.AdditionalMessage,
-            {m => m.SetTheLabelOnAnotherField, p => p.WithDisabled(m => m.CheckBox)}
+            {m => m.SetTheLabelOnAnotherField, p => p.WithDisabled(m => m.CheckBox) },
+            m => m.TextAreaInput,
+            m => m.TimeInput
         };
     }
 }

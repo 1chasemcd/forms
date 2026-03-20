@@ -21,7 +21,7 @@ public class ButtonBuilderTests
     public void Build_NoLabelSpecified_UsesMethodName()
     {
         IEnumerable<PropertyOrConstant?> labels = GetFields().Select(f => f.Label);
-        Assert.That(labels, Has.One.With.Property(nameof(Constant.Value)).EqualTo("This Is A Button"));
+        Assert.That(labels, Has.One.With.Property(nameof(Constant.Value)).EqualTo("This Is a Button"));
     }
 
     private class TestBuilder : FormBuilder<TestModel>

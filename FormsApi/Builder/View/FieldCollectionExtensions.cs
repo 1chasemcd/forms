@@ -66,7 +66,7 @@ public static class FieldCollectionExtensions
         fieldCollection.Fields.Add(field);
     }
 
-    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, IEnumerable<string>?>> selector, Action<TextAreaInputBuilder<TModel>>? augment = null)
+    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, TextArea?>> selector, Action<TextAreaInputBuilder<TModel>>? augment = null)
     {
         var field = new TextAreaInputBuilder<TModel>(selector);
         augment?.Invoke(field);

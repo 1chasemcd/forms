@@ -14,7 +14,7 @@ public class DataViewTests
     [TestCase(nameof(TestModel.DateProperty), 2)]
     [TestCase(nameof(TestModel.DecimalProperty), 3)]
     [TestCase(nameof(TestModel.IntProperty), 4)]
-    [TestCase(nameof(TestModel.StringListProperty), 5)]
+    [TestCase(nameof(TestModel.TextAreaProperty), 5)]
     [TestCase(nameof(TestModel.StringProperty), 6)]
     [TestCase(nameof(TestModel.TimeProperty), 7)]
     public void DataView_MaintainsCorrectFieldOrder(string propertyName, int expectedIndex)
@@ -32,7 +32,7 @@ public class DataViewTests
     [TestCase(nameof(TestModel.DateProperty), typeof(DateInput))]
     [TestCase(nameof(TestModel.DecimalProperty), typeof(NumericInput))]
     [TestCase(nameof(TestModel.IntProperty), typeof(NumericInput))]
-    [TestCase(nameof(TestModel.StringListProperty), typeof(TextAreaInput))]
+    [TestCase(nameof(TestModel.TextAreaProperty), typeof(TextAreaInput))]
     [TestCase(nameof(TestModel.StringProperty), typeof(TextInput))]
     [TestCase(nameof(TestModel.TimeProperty), typeof(TimeInput))]
     public void DataView_MapsInputFieldTypesCorrectly(string inputName, Type expectedInputType)
