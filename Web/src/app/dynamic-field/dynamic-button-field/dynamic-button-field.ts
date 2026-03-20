@@ -12,7 +12,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { ButtonField } from '../../api/api.g';
+import { ButtonField, FormActionClient } from '../../api/api.g';
 import { FormModel } from '../../dynamic-form/form-model';
 import { CUSTOM_FIELDS } from '../../field-resolution/custom-field-provider';
 import { CustomButtonComponent } from '../../field-resolution/custom-field-registration';
@@ -28,6 +28,7 @@ export class DynamicButtonField implements OnInit, AfterViewInit {
   readonly disabled = signal(false);
   private registry = inject(CUSTOM_FIELDS);
   private injector = inject(Injector);
+  private formActionClient = inject(FormActionClient);
   @ViewChild('container', { read: ViewContainerRef })
   vcr!: ViewContainerRef;
 

@@ -2,7 +2,7 @@ using FormsApi.Builder;
 using FormsApi.Builder.Field;
 using FormsApi.Builder.View;
 using FormsApi.Common.Types;
-using FormsApi.FormAction;
+using FormsApi.Recalculate;
 
 namespace Tests.Builder;
 
@@ -83,5 +83,5 @@ public class TestModel
 
 public class TestService
 {
-    public FormActionResult PerformAction(TestModel model) => null!;
+    public RecalculateEventResult PerformAction(TestModel model) => null!;
 }

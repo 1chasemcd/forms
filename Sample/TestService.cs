@@ -1,22 +1,22 @@
 using System;
-using FormsApi.FormAction;
+using FormsApi.Recalculate;
 
 namespace Sample;
 
 public class TestService
 {
-    public FormActionResult SetNumericValue(TestModel model)
+    public RecalculateEventResult SetNumericValue(TestModel model)
     {
         model.NumericField = 12345;
-        return new FormActionResult()
+        return new RecalculateEventResult()
         {
             Model = model
         };
     }
 
-    public FormActionResult ResetForm()
+    public RecalculateEventResult ResetForm()
     {
-        return new FormActionResult()
+        return new RecalculateEventResult()
         {
             Model = new TestModel()
         };

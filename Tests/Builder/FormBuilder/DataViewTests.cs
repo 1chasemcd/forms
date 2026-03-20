@@ -51,13 +51,13 @@ public class DataViewTests
             .Select(x => x as DataView).First(x => x != null)?.Fields.SingleOrDefault(f => f is ButtonField) as ButtonField;
 
 
-        Assert.That(button, Has.Property(nameof(ButtonField.OnChange))
-            .With.Property(nameof(OnChangeEvent.FormAction))
+        Assert.That(button, Has.Property(nameof(ButtonField.RecalculateEvent))
+            .With.Property(nameof(RecalculateEvent.FormAction))
             .With.Property(nameof(FormAction.Service))
             .EqualTo(new SerializedType(typeof(TestService))));
 
-        Assert.That(button, Has.Property(nameof(ButtonField.OnChange))
-            .With.Property(nameof(OnChangeEvent.FormAction))
+        Assert.That(button, Has.Property(nameof(ButtonField.RecalculateEvent))
+            .With.Property(nameof(RecalculateEvent.FormAction))
             .With.Property(nameof(FormAction.Method))
             .EqualTo(nameof(TestService.PerformAction)));
     }

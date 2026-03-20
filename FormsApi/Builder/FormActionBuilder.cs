@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using FormsApi.Form.Primitives;
-using FormsApi.FormAction;
+using FormsApi.Recalculate;
 
 namespace FormsApi.Builder;
 
@@ -12,14 +12,14 @@ public interface IFormActionBuilder<TModel>
 
 internal sealed class FormActionBuilder<TService, TModel> : IFormActionBuilder<TModel>
 {
-    private readonly Expression<Func<TService, Func<TModel, FormActionResult>>>? _methodWithParam;
-    private readonly Expression<Func<TService, Func<FormActionResult>>>? _methodNoParam;
-    public FormActionBuilder(Expression<Func<TService, Func<TModel, FormActionResult>>> method)
+    private readonly Expression<Func<TService, Func<TModel, RecalculateEventResult>>>? _methodWithParam;
+    private readonly Expression<Func<TService, Func<RecalculateEventResult>>>? _methodNoParam;
+    public FormActionBuilder(Expression<Func<TService, Func<TModel, RecalculateEventResult>>> method)
     {
         _methodWithParam = method;
     }
 
-    public FormActionBuilder(Expression<Func<TService, Func<FormActionResult>>> method)
+    public FormActionBuilder(Expression<Func<TService, Func<RecalculateEventResult>>> method)
     {
         _methodNoParam = method;
     }

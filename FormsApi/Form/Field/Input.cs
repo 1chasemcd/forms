@@ -7,7 +7,7 @@ public abstract record class BaseInput : BaseField
 {
     [Required]
     public required string Property { get; init; }
-    public OnChangeEvent? OnChange { get; init; }
+    public RecalculateEvent? RecalculateEvent { get; init; }
     public PropertyOrConstant? Required { get; init; }
     public PropertyOrConstant? Disabled { get; init; }
 }

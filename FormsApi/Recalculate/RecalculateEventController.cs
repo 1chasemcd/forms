@@ -3,14 +3,14 @@ using System.Text.Json;
 using FormsApi.Form.Primitives;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FormsApi.FormAction;
+namespace FormsApi.Recalculate;
 
 [Route("api/[controller]")]
 [ApiController]
-public class FormActionController(IServiceProvider serviceProvider) : ControllerBase
+public class RecalculateEventController(IServiceProvider serviceProvider) : ControllerBase
 {
     [HttpPost("{serviceType}/{method}")]
-    public FormActionResult PerformAction(
+    public RecalculateEventResult PerformAction(
         [FromRoute] SerializedType serviceType,
         [FromRoute] string method,
         [FromBody] JsonElement body)
@@ -21,7 +21,7 @@ public class FormActionController(IServiceProvider serviceProvider) : Controller
             .GetMethods()
             .Where(m =>
                 m.Name.Equals(method, StringComparison.OrdinalIgnoreCase) &&
-                m.ReturnType == typeof(FormActionResult))
+                m.ReturnType == typeof(RecalculateEventResult))
             .ToList();
 
 
@@ -43,6 +43,6 @@ public class FormActionController(IServiceProvider serviceProvider) : Controller
         object? result = methodToUse.Invoke(serviceInstance, args);
 
 
-        return (FormActionResult)result!;
+        return (RecalculateEventResult)result!;
     }
 }

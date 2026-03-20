@@ -6,7 +6,7 @@ using FormsApi.Form;
 using FormsApi.Form.Field;
 using FormsApi.Form.Primitives;
 using FormsApi.Form.View;
-using FormsApi.FormAction;
+using FormsApi.Recalculate;
 
 namespace Tests.Builder.FormBuilder;
 
@@ -35,6 +35,6 @@ public class ButtonBuilderTests
     private class TestModel;
     private class TestService
     {
-        public FormActionResult ThisIsAButton(TestModel model) => null!;
+        public RecalculateEventResult ThisIsAButton(TestModel model) => null!;
     }
 }

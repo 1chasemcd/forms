@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using FormsApi.Common;
 using FormsApi.Form.Field;
 using FormsApi.Form.Primitives;
-using FormsApi.FormAction;
+using FormsApi.Recalculate;
 
 namespace FormsApi.Builder.Field;
 
@@ -26,17 +26,17 @@ public sealed class ButtonFieldBuilder<TModel>
     public PropertyOrConstantBuilder<TModel, bool>? Disabled { get; set; }
     protected override ButtonField BuildField()
     {
-        OnChangeEvent onChange = BuildOnChangeEvent();
+        RecalculateEvent onChange = BuildRecalculateEvent();
         return new ButtonField()
         {
             Label = new Constant(onChange.FormAction?.Method.CamelCaseToWords() ?? "Button"),
-            OnChange = onChange
+            RecalculateEvent = onChange
         };
     }
 
-    private OnChangeEvent BuildOnChangeEvent()
+    private RecalculateEvent BuildRecalculateEvent()
     {
-        return new OnChangeEvent()
+        return new RecalculateEvent()
         {
             PropertiesToUpdate = PropsToUpdate?.Select(p => p.Build()),
             FormAction = FormActionBuilder?.Build()
@@ -48,13 +48,13 @@ public sealed class ButtonFieldBuilder<TModel>
         return this;
     }
 
-    public ButtonFieldBuilder<TModel> WithActionOnChange<TService>(Expression<Func<TService, Func<TModel, FormActionResult>>> serviceMethod)
+    public ButtonFieldBuilder<TModel> WithActionOnChange<TService>(Expression<Func<TService, Func<TModel, RecalculateEventResult>>> serviceMethod)
     {
         FormActionBuilder = new FormActionBuilder<TService, TModel>(serviceMethod);
         return this;
     }
 
-    public ButtonFieldBuilder<TModel> WithActionOnChange<TService>(Expression<Func<TService, Func<FormActionResult>>> serviceMethod)
+    public ButtonFieldBuilder<TModel> WithActionOnChange<TService>(Expression<Func<TService, Func<RecalculateEventResult>>> serviceMethod)
     {
         FormActionBuilder = new FormActionBuilder<TService, TModel>(serviceMethod);
         return this;

@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using FormsApi.Common;
 using FormsApi.Form.Field;
 using FormsApi.Form.Primitives;
-using FormsApi.FormAction;
+using FormsApi.Recalculate;
 
 namespace FormsApi.Builder.Field;
 
@@ -20,17 +20,17 @@ public abstract class BaseInputBuilder<TModel, TThis> : BaseFieldBuilder<TModel,
         return input with
         {
             Label = new Constant(input.Property.CamelCaseToWords()),
-            OnChange = BuildOnChangeEvent(),
+            RecalculateEvent = BuildRecalculateEvent(),
             Required = Required?.Build(),
             Disabled = Disabled?.Build(),
         };
     }
 
-    private OnChangeEvent? BuildOnChangeEvent()
+    private RecalculateEvent? BuildRecalculateEvent()
     {
         if (PropsToUpdate is null && Action is null)
             return null;
-        return new OnChangeEvent()
+        return new RecalculateEvent()
         {
             PropertiesToUpdate = PropsToUpdate?.Select(p => p.Build()),
             FormAction = Action?.Build()
@@ -45,13 +45,13 @@ public abstract class BaseInputBuilder<TModel, TThis> : BaseFieldBuilder<TModel,
         return This;
     }
 
-    public TThis WithActionOnChange<TService>(Expression<Func<TService, Func<TModel, FormActionResult>>> serviceMethod)
+    public TThis WithActionOnChange<TService>(Expression<Func<TService, Func<TModel, RecalculateEventResult>>> serviceMethod)
     {
         Action = new FormActionBuilder<TService, TModel>(serviceMethod);
         return This;
     }
 
-    public TThis WithActionOnChange<TService>(Expression<Func<TService, Func<FormActionResult>>> serviceMethod)
+    public TThis WithActionOnChange<TService>(Expression<Func<TService, Func<RecalculateEventResult>>> serviceMethod)
     {
         Action = new FormActionBuilder<TService, TModel>(serviceMethod);
         return This;
