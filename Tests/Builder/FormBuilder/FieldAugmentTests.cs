@@ -22,11 +22,6 @@ public class FieldAugmentTests
         AssertAugmentHasValue(fields, nameof(TestModel.IntProperty), nameof(NumericInput.MinValue), new Property(nameof(TestModel.MinValueProperty)));
         AssertAugmentHasValue(fields, nameof(TestModel.TextAreaProperty), nameof(TextAreaInput.Hidden), new Constant(true));
         AssertAugmentHasValue(fields, nameof(TestModel.StringProperty), nameof(TextInput.Label), new Constant("Test Label"));
-
-        TimeInput timeField = fields.OfType<TimeInput>()
-                                   .First(f => f.Property.Equals(nameof(TestModel.TimeProperty)));
-
-        Assert.That(timeField.RecalculateEvent?.PropertiesToUpdate, Is.EquivalentTo(new List<string>() { nameof(TestModel.BoolProperty) }));
     }
 
     private static void AssertAugmentHasValue(List<BaseField> fields, string inputName, string augmentName, object value)

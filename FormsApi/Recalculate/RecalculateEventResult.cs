@@ -1,6 +1,6 @@
 namespace FormsApi.Recalculate;
 
-public class RecalculateEventResult
+public class RecalculateEventResult<T>
 {
-    public object? Model { get; init; }
+    public T? Model { get; init; }
 }

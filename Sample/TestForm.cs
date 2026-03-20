@@ -19,8 +19,8 @@ public class TestForm : FormBuilder<TestModel>
         {
             { m => m.TextField, p => p.WithWidth(6).WithLabel(m => m.SetTheLabelOnAnotherField) },
             { m => m.DateField, p => p.WithWidth(6) },
-            { m => Button.Build(m).WithActionOnChange<TestService>(s => s.ResetForm) },
-            { m => Button.Build(m).WithActionOnChange<TestService>(s => s.SetNumericValue) },
+            { m => Button.OnModel(m).WithActionOnChange<TestService>(s => s.ResetForm) },
+            { m => Button.OnModel(m).WithActionOnChange<TestService>(s => s.SetNumericValue) },
         };
     }
 

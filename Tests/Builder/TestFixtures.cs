@@ -27,7 +27,7 @@ public class TestFormBuilder : FormBuilder<TestModel>
             { m => m.StringProperty },
             { m => m.TimeProperty },
 
-            { m => Button.Build(m), p => p.WithActionOnChange<TestService>(s => s.PerformAction) },
+            { m => Button.OnModel(m), p => p.WithRecalculate<TestService>(s => s.PerformAction) },
             { "Static Text" },
         };
     }
@@ -43,7 +43,6 @@ public class TestFormBuilder : FormBuilder<TestModel>
             { m => m.IntProperty, p => p.WithMinValue(m => m.MinValueProperty) },
             { m => m.TextAreaProperty, p => p.WithHidden(true) },
             { m => m.StringProperty, p => p.WithLabel("Test Label")},
-            { m => m.TimeProperty, p => p.WithPropsToUpdate(x => x.BoolProperty) }
         };
     }
 
@@ -83,5 +82,6 @@ public class TestModel
 
 public class TestService
 {
-    public RecalculateEventResult PerformAction(TestModel model) => null!;
+    public RecalculateEventResult<TestModel> PerformAction(TestModel model) => null!;
+
 }

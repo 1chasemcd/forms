@@ -8,58 +8,55 @@ namespace FormsApi.Builder.Field;
 
 public static class Button
 {
-    public static ButtonFieldBuilder<TModel> Build<TModel>(TModel model)
+    public static ButtonFieldBuilder<TModel> OnModel<TModel>(TModel model)
     {
         TModel? _ = model; // just to remove unused parameter warning
         return new ButtonFieldBuilder<TModel>();
     }
 
-    public static ButtonFieldBuilder<TModel> Build<TModel>() => new();
+    public static ButtonFieldBuilder<TModel> OnModel<TModel>() => new();
 
 }
 
 public sealed class ButtonFieldBuilder<TModel>
     : BaseFieldBuilder<TModel, ButtonFieldBuilder<TModel>>
 {
-    public IEnumerable<ModelMemberBuilder<TModel, object>>? PropsToUpdate { get; set; }
-    public IFormActionBuilder<TModel>? FormActionBuilder { get; set; }
+    public IRecalculateEventBuilder<TModel>? Recalculate { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Disabled { get; set; }
     protected override ButtonField BuildField()
     {
-        RecalculateEvent onChange = BuildRecalculateEvent();
+        if (Recalculate == null) throw new NullReferenceException();
+        RecalculateEvent recalculate = Recalculate.Build();
         return new ButtonField()
         {
-            Label = new Constant(onChange.FormAction?.Method.CamelCaseToWords() ?? "Button"),
-            RecalculateEvent = onChange
+            Label = new Constant(recalculate.Method.CamelCaseToWords()),
+            RecalculateEvent = recalculate
         };
     }
 
-    private RecalculateEvent BuildRecalculateEvent()
+    public ButtonFieldBuilder<TModel> WithRecalculate<TService>(Expression<Func<TService, Func<TModel, RecalculateEventResult<TModel>>>> serviceMethod)
     {
-        return new RecalculateEvent()
-        {
-            PropertiesToUpdate = PropsToUpdate?.Select(p => p.Build()),
-            FormAction = FormActionBuilder?.Build()
-        };
-    }
-    public ButtonFieldBuilder<TModel> WithPropsToUpdate(params Expression<Func<TModel, object>>[] props)
-    {
-        PropsToUpdate = props.Select(x => new ModelMemberBuilder<TModel, object>(x));
-        return this;
+        Recalculate = new RecalculateEventBuilder<TModel, TService, TModel>(serviceMethod);
+        return This;
     }
 
-    public ButtonFieldBuilder<TModel> WithActionOnChange<TService>(Expression<Func<TService, Func<TModel, RecalculateEventResult>>> serviceMethod)
+    public ButtonFieldBuilder<TModel> WithRecalculate<TService>(Expression<Func<TService, Func<RecalculateEventResult<TModel>>>> serviceMethod)
     {
-        FormActionBuilder = new FormActionBuilder<TService, TModel>(serviceMethod);
-        return this;
+        Recalculate = new RecalculateEventBuilder<TModel, TService, TModel>(serviceMethod);
+        return This;
     }
 
-    public ButtonFieldBuilder<TModel> WithActionOnChange<TService>(Expression<Func<TService, Func<RecalculateEventResult>>> serviceMethod)
+    public ButtonFieldBuilder<TModel> WithRecalculate<TService, TMethod>(Expression<Func<TService, Func<TMethod, RecalculateEventResult<TMethod>>>> serviceMethod)
     {
-        FormActionBuilder = new FormActionBuilder<TService, TModel>(serviceMethod);
-        return this;
+        Recalculate = new RecalculateEventBuilder<TModel, TService, TMethod>(serviceMethod);
+        return This;
     }
 
+    public ButtonFieldBuilder<TModel> WithRecalculate<TService, TMethod>(Expression<Func<TService, Func<RecalculateEventResult<TMethod>>>> serviceMethod)
+    {
+        Recalculate = new RecalculateEventBuilder<TModel, TService, TMethod>(serviceMethod);
+        return This;
+    }
     public ButtonFieldBuilder<TModel> WithDisabled(bool disabled = true)
     {
         Disabled = disabled;

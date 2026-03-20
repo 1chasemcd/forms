@@ -10,7 +10,7 @@ namespace FormsApi.Recalculate;
 public class RecalculateEventController(IServiceProvider serviceProvider) : ControllerBase
 {
     [HttpPost("{serviceType}/{method}")]
-    public RecalculateEventResult PerformAction(
+    public ActionResult<RecalculateEventResult<object>> PerformAction(
         [FromRoute] SerializedType serviceType,
         [FromRoute] string method,
         [FromBody] JsonElement body)
@@ -21,7 +21,7 @@ public class RecalculateEventController(IServiceProvider serviceProvider) : Cont
             .GetMethods()
             .Where(m =>
                 m.Name.Equals(method, StringComparison.OrdinalIgnoreCase) &&
-                m.ReturnType == typeof(RecalculateEventResult))
+                m.ReturnType == typeof(RecalculateEventResult<>))
             .ToList();
 
 
@@ -41,8 +41,10 @@ public class RecalculateEventController(IServiceProvider serviceProvider) : Cont
             args[0] = body.Deserialize(parameter.ParameterType);
 
         object? result = methodToUse.Invoke(serviceInstance, args);
-
-
-        return (RecalculateEventResult)result!;
+        object? model = typeof(RecalculateEventResult<>).GetProperty(nameof(RecalculateEventResult<>.Model))?.GetValue(result);
+        return Ok(new RecalculateEventResult<object>
+        {
+            Model = model
+        });
     }
 }

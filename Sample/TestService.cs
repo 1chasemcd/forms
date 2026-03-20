@@ -5,18 +5,18 @@ namespace Sample;
 
 public class TestService
 {
-    public RecalculateEventResult SetNumericValue(TestModel model)
+    public RecalculateEventResult<TestModel> SetNumericValue(TestModel model)
     {
         model.NumericField = 12345;
-        return new RecalculateEventResult()
+        return new RecalculateEventResult<TestModel>()
         {
             Model = model
         };
     }
 
-    public RecalculateEventResult ResetForm()
+    public RecalculateEventResult<TestModel> ResetForm()
     {
-        return new RecalculateEventResult()
+        return new RecalculateEventResult<TestModel>()
         {
             Model = new TestModel()
         };

@@ -28,13 +28,13 @@ public class ButtonBuilderTests
     {
         protected override ViewBuilder<TestModel> View => new DataViewBuilder<TestModel>()
         {
-            { m => Button.Build(m).WithActionOnChange<TestService>(s => s.ThisIsAButton) }
+            { m => Button.OnModel(m).WithRecalculate<TestService>(s => s.ThisIsAButton) }
         };
     }
 
     private class TestModel;
     private class TestService
     {
-        public RecalculateEventResult ThisIsAButton(TestModel model) => null!;
+        public RecalculateEventResult<TestModel> ThisIsAButton(TestModel model) => null!;
     }
 }

@@ -9,8 +9,7 @@ namespace FormsApi.Builder.Field;
 public abstract class BaseInputBuilder<TModel, TThis> : BaseFieldBuilder<TModel, TThis>
     where TThis : BaseInputBuilder<TModel, TThis>
 {
-    public IEnumerable<ModelMemberBuilder<TModel, object>>? PropsToUpdate { get; set; }
-    public IFormActionBuilder<TModel>? Action { get; set; }
+    public IRecalculateEventBuilder<TModel>? Recalculate { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Required { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Disabled { get; set; }
 
@@ -20,40 +19,35 @@ public abstract class BaseInputBuilder<TModel, TThis> : BaseFieldBuilder<TModel,
         return input with
         {
             Label = new Constant(input.Property.CamelCaseToWords()),
-            RecalculateEvent = BuildRecalculateEvent(),
+            RecalculateEvent = Recalculate?.Build(),
             Required = Required?.Build(),
             Disabled = Disabled?.Build(),
         };
     }
 
-    private RecalculateEvent? BuildRecalculateEvent()
-    {
-        if (PropsToUpdate is null && Action is null)
-            return null;
-        return new RecalculateEvent()
-        {
-            PropertiesToUpdate = PropsToUpdate?.Select(p => p.Build()),
-            FormAction = Action?.Build()
-        };
-    }
-
     protected abstract BaseInput BuildInput();
 
-    public TThis WithPropsToUpdate(params Expression<Func<TModel, object>>[] props)
+    public TThis WithRecalculate<TService>(Expression<Func<TService, Func<TModel, RecalculateEventResult<TModel>>>> serviceMethod)
     {
-        PropsToUpdate = props.Select(x => new ModelMemberBuilder<TModel, object>(x));
+        Recalculate = new RecalculateEventBuilder<TModel, TService, TModel>(serviceMethod);
         return This;
     }
 
-    public TThis WithActionOnChange<TService>(Expression<Func<TService, Func<TModel, RecalculateEventResult>>> serviceMethod)
+    public TThis WithRecalculate<TService>(Expression<Func<TService, Func<RecalculateEventResult<TModel>>>> serviceMethod)
     {
-        Action = new FormActionBuilder<TService, TModel>(serviceMethod);
+        Recalculate = new RecalculateEventBuilder<TModel, TService, TModel>(serviceMethod);
         return This;
     }
 
-    public TThis WithActionOnChange<TService>(Expression<Func<TService, Func<RecalculateEventResult>>> serviceMethod)
+    public TThis WithRecalculate<TService, TMethod>(Expression<Func<TService, Func<TMethod, RecalculateEventResult<TMethod>>>> serviceMethod)
     {
-        Action = new FormActionBuilder<TService, TModel>(serviceMethod);
+        Recalculate = new RecalculateEventBuilder<TModel, TService, TMethod>(serviceMethod);
+        return This;
+    }
+
+    public TThis WithRecalculate<TService, TMethod>(Expression<Func<TService, Func<RecalculateEventResult<TMethod>>>> serviceMethod)
+    {
+        Recalculate = new RecalculateEventBuilder<TModel, TService, TMethod>(serviceMethod);
         return This;
     }
 

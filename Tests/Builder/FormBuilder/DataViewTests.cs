@@ -52,13 +52,11 @@ public class DataViewTests
 
 
         Assert.That(button, Has.Property(nameof(ButtonField.RecalculateEvent))
-            .With.Property(nameof(RecalculateEvent.FormAction))
-            .With.Property(nameof(FormAction.Service))
+            .With.Property(nameof(RecalculateEvent.Service))
             .EqualTo(new SerializedType(typeof(TestService))));
 
         Assert.That(button, Has.Property(nameof(ButtonField.RecalculateEvent))
-            .With.Property(nameof(RecalculateEvent.FormAction))
-            .With.Property(nameof(FormAction.Method))
+            .With.Property(nameof(RecalculateEvent.Method))
             .EqualTo(nameof(TestService.PerformAction)));
     }
 }
