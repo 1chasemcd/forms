@@ -19,9 +19,11 @@ import { CustomNumberInput } from './custom-field/custom-number-input/custom-num
 import { CustomDateInput } from './custom-field/custom-date-input/custom-date-input';
 import { CustomTextAreaInput } from './custom-field/custom-text-area-input/custom-text-area-input';
 import { CustomTimeInput } from './custom-field/custom-time-input/custom-time-input';
+import { RecalculateEventClient } from './api/api.g';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    RecalculateEventClient,
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),

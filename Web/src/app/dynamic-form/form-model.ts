@@ -22,6 +22,10 @@ export class FormModel {
     return this._model[key] as T;
   }
 
+  asRecord(): Record<string, unknown> {
+    return this._model;
+  }
+
   registerDependency<T = unknown>(key: string, actionOnChange: (value: T) => void) {
     this._onChangeActions[key] ??= [];
     this._onChangeActions[key].push(actionOnChange as (value: unknown) => void);

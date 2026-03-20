@@ -12,14 +12,16 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { ButtonField, FormActionClient } from '../../api/api.g';
+import { ButtonField } from '../../api/api.g';
 import { FormModel } from '../../dynamic-form/form-model';
 import { CUSTOM_FIELDS } from '../../field-resolution/custom-field-provider';
 import { CustomButtonComponent } from '../../field-resolution/custom-field-registration';
+import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
 
 @Component({
   selector: 'app-dynamic-button-field',
   template: '<ng-container #container></ng-container>',
+  providers: [RecalculateEventService],
 })
 export class DynamicButtonField implements OnInit, AfterViewInit {
   readonly button = input.required<ButtonField>();
@@ -28,7 +30,7 @@ export class DynamicButtonField implements OnInit, AfterViewInit {
   readonly disabled = signal(false);
   private registry = inject(CUSTOM_FIELDS);
   private injector = inject(Injector);
-  private formActionClient = inject(FormActionClient);
+  private recalculateEventService = inject(RecalculateEventService);
   @ViewChild('container', { read: ViewContainerRef })
   vcr!: ViewContainerRef;
 
@@ -60,7 +62,6 @@ export class DynamicButtonField implements OnInit, AfterViewInit {
   }
 
   onClick = () => {
-    console.log('Button clicked, perform action');
-    console.log(this.model());
+    this.recalculateEventService.runRecalculate(this.model(), this.button().RecalculateEvent);
   };
 }
