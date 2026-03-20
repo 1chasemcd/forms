@@ -10,22 +10,16 @@ import {
 import { CUSTOM_FIELDS } from '../../field-resolution/custom-field-provider';
 import { CustomInputComponent } from '../../field-resolution/custom-field-registration';
 import { NgComponentOutlet } from '@angular/common';
-import { ObsoleteInputField } from '../input-field/input-field';
 
 @Component({
   selector: 'app-dynamic-input-field',
-  imports: [ReactiveFormsModule, NgComponentOutlet, ObsoleteInputField],
+  imports: [ReactiveFormsModule, NgComponentOutlet],
   template: `
     @if (inputComponent(); as component) {
       <ng-container
         *ngComponentOutlet="component; inputs: { label: label(), formControl: control() }"
       >
       </ng-container>
-    } @else {
-      <app-obsolete-input-field
-        [baseInput]="baseInput()"
-        [model]="model()"
-      ></app-obsolete-input-field>
     }
   `,
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
