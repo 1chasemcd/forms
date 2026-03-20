@@ -18,6 +18,7 @@ import { CustomTextInput } from './custom-field/custom-text-input/custom-text-in
 import { CustomNumberInput } from './custom-field/custom-number-input/custom-number-input';
 import { CustomDateInput } from './custom-field/custom-date-input/custom-date-input';
 import { CustomTextAreaInput } from './custom-field/custom-text-area-input/custom-text-area-input';
+import { CustomTimeInput } from './custom-field/custom-time-input/custom-time-input';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -33,5 +34,6 @@ export const appConfig: ApplicationConfig = {
     provideCustomInput('currencyinput', CustomNumberInput),
     provideCustomInput('dateinput', CustomDateInput),
     provideCustomInput('textareainput', CustomTextAreaInput),
+    provideCustomInput('timeinput', CustomTimeInput),
   ],
 };
