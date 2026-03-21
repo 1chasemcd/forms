@@ -10,7 +10,8 @@ public class TestForm : FormBuilder<TestModel>
     {
         TopLeftView(),
         TopRightView(),
-        BottomView()
+        BottomView(),
+        GridView()
     };
 
     private static ViewBuilder<TestModel> TopLeftView()
@@ -45,6 +46,17 @@ public class TestForm : FormBuilder<TestModel>
             {m => m.SetTheLabelOnAnotherField, p => p.WithDisabled(m => m.CheckBox) },
             m => m.TextAreaInput,
             m => m.TimeInput
+        };
+    }
+
+    private static SubPropertyGridViewBuilder<TestModel, Movie> GridView()
+    {
+        return new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies)
+        {
+            { m => m.Name, p => p.Width = 6 },
+            m => m.ReleaseDate,
+            m => m.DirectorName,
+            m => m.MyPersonalRating
         };
     }
 }
