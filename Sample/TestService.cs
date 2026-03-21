@@ -21,4 +21,12 @@ public class TestService
             Model = new TestModel()
         };
     }
+
+    public RecalculateEventResult<INumberAdder> Reserialize(INumberAdder model)
+    {
+        return new RecalculateEventResult<INumberAdder>()
+        {
+            Model = model
+        };
+    }
 }

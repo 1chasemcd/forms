@@ -2,7 +2,12 @@ using FormsApi.Common.Types;
 
 namespace Sample;
 
-public class TestModel
+public interface INumberAdder
+{
+    decimal NumericField { get; set; }
+    decimal ResultNumberPlus1 { get; }
+}
+public class TestModel : INumberAdder
 {
     public TestModel()
     {
@@ -31,6 +36,7 @@ public class TestModel
     public Currency CurrencyField { get; set; } = 0;
     public DateOnly? DateField { get; set; } = new DateOnly(2016, 01, 05);
     public decimal NumericField { get; set; }
+    public decimal ResultNumberPlus1 => NumericField + 1;
     public string TextField { get; set; } = string.Empty;
     public string TextFieldWithInitialValue { get; set; } = "Test Value";
     public StaticText AdditionalMessage => "Another static message";

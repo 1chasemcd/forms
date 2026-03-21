@@ -21,7 +21,8 @@ public class RecalculateEventController(IServiceProvider serviceProvider) : Cont
             .GetMethods()
             .Where(m =>
                 m.Name.Equals(method, StringComparison.OrdinalIgnoreCase) &&
-                m.ReturnType == typeof(RecalculateEventResult<>))
+                m.ReturnType.IsGenericType &&
+                m.ReturnType.GetGenericTypeDefinition() == typeof(RecalculateEventResult<>))
             .ToList();
 
 
@@ -34,14 +35,14 @@ public class RecalculateEventController(IServiceProvider serviceProvider) : Cont
 
         ParameterInfo[] parameters = methodToUse.GetParameters();
         if (parameters.Length > 1)
-            throw new InvalidOperationException($"Multiple overloads for '{method}' found on service '{serviceType}'.");
+            throw new InvalidOperationException($"Expected method with 1 parameter but was {parameters.Length} for {serviceType}.{method}");
 
         object?[] args = new object?[parameters.Length];
         if (parameters.SingleOrDefault() is { } parameter)
             args[0] = body.Deserialize(parameter.ParameterType);
 
-        object? result = methodToUse.Invoke(serviceInstance, args);
-        object? model = typeof(RecalculateEventResult<>).GetProperty(nameof(RecalculateEventResult<>.Model))?.GetValue(result);
+        object? result = methodToUse.Invoke(serviceInstance, args) ?? throw new InvalidOperationException("Method result was null.");
+        object? model = result.GetType().GetProperty(nameof(RecalculateEventResult<>.Model))?.GetValue(result);
         return Ok(new RecalculateEventResult<object>
         {
             Model = model
