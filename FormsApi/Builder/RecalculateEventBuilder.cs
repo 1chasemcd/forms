@@ -10,31 +10,27 @@ public interface IRecalculateEventBuilder<TModel>
     RecalculateEvent Build();
 }
 
-internal sealed class RecalculateEventBuilder<TModel, TService, TMethod> : IRecalculateEventBuilder<TModel>
+internal sealed class RecalculateEventBuilder<TModel, TService> : IRecalculateEventBuilder<TModel>
 {
-    private readonly Expression<Func<TService, Func<TMethod, RecalculateEventResult<TMethod>>>>? _methodWithParam;
-    private readonly Expression<Func<TService, Func<RecalculateEventResult<TMethod>>>>? _methodNoParam;
-    internal RecalculateEventBuilder(Expression<Func<TService, Func<TMethod, RecalculateEventResult<TMethod>>>> method)
+    private readonly Expression<Func<TService, Func<TModel, PostRecalculateEvent?>>>? _methodWithParam;
+    private readonly Expression<Func<TService, Func<PostRecalculateEvent?>>>? _methodNoParam;
+    internal RecalculateEventBuilder(Expression<Func<TService, Func<TModel, PostRecalculateEvent?>>> method)
     {
         _methodWithParam = method;
     }
 
-    internal RecalculateEventBuilder(Expression<Func<TService, Func<RecalculateEventResult<TMethod>>>> method)
+    internal RecalculateEventBuilder(Expression<Func<TService, Func<PostRecalculateEvent?>>> method)
     {
         _methodNoParam = method;
     }
 
     public RecalculateEvent Build()
     {
-        // Wish we could enforce this at compile time
-        if (!typeof(TMethod).IsAssignableFrom(typeof(TModel)))
-            throw new InvalidOperationException(
-                $"Model type '{typeof(TModel).Name}' must be assignable to method parameter/return type '{typeof(TMethod).Name}'");
         return new RecalculateEvent
         {
             Service = new SerializedType(typeof(TService)),
             Method = GetMethodName(),
-            PropertiesToSend = GetPropertiesToSend()
+            DontSendModel = _methodWithParam == null && _methodNoParam != null
         };
     }
 
@@ -62,30 +58,5 @@ internal sealed class RecalculateEventBuilder<TModel, TService, TMethod> : IReca
                 constantExpression.Value is MethodInfo m)
             return m.Name;
         return null;
-    }
-
-    private PropertiesToSendCollection GetPropertiesToSend()
-    {
-        if (_methodWithParam == null && _methodNoParam != null)
-            return new SendNone();
-        else if (typeof(TModel) == typeof(TMethod))
-            return new SendAll();
-        else
-            return new SendSome()
-            {
-                Names = GetPublicSettableMemberNames(typeof(TMethod))
-            };
-    }
-
-    public static IEnumerable<string> GetPublicSettableMemberNames(Type type)
-    {
-        var properties = type
-            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-            .Where(p => p.SetMethod != null && p.SetMethod.IsPublic);
-
-        var fields = type
-            .GetFields(BindingFlags.Instance | BindingFlags.Public);
-
-        return properties.Cast<MemberInfo>().Concat(fields).Select(x => x.Name);
     }
 }

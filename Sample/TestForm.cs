@@ -37,7 +37,7 @@ public class TestForm : FormBuilder<TestModel>
     {
         return new DataViewBuilder<TestModel>()
         {
-            {m => m.NumericField, p => p.WithWidth(6).WithRecalculate<TestService, INumberAdder>(s => s.Reserialize)},
+            {m => m.NumericField, p => p.WithWidth(6).WithRecalculate<TestService>(s => s.Reserialize)},
             {m => m.ResultNumberPlus1, p => p.WithWidth(6)},
             m => m.CheckBox,
             "A static message to display at the bottom",

@@ -7,10 +7,10 @@ namespace FormsApi.Recalculate;
 
 [Route("api/[controller]")]
 [ApiController]
-public class RecalculateEventController(IServiceProvider serviceProvider) : ControllerBase
+public sealed class RecalculateEventController(IServiceProvider serviceProvider) : ControllerBase
 {
     [HttpPost("{serviceType}/{method}")]
-    public ActionResult<RecalculateEventResult<object>> PerformAction(
+    public ActionResult<RecalculateEventResult> PerformAction(
         [FromRoute] SerializedType serviceType,
         [FromRoute] string method,
         [FromBody] JsonElement body)
@@ -21,8 +21,8 @@ public class RecalculateEventController(IServiceProvider serviceProvider) : Cont
             .GetMethods()
             .Where(m =>
                 m.Name.Equals(method, StringComparison.OrdinalIgnoreCase) &&
-                m.ReturnType.IsGenericType &&
-                m.ReturnType.GetGenericTypeDefinition() == typeof(RecalculateEventResult<>))
+                (m.ReturnType == typeof(PostRecalculateEvent) ||
+                Nullable.GetUnderlyingType(m.ReturnType) == typeof(PostRecalculateEvent)))
             .ToList();
 
 
@@ -41,11 +41,12 @@ public class RecalculateEventController(IServiceProvider serviceProvider) : Cont
         if (parameters.SingleOrDefault() is { } parameter)
             args[0] = body.Deserialize(parameter.ParameterType);
 
-        object? result = methodToUse.Invoke(serviceInstance, args) ?? throw new InvalidOperationException("Method result was null.");
-        object? model = result.GetType().GetProperty(nameof(RecalculateEventResult<>.Model))?.GetValue(result);
-        return Ok(new RecalculateEventResult<object>
+        object? result = methodToUse.Invoke(serviceInstance, args);
+        object? model = args.Length > 0 ? args[0] : null;
+        return Ok(new RecalculateEventResult
         {
-            Model = model
+            Model = model,
+            PostEvent = result as PostRecalculateEvent
         });
     }
 }

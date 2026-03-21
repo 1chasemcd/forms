@@ -34,29 +34,18 @@ public sealed class ButtonFieldBuilder<TModel>
         };
     }
 
-    public ButtonFieldBuilder<TModel> WithRecalculate<TService>(Expression<Func<TService, Func<TModel, RecalculateEventResult<TModel>>>> serviceMethod)
+    public ButtonFieldBuilder<TModel> WithRecalculate<TService>(Expression<Func<TService, Func<TModel, PostRecalculateEvent?>>> serviceMethod)
     {
-        Recalculate = new RecalculateEventBuilder<TModel, TService, TModel>(serviceMethod);
+        Recalculate = new RecalculateEventBuilder<TModel, TService>(serviceMethod);
         return This;
     }
 
-    public ButtonFieldBuilder<TModel> WithRecalculate<TService>(Expression<Func<TService, Func<RecalculateEventResult<TModel>>>> serviceMethod)
+    public ButtonFieldBuilder<TModel> WithRecalculate<TService>(Expression<Func<TService, Func<PostRecalculateEvent?>>> serviceMethod)
     {
-        Recalculate = new RecalculateEventBuilder<TModel, TService, TModel>(serviceMethod);
+        Recalculate = new RecalculateEventBuilder<TModel, TService>(serviceMethod);
         return This;
     }
 
-    public ButtonFieldBuilder<TModel> WithRecalculate<TService, TMethod>(Expression<Func<TService, Func<TMethod, RecalculateEventResult<TMethod>>>> serviceMethod)
-    {
-        Recalculate = new RecalculateEventBuilder<TModel, TService, TMethod>(serviceMethod);
-        return This;
-    }
-
-    public ButtonFieldBuilder<TModel> WithRecalculate<TService, TMethod>(Expression<Func<TService, Func<RecalculateEventResult<TMethod>>>> serviceMethod)
-    {
-        Recalculate = new RecalculateEventBuilder<TModel, TService, TMethod>(serviceMethod);
-        return This;
-    }
     public ButtonFieldBuilder<TModel> WithDisabled(bool disabled = true)
     {
         Disabled = disabled;

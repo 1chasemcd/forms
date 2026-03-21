@@ -9,10 +9,7 @@ export class RecalculateEventService {
 
   runRecalculate(model: FormModel, recalculateEvent: RecalculateEvent) {
     let propertiesToSend = {};
-    if (recalculateEvent.PropertiesToSend.$type == 'sendsome')
-      propertiesToSend = this.pickKeys(model.asRecord(), recalculateEvent.PropertiesToSend.Names);
-    else if (recalculateEvent.PropertiesToSend.$type == 'sendall')
-      propertiesToSend = model.asRecord();
+    if (!recalculateEvent.DontSendModel) propertiesToSend = model.asRecord();
 
     this.recalculateEventClient
       .performAction(recalculateEvent.Service, recalculateEvent.Method, propertiesToSend)
@@ -23,9 +20,5 @@ export class RecalculateEventService {
         }),
       )
       .subscribe((result) => model.patch(result.Model));
-  }
-
-  private pickKeys(rec: Record<string, unknown>, keysToTake: string[]): Record<string, unknown> {
-    return Object.fromEntries(Object.entries(rec).filter(([key]) => keysToTake.includes(key)));
   }
 }

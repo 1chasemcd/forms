@@ -35,6 +35,6 @@ public class ButtonBuilderTests
     private class TestModel;
     private class TestService
     {
-        public RecalculateEventResult<TestModel> ThisIsAButton(TestModel model) => null!;
+        public PostRecalculateEvent? ThisIsAButton(TestModel model) => null;
     }
 }

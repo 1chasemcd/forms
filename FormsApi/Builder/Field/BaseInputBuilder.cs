@@ -27,27 +27,15 @@ public abstract class BaseInputBuilder<TModel, TThis> : BaseFieldBuilder<TModel,
 
     protected abstract BaseInput BuildInput();
 
-    public TThis WithRecalculate<TService>(Expression<Func<TService, Func<TModel, RecalculateEventResult<TModel>>>> serviceMethod)
+    public TThis WithRecalculate<TService>(Expression<Func<TService, Func<TModel, PostRecalculateEvent?>>> serviceMethod)
     {
-        Recalculate = new RecalculateEventBuilder<TModel, TService, TModel>(serviceMethod);
+        Recalculate = new RecalculateEventBuilder<TModel, TService>(serviceMethod);
         return This;
     }
 
-    public TThis WithRecalculate<TService>(Expression<Func<TService, Func<RecalculateEventResult<TModel>>>> serviceMethod)
+    public TThis WithRecalculate<TService>(Expression<Func<TService, Func<PostRecalculateEvent?>>> serviceMethod)
     {
-        Recalculate = new RecalculateEventBuilder<TModel, TService, TModel>(serviceMethod);
-        return This;
-    }
-
-    public TThis WithRecalculate<TService, TMethod>(Expression<Func<TService, Func<TMethod, RecalculateEventResult<TMethod>>>> serviceMethod)
-    {
-        Recalculate = new RecalculateEventBuilder<TModel, TService, TMethod>(serviceMethod);
-        return This;
-    }
-
-    public TThis WithRecalculate<TService, TMethod>(Expression<Func<TService, Func<RecalculateEventResult<TMethod>>>> serviceMethod)
-    {
-        Recalculate = new RecalculateEventBuilder<TModel, TService, TMethod>(serviceMethod);
+        Recalculate = new RecalculateEventBuilder<TModel, TService>(serviceMethod);
         return This;
     }
 

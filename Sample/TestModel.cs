@@ -2,12 +2,7 @@ using FormsApi.Common.Types;
 
 namespace Sample;
 
-public interface INumberAdder
-{
-    decimal NumericField { get; set; }
-    decimal ResultNumberPlus1 { get; }
-}
-public class TestModel : INumberAdder
+public class TestModel
 {
     public TestModel()
     {

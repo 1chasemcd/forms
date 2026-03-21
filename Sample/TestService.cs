@@ -1,32 +1,44 @@
 using System;
+using System.Reflection;
 using FormsApi.Recalculate;
 
 namespace Sample;
 
 public class TestService
 {
-    public RecalculateEventResult<TestModel> SetNumericValue(TestModel model)
+    public PostRecalculateEvent? SetNumericValue(TestModel model)
     {
         model.NumericField = 12345;
-        return new RecalculateEventResult<TestModel>()
-        {
-            Model = model
-        };
+        return null;
     }
 
-    public RecalculateEventResult<TestModel> ResetForm()
+    public PostRecalculateEvent? ResetForm(TestModel model)
     {
-        return new RecalculateEventResult<TestModel>()
-        {
-            Model = new TestModel()
-        };
+        CopyMembers(new TestModel(), model);
+        return null;
     }
 
-    public RecalculateEventResult<INumberAdder> Reserialize(INumberAdder model)
+    private static void CopyMembers<T>(T source, T target)
     {
-        return new RecalculateEventResult<INumberAdder>()
+        Type type = typeof(T);
+
+        foreach (PropertyInfo prop in type.GetProperties())
         {
-            Model = model
-        };
+            if (!prop.CanRead || !prop.CanWrite) continue;
+
+            object? value = prop.GetValue(source);
+            prop.SetValue(target, value);
+        }
+
+        foreach (FieldInfo field in type.GetFields())
+        {
+            object? value = field.GetValue(source);
+            field.SetValue(target, value);
+        }
+    }
+
+    public PostRecalculateEvent? Reserialize(TestModel model)
+    {
+        return null;
     }
 }

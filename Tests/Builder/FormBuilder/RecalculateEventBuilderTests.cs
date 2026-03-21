@@ -22,52 +22,24 @@ public class RecalculateEventBuilderTests
         {
             Assert.That(recalculate.Service, Is.EqualTo(new SerializedType(typeof(TestService))));
             Assert.That(recalculate.Method, Is.EqualTo(nameof(TestService.ShouldSendNone)));
-            Assert.That(recalculate.PropertiesToSend, Is.InstanceOf<SendNone>());
-        }
-    }
-
-    [Test]
-    public void MethodWithInterfaceParameter_ShouldSendSome()
-    {
-        string[] expectedProps = ["Prop1", "Prop2"];
-        RecalculateEvent? recalculate = ((_form.View as DataView)?.Fields.ToList()[1] as BaseInput)?.RecalculateEvent;
-        Assert.That(recalculate, Is.Not.Null);
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(recalculate.Service, Is.EqualTo(new SerializedType(typeof(TestService))));
-            Assert.That(recalculate.Method, Is.EqualTo(nameof(TestService.ShouldSendSome)));
-            Assert.That(recalculate.PropertiesToSend, Is.InstanceOf<SendSome>()
-                .With.Property(nameof(SendSome.Names)).EquivalentTo(expectedProps));
+            Assert.That(recalculate.DontSendModel, Is.True);
         }
     }
 
     [Test]
     public void MethodWithModelParameter_ShouldSendAll()
     {
-        RecalculateEvent? recalculate = ((_form.View as DataView)?.Fields.ToList()[2] as BaseInput)?.RecalculateEvent;
+        RecalculateEvent? recalculate = ((_form.View as DataView)?.Fields.ToList()[1] as BaseInput)?.RecalculateEvent;
         Assert.That(recalculate, Is.Not.Null);
         using (Assert.EnterMultipleScope())
         {
             Assert.That(recalculate.Service, Is.EqualTo(new SerializedType(typeof(TestService))));
             Assert.That(recalculate.Method, Is.EqualTo(nameof(TestService.ShouldSendAll)));
-            Assert.That(recalculate.PropertiesToSend, Is.InstanceOf<SendAll>());
+            Assert.That(recalculate.DontSendModel, Is.False);
         }
     }
 
-    [Test]
-    public void InvalidModel_ShouldThrow()
-    {
-        var e = Assert.Throws<InvalidOperationException>(() => (new InvalidTestForm().Build().View as DataView)?.Fields.ToList());
-        Assert.That(e.Message, Does.Contain("must be assignable to method parameter/return type"));
-    }
-
-    private interface IIntPropertyRecalculable
-    {
-        int Prop1 { get; set; }
-        int Prop2 { get; set; }
-        int Prop3 { get; }
-    }
-    private class TestModel : IIntPropertyRecalculable
+    private class TestModel
     {
         public int Prop1 { get; set; }
         public int Prop2 { get; set; }
@@ -78,10 +50,8 @@ public class RecalculateEventBuilderTests
 
     private class TestService
     {
-        public RecalculateEventResult<TestModel> ShouldSendNone() => null!;
-        public RecalculateEventResult<IIntPropertyRecalculable> ShouldSendSome(IIntPropertyRecalculable model) => null!;
-        public RecalculateEventResult<TestModel> ShouldSendAll(TestModel model) => null!;
-        public RecalculateEventResult<string> ShouldBeInvalid(string param) => null!;
+        public PostRecalculateEvent? ShouldSendNone() => null;
+        public PostRecalculateEvent? ShouldSendAll(TestModel model) => null;
 
     }
 
@@ -90,16 +60,7 @@ public class RecalculateEventBuilderTests
         protected override ViewBuilder<TestModel> View => new DataViewBuilder<TestModel>()
         {
             { m => Button.OnModel(m).WithRecalculate<TestService>(s => s.ShouldSendNone) },
-            { m => m.Prop1, p => p.WithRecalculate<TestService, IIntPropertyRecalculable>(s => s.ShouldSendSome) },
             { m => m.Prop4, p => p.WithRecalculate<TestService>(s => s.ShouldSendAll )},
-        };
-    }
-
-    private class InvalidTestForm : FormBuilder<TestModel>
-    {
-        protected override ViewBuilder<TestModel> View => new DataViewBuilder<TestModel>()
-        {
-            { m => Button.OnModel(m).WithRecalculate<TestService, string>(s => s.ShouldBeInvalid) },
         };
     }
 }

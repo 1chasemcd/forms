@@ -82,6 +82,6 @@ public class TestModel
 
 public class TestService
 {
-    public RecalculateEventResult<TestModel> PerformAction(TestModel model) => null!;
+    public PostRecalculateEvent? PerformAction(TestModel model) => null;
 
 }
