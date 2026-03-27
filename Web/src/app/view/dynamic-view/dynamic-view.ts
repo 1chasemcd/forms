@@ -4,14 +4,14 @@ import { widthToCss } from '../../utils/width-utils';
 import { DynamicField } from '../../dynamic-field/dynamic-field/dynamic-field';
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
 import { FormModel } from '../../dynamic-form/form-model';
-import { SubpropertyGridView } from '../subproperty-grid-view/subproperty-grid-view';
+import { SubpropertyGridViewComponent } from '../subproperty-grid-view/subproperty-grid-view';
 
 @Component({
   selector: 'app-dynamic-view',
   host: {
     '[class]': 'width() + " grid grid-cols-12 gap-4 content-start"',
   },
-  imports: [DynamicField, SubpropertyGridView],
+  imports: [DynamicField, SubpropertyGridViewComponent],
   templateUrl: './dynamic-view.html',
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })

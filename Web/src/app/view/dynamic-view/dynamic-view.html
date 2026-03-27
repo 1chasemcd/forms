@@ -10,5 +10,5 @@
     <app-dynamic-field [field]="field" [model]="model()"></app-dynamic-field>
   }
 } @else if (subpropertyGridView(); as view) {
-  <app-subproperty-grid-view></app-subproperty-grid-view>
+  <app-subproperty-grid-view [gridView]="view" [model]="model()"></app-subproperty-grid-view>
 }

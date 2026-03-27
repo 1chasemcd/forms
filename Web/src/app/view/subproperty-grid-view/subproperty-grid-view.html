@@ -1,1 +1,10 @@
-<p>subproperty-grid-view works!</p>
+<table ngGrid>
+  <thead>
+    <tr ngGridRow>
+      @for (label of labels; track $index) {
+        <th ngGridCell>{{ label }}</th>
+      }
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
