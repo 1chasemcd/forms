@@ -28,7 +28,10 @@ export class FormModel {
 
   asRecord(): Record<string, unknown> {
     return Object.fromEntries(
-      Object.entries(this._model).map((x) => (x instanceof FormModelArray ? x.asArray() : x)),
+      Object.entries(this._model).map(([k, v]) => [
+        k,
+        v instanceof FormModelArray ? v.asArray() : v,
+      ]),
     );
   }
 
