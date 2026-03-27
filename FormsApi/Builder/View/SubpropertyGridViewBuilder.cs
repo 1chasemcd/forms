@@ -25,7 +25,7 @@ public class SubPropertyGridViewBuilder<TModel, TSub>(
         return new SubPropertyGridView()
         {
             IdProperty = IdProperty.Build(),
-            Columns = Fields.Select(x => x.Build()),
+            Fields = Fields.Select(x => x.Build()),
             SubPropertyName = SubProperty.Build(),
             CanAdd = CanAdd?.Build(),
             CanEdit = CanEdit?.Build(),

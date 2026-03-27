@@ -9,7 +9,7 @@ public class TestGridForm : FormBuilder<TestModel>
 
     private static ViewBuilder<TestModel> CreateMovieGridView()
     {
-        var movieGrid = new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies)
+        var movieGrid = new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies, r => r.Name)
         {
             m => m.Name,
             m => m.DirectorName,

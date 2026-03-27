@@ -51,7 +51,7 @@ public class TestForm : FormBuilder<TestModel>
 
     private static SubPropertyGridViewBuilder<TestModel, Movie> GridView()
     {
-        return new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies)
+        return new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies, r => r.Name)
         {
             { m => m.Name, p => p.Width = 6 },
             m => m.ReleaseDate,

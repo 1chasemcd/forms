@@ -21,8 +21,8 @@ public class SubPropertyGridTests
     [TestCase(nameof(TestModel.TestModelChild.Property2), 1)]
     public void SubPropertyGridView_MaintainsCorrectColumnOrder(string propertyName, int expectedIndex)
     {
-        Assert.That(GridView.Columns, Is.Not.Null);
-        Assert.That(GridView.Columns.ToList(), Has.ItemAt(expectedIndex)
+        Assert.That(GridView.Fields, Is.Not.Null);
+        Assert.That(GridView.Fields.ToList(), Has.ItemAt(expectedIndex)
             .With.Property(nameof(BaseInput.Property)).EqualTo(propertyName));
     }
 }

@@ -27,9 +27,9 @@ internal sealed class FormValidationService : IFormValidationService
         if (view is DataView data)
             return data.Fields.Where(f => f is BaseInput).Cast<BaseInput>().Select(f => f.Property);
         if (view is RepositoryGridView repoGrid)
-            return repoGrid.Columns.Where(f => f is BaseInput).Cast<BaseInput>().Select(f => f.Property); // TODO this is probably wrong
+            return repoGrid.Fields.Where(f => f is BaseInput).Cast<BaseInput>().Select(f => f.Property); // TODO this is probably wrong
         if (view is SubPropertyGridView subGrid)
-            return subGrid.Columns.Where(f => f is BaseInput).Cast<BaseInput>().Select(f => f.Property); // TODO this is probably wrong
+            return subGrid.Fields.Where(f => f is BaseInput).Cast<BaseInput>().Select(f => f.Property); // TODO this is probably wrong
         throw new NotImplementedException($"Validation for {view.GetType()} not implemented");
     }
 }

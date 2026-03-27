@@ -4,10 +4,10 @@ using FormsApi.Form.Primitives;
 
 namespace FormsApi.Form.View;
 
-public abstract record class GridView : BaseView
+public abstract record class GridView : BaseView, IFieldView
 {
     [Required]
-    public required IEnumerable<BaseField> Columns { get; init; }
+    public required IEnumerable<BaseField> Fields { get; init; }
     [Required]
     public required string IdProperty { get; init; }
     public PropertyOrConstant? CanAdd { get; init; }

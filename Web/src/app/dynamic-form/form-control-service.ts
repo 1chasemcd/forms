@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { FormDefinition, BaseView, CombinedView, DataView, BaseField } from '../api/api.g';
-import { FormModel } from './form-model';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormDefinition,
+  BaseView,
+  CombinedView,
+  BaseField,
+  SubPropertyGridView,
+} from '../api/api.g';
+import { FormModel, FormModelArray } from './form-model';
 import {
   createMaxLengthValidator,
   createPrecisionScaleValidator,
@@ -11,20 +17,21 @@ import {
 @Injectable()
 export class FormControlService {
   createFromDefinition(form: FormDefinition, model: FormModel) {
-    let controls: Record<string, FormControl> = {};
+    let controls: Record<string, FormControl | FormArray> = {};
     if (form.View) controls = this.processView(form.View, model);
 
     return new FormGroup(controls);
   }
 
-  private processView(view: BaseView, model: FormModel): Record<string, FormControl> {
+  private processView(view: BaseView, model: FormModel): Record<string, FormControl | FormArray> {
     switch (view.$type) {
       case 'combinedview':
         return this.processCombinedView(view, model);
       case 'dataview':
-        return this.processDataView(view, model);
-      case 'repositorygridview':
+        return this.processFieldView(view, model);
       case 'subpropertygridview':
+        return this.processGridView(view, model);
+      case 'repositorygridview':
         return {};
     }
   }
@@ -34,9 +41,32 @@ export class FormControlService {
     return Object.assign({}, ...controls);
   }
 
-  private processDataView(view: DataView, model: FormModel): Record<string, FormControl> {
+  private processFieldView<T extends BaseView & { Fields: BaseField[] }>(
+    view: T,
+    model: FormModel,
+  ): Record<string, FormControl> {
     const fields = view.Fields?.map((f) => this.processField(f, model)) ?? [];
     return Object.fromEntries(fields.filter((v): v is [string, FormControl] => v !== null));
+  }
+
+  private processGridView(view: SubPropertyGridView, model: FormModel): Record<string, FormArray> {
+    const formArray = new FormArray<FormGroup>([]);
+
+    const onDeleteRow = (id: unknown) => {
+      for (let i = 0; i < formArray.length; i++)
+        if (formArray.at(i) instanceof FormGroup && formArray.at(i).get(view.IdProperty) == id)
+          formArray.removeAt(i);
+    };
+
+    const onAddRow = (formModel: FormModel) => {
+      const fields = this.processFieldView(view, formModel);
+      formArray.push(new FormGroup(fields));
+    };
+
+    const formModelArray = new FormModelArray(view.IdProperty, onAddRow, onDeleteRow);
+    model.set(view.SubPropertyName, formModelArray);
+
+    return Object.fromEntries([[view.SubPropertyName, formArray]]);
   }
 
   private processField(field: BaseField, model: FormModel): [string, FormControl] | null {

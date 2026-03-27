@@ -3,7 +3,7 @@ using FormsApi.Form.Field;
 
 namespace FormsApi.Form.View;
 
-public sealed record class DataView : BaseView
+public sealed record class DataView : BaseView, IFieldView
 {
     [Required]
     public required IEnumerable<BaseField> Fields { get; init; }
