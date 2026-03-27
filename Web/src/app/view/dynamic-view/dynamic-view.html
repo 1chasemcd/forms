@@ -9,4 +9,6 @@
   @for (field of view.Fields; track $index) {
     <app-dynamic-field [field]="field" [model]="model()"></app-dynamic-field>
   }
+} @else if (subpropertyGridView(); as view) {
+  <app-subproperty-grid-view></app-subproperty-grid-view>
 }
