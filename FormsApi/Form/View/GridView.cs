@@ -8,6 +8,8 @@ public abstract record class GridView : BaseView
 {
     [Required]
     public required IEnumerable<BaseField> Columns { get; init; }
+    [Required]
+    public required string IdProperty { get; init; }
     public PropertyOrConstant? CanAdd { get; init; }
     public PropertyOrConstant? CanEdit { get; init; }
     public PropertyOrConstant? CanEditRow { get; init; }

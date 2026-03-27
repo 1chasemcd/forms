@@ -48,7 +48,7 @@ public class TestFormBuilder : FormBuilder<TestModel>
 
     private static SubPropertyGridViewBuilder<TestModel, TestModel.TestModelChild> SubPropertyGridView()
     {
-        return new SubPropertyGridViewBuilder<TestModel, TestModel.TestModelChild>(m => m.EnumerableProperty)
+        return new SubPropertyGridViewBuilder<TestModel, TestModel.TestModelChild>(m => m.EnumerableProperty, r => r.Property1)
         {
             m => m.Property1,
             m => m.Property2
