@@ -13,24 +13,26 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { ButtonField } from '../../api/api.g';
-import { FormModel } from '../../dynamic-form/form-model';
 import { CUSTOM_FIELDS } from '../../field-resolution/custom-field-provider';
 import { CustomButtonComponent } from '../../field-resolution/custom-field-registration';
 import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
+import { applyPropertyOrConstant } from '../../utils/api-utils';
+import { ControlContainer, FormGroupDirective } from '@angular/forms';
 
 @Component({
   selector: 'app-dynamic-button-field',
   template: '<ng-container #container></ng-container>',
   providers: [RecalculateEventService],
+  viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class DynamicButtonField implements OnInit, AfterViewInit {
   readonly button = input.required<ButtonField>();
-  readonly model = input.required<FormModel>();
   readonly label = signal('');
   readonly disabled = signal(false);
   private registry = inject(CUSTOM_FIELDS);
   private injector = inject(Injector);
   private recalculateEventService = inject(RecalculateEventService);
+  private parentForm = inject(ControlContainer) as FormGroupDirective;
   @ViewChild('container', { read: ViewContainerRef })
   vcr!: ViewContainerRef;
 
@@ -39,8 +41,8 @@ export class DynamicButtonField implements OnInit, AfterViewInit {
   });
 
   ngOnInit(): void {
-    this.model().registerPocDependency(this.button().Label, this.label.set);
-    this.model().registerPocDependency(this.button().Disabled, this.disabled.set);
+    applyPropertyOrConstant(this.button().Label, this.parentForm.control, this.label.set);
+    applyPropertyOrConstant(this.button().Disabled, this.parentForm.control, this.disabled.set);
   }
 
   ngAfterViewInit() {
@@ -62,6 +64,9 @@ export class DynamicButtonField implements OnInit, AfterViewInit {
   }
 
   onClick = () => {
-    this.recalculateEventService.runRecalculate(this.model(), this.button().RecalculateEvent);
+    this.recalculateEventService.runRecalculate(
+      this.parentForm.control,
+      this.button().RecalculateEvent,
+    );
   };
 }

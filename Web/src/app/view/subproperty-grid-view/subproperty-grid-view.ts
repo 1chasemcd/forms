@@ -1,8 +1,8 @@
 import { Component, computed, inject, input, OnInit } from '@angular/core';
 import { Grid } from '@angular/aria/grid';
 import { SubPropertyGridView } from '../../api/api.g';
-import { FormModel } from '../../dynamic-form/form-model';
 import { ControlContainer, FormArray, FormGroupDirective } from '@angular/forms';
+import { applyPropertyOrConstant } from '../../utils/api-utils';
 
 @Component({
   selector: 'app-subproperty-grid-view',
@@ -12,7 +12,6 @@ import { ControlContainer, FormArray, FormGroupDirective } from '@angular/forms'
 })
 export class SubpropertyGridViewComponent implements OnInit {
   readonly gridView = input.required<SubPropertyGridView>();
-  readonly model = input.required<FormModel>();
   readonly labels: string[] = [];
   private readonly parentForm = inject(ControlContainer) as FormGroupDirective;
 
@@ -23,9 +22,10 @@ export class SubpropertyGridViewComponent implements OnInit {
   ngOnInit() {
     for (const field of this.gridView().Fields) {
       const index = this.labels.push('') - 1;
-      this.model().registerPocDependency(
+      applyPropertyOrConstant(
         field.Label,
-        (label) => (this.labels[index] = label as string),
+        this.parentForm.control,
+        (label: string) => (this.labels[index] = label),
       );
     }
   }

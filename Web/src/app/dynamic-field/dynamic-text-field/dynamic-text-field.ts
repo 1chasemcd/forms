@@ -2,11 +2,13 @@ import { NgComponentOutlet } from '@angular/common';
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { StaticTextField } from '../../api/api.g';
 import { CUSTOM_FIELDS } from '../../field-resolution/custom-field-provider';
-import { FormModel } from '../../dynamic-form/form-model';
+import { ControlContainer, FormGroupDirective } from '@angular/forms';
+import { applyPropertyOrConstant } from '../../utils/api-utils';
 
 @Component({
   selector: 'app-dynamic-text-field',
   imports: [NgComponentOutlet],
+  viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
     @if (staticTextComponent(); as component) {
       <ng-container *ngComponentOutlet="component; inputs: { label: label() }"></ng-container>
@@ -15,8 +17,8 @@ import { FormModel } from '../../dynamic-form/form-model';
 })
 export class DynamicTextField implements OnInit {
   readonly staticText = input.required<StaticTextField>();
-  readonly model = input.required<FormModel>();
   readonly label = signal('');
+  private parentForm = inject(ControlContainer) as FormGroupDirective;
   private registry = inject(CUSTOM_FIELDS);
 
   staticTextComponent = computed(() => {
@@ -24,6 +26,6 @@ export class DynamicTextField implements OnInit {
   });
 
   ngOnInit(): void {
-    this.model().registerPocDependency(this.staticText().Label, this.label.set);
+    applyPropertyOrConstant(this.staticText().Label, this.parentForm.control, this.label.set);
   }
 }

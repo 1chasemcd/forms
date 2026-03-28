@@ -1,6 +1,5 @@
 import { Component, computed, inject, input, OnInit, signal, Type } from '@angular/core';
 import { BaseInput } from '../../api/api.g';
-import { FormModel } from '../../dynamic-form/form-model';
 import {
   ControlContainer,
   FormControl,
@@ -11,6 +10,7 @@ import { CUSTOM_FIELDS } from '../../field-resolution/custom-field-provider';
 import { CustomInputComponent } from '../../field-resolution/custom-field-registration';
 import { NgComponentOutlet } from '@angular/common';
 import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
+import { applyPropertyOrConstant } from '../../utils/api-utils';
 
 @Component({
   selector: 'app-dynamic-input-field',
@@ -32,7 +32,6 @@ import { RecalculateEventService } from '../../recalculate-event-service/recalcu
 })
 export class DynamicInputField implements OnInit {
   readonly baseInput = input.required<BaseInput>();
-  readonly model = input.required<FormModel>();
   private parentForm = inject(ControlContainer) as FormGroupDirective;
   private registry = inject(CUSTOM_FIELDS);
   private recalculateEventService = inject(RecalculateEventService);
@@ -49,11 +48,12 @@ export class DynamicInputField implements OnInit {
 
   onFocusOut() {
     const recalculate = this.baseInput().RecalculateEvent;
-    if (recalculate) this.recalculateEventService.runRecalculate(this.model(), recalculate);
+    if (recalculate)
+      this.recalculateEventService.runRecalculate(this.parentForm.control, recalculate);
   }
 
   ngOnInit(): void {
     const i = this.baseInput();
-    this.model().registerPocDependency(i.Label, this.label.set);
+    applyPropertyOrConstant(i.Label, this.parentForm.control, this.label.set);
   }
 }

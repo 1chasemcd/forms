@@ -1,15 +1,17 @@
 import { inject, Injectable } from '@angular/core';
 import { RecalculateEvent, RecalculateEventClient } from '../api/api.g';
-import { FormModel } from '../dynamic-form/form-model';
 import { catchError, throwError } from 'rxjs';
+import { FormGroup } from '@angular/forms';
+import { FormModelService } from '../dynamic-form/form-model-service';
 
 @Injectable()
 export class RecalculateEventService {
   private recalculateEventClient = inject(RecalculateEventClient);
+  private formModelService = inject(FormModelService);
 
-  runRecalculate(model: FormModel, recalculateEvent: RecalculateEvent) {
+  runRecalculate(model: FormGroup, recalculateEvent: RecalculateEvent) {
     let propertiesToSend = {};
-    if (!recalculateEvent.DontSendModel) propertiesToSend = model.asRecord();
+    if (!recalculateEvent.DontSendModel) propertiesToSend = this.formModelService.toRecord(model);
 
     this.recalculateEventClient
       .performAction(recalculateEvent.Service, recalculateEvent.Method, propertiesToSend)
@@ -19,6 +21,6 @@ export class RecalculateEventService {
           return throwError(() => error);
         }),
       )
-      .subscribe((result) => model.patch(result.Model));
+      .subscribe((result) => this.formModelService.patchValues(model, result.Model));
   }
 }

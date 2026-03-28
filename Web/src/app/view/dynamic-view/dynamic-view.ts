@@ -1,10 +1,10 @@
-import { Component, computed, input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { BaseView } from '../../api/api.g';
 import { widthToCss } from '../../utils/width-utils';
 import { DynamicField } from '../../dynamic-field/dynamic-field/dynamic-field';
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
-import { FormModel } from '../../dynamic-form/form-model';
 import { SubpropertyGridViewComponent } from '../subproperty-grid-view/subproperty-grid-view';
+import { applyPropertyOrConstant } from '../../utils/api-utils';
 
 @Component({
   selector: 'app-dynamic-view',
@@ -17,11 +17,11 @@ import { SubpropertyGridViewComponent } from '../subproperty-grid-view/subproper
 })
 export class DynamicView implements OnInit {
   readonly formView = input.required<BaseView>();
-  readonly model = input.required<FormModel>();
   title = signal('');
+  private readonly parentForm = inject(ControlContainer) as FormGroupDirective;
 
   ngOnInit(): void {
-    this.model().registerPocDependency<string>(this.formView().Title, this.title.set);
+    applyPropertyOrConstant(this.formView().Title, this.parentForm.control, this.title.set);
   }
 
   readonly combinedViews = computed(() => {

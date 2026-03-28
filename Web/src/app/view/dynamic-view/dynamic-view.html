@@ -3,12 +3,12 @@
 }
 @if (combinedViews(); as views) {
   @for (childView of views; track $index) {
-    <app-dynamic-view [formView]="childView" [model]="model()"></app-dynamic-view>
+    <app-dynamic-view [formView]="childView"></app-dynamic-view>
   }
 } @else if (dataView(); as view) {
   @for (field of view.Fields; track $index) {
-    <app-dynamic-field [field]="field" [model]="model()"></app-dynamic-field>
+    <app-dynamic-field [field]="field"></app-dynamic-field>
   }
 } @else if (subpropertyGridView(); as view) {
-  <app-subproperty-grid-view [gridView]="view" [model]="model()"></app-subproperty-grid-view>
+  <app-subproperty-grid-view [gridView]="view"></app-subproperty-grid-view>
 }
