@@ -27,7 +27,6 @@ public static class Program
 
         builder.Services.AddForms(formsSetup => formsSetup
             .AddForm<TestForm>("home")
-            .AddForm<TestGridForm>("movies")
             .AddRepository<ModelRepository>()
         );
 

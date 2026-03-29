@@ -1,12 +1,19 @@
 import { Component, computed, inject, input, OnInit } from '@angular/core';
 import { Grid } from '@angular/aria/grid';
 import { SubPropertyGridView } from '../../api/api.g';
-import { ControlContainer, FormArray, FormGroupDirective } from '@angular/forms';
+import {
+  ControlContainer,
+  FormArray,
+  FormGroup,
+  FormGroupDirective,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { applyPropertyOrConstant } from '../../utils/api-utils';
+import { GridCell } from '../grid-cell/grid-cell';
 
 @Component({
   selector: 'app-subproperty-grid-view',
-  imports: [Grid],
+  imports: [Grid, ReactiveFormsModule, GridCell],
   templateUrl: './subproperty-grid-view.html',
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
@@ -16,7 +23,7 @@ export class SubpropertyGridViewComponent implements OnInit {
   private readonly parentForm = inject(ControlContainer) as FormGroupDirective;
 
   readonly formArray = computed(
-    () => this.parentForm.control.get(this.gridView().SubPropertyName) as FormArray,
+    () => this.parentForm.control.get(this.gridView().SubPropertyName) as FormArray<FormGroup>,
   );
 
   ngOnInit() {

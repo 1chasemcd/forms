@@ -51,12 +51,15 @@ public class TestForm : FormBuilder<TestModel>
 
     private static SubPropertyGridViewBuilder<TestModel, Movie> GridView()
     {
-        return new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies, r => r.Name)
+        var view = new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies, r => r.Name)
         {
-            { m => m.Name, p => p.Width = 6 },
-            m => m.ReleaseDate,
-            m => m.DirectorName,
+            { m => m.Name, p => p.WithWidth(6).WithDisabled() },
+            { m => m.ReleaseDate, p => p.WithDisabled() },
+            { m => m.DirectorName, p => p.WithDisabled() },
             m => m.MyPersonalRating
         };
+
+        view.Title = "A Grid View";
+        return view;
     }
 }

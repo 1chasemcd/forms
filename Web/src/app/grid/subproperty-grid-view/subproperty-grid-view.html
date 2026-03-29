@@ -1,0 +1,20 @@
+<table ngGrid>
+  <thead>
+    <tr ngGridRow>
+      @for (label of labels; track $index) {
+        <th ngGridCell>{{ label }}</th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (row of formArray().controls; track row.get(gridView().IdProperty)) {
+      <tr ngGridRow [formGroup]="row">
+        @for (column of gridView().Fields; track $index) {
+          <td ngGridCell>
+            <app-grid-cell [field]="column"></app-grid-cell>
+          </td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>

@@ -3,8 +3,8 @@ import { BaseView } from '../../api/api.g';
 import { widthToCss } from '../../utils/width-utils';
 import { DynamicField } from '../../dynamic-field/dynamic-field/dynamic-field';
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
-import { SubpropertyGridViewComponent } from '../subproperty-grid-view/subproperty-grid-view';
 import { applyPropertyOrConstant } from '../../utils/api-utils';
+import { SubpropertyGridViewComponent } from '../../grid/subproperty-grid-view/subproperty-grid-view';
 
 @Component({
   selector: 'app-dynamic-view',
