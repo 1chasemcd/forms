@@ -1,7 +1,7 @@
 using System.Collections;
 using FormsApi.Builder.Field;
-using FormsApi.Form.Primitives;
-using FormsApi.Form.View;
+using FormsApi.Definition.Primitives;
+using FormsApi.Definition.View;
 
 namespace FormsApi.Builder.View;
 

@@ -2,10 +2,10 @@ using FormsApi.Builder;
 using FormsApi.Builder.Field;
 using FormsApi.Builder.View;
 using FormsApi.Common.Types;
-using FormsApi.Form;
-using FormsApi.Form.Field;
-using FormsApi.Form.Primitives;
-using FormsApi.Form.View;
+using FormsApi.Definition;
+using FormsApi.Definition.Field;
+using FormsApi.Definition.Primitives;
+using FormsApi.Definition.View;
 using FormsApi.Recalculate;
 
 namespace Tests.Builder.FormBuilder;

@@ -1,5 +1,6 @@
 using FormsApi.Builder.Validation;
-using FormsApi.Form;
+using FormsApi.Definition;
+using FormsApi.Definition.Field;
 using FormsApi.Form.Field;
 using FormsApi.Form.View;
 

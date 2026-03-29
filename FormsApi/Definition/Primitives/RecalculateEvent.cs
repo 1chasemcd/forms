@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace FormsApi.Form.Primitives;
+namespace FormsApi.Definition.Primitives;
 
 public sealed class RecalculateEvent
 {

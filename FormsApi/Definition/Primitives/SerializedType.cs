@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using FormsApi.Json;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace FormsApi.Form.Primitives;
+namespace FormsApi.Definition.Primitives;
 
 [JsonConverter(typeof(SerializedTypeJsonConverter))]
 public record class SerializedType(Type type)

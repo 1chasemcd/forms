@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using FormsApi.Form.Primitives;
+using FormsApi.Definition.Primitives;
 
 namespace FormsApi.Json;
 

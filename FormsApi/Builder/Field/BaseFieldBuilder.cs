@@ -1,7 +1,7 @@
 
 using System.Linq.Expressions;
-using FormsApi.Form.Field;
-using FormsApi.Form.Primitives;
+using FormsApi.Definition.Field;
+using FormsApi.Definition.Primitives;
 
 namespace FormsApi.Builder.Field;
 

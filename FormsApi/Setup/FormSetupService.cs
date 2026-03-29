@@ -1,7 +1,7 @@
 using FormsApi.Builder;
 using FormsApi.Builder.Validation;
 using FormsApi.Common.Registry;
-using FormsApi.Form;
+using FormsApi.Definition;
 
 namespace FormsApi.Setup;
 

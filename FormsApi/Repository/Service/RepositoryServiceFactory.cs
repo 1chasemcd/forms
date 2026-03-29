@@ -1,5 +1,5 @@
 using System.Text.Json;
-using FormsApi.Form.Primitives;
+using FormsApi.Definition.Primitives;
 using FormsApi.Repository.Handler;
 using FormsApi.Repository.Query;
 

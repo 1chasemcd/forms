@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using FormsApi.Form.Primitives;
+using FormsApi.Definition.Primitives;
 
 namespace FormsApi.Builder;
 

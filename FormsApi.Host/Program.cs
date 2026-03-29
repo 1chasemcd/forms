@@ -1,4 +1,4 @@
-using FormsApi.Form.Primitives;
+using FormsApi.Definition.Primitives;
 using NJsonSchema;
 using NJsonSchema.Generation;
 

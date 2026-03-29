@@ -1,10 +1,12 @@
 using FormsApi.Builder;
 using FormsApi.Builder.Field;
 using FormsApi.Builder.View;
-using FormsApi.Form;
+using FormsApi.Definition;
+using FormsApi.Definition.Field;
+using FormsApi.Definition.Primitives;
+using FormsApi.Definition.View;
 using FormsApi.Form.Field;
 using FormsApi.Form.Primitives;
-using FormsApi.Form.View;
 using FormsApi.Recalculate;
 using NUnit.Framework;
 

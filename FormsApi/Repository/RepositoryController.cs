@@ -1,5 +1,5 @@
 using System.Text.Json;
-using FormsApi.Form.Primitives;
+using FormsApi.Definition.Primitives;
 using FormsApi.Repository.Query;
 using FormsApi.Repository.Service;
 using Microsoft.AspNetCore.Mvc;

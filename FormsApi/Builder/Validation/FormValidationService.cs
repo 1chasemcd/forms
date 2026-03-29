@@ -1,6 +1,6 @@
-using FormsApi.Form;
+using FormsApi.Definition;
+using FormsApi.Definition.View;
 using FormsApi.Form.Field;
-using FormsApi.Form.View;
 
 namespace FormsApi.Builder.Validation;
 
@@ -28,7 +28,7 @@ internal sealed class FormValidationService : IFormValidationService
             return data.Fields.Where(f => f is BaseInput).Cast<BaseInput>().Select(f => f.Property);
         if (view is RepositoryGridView repoGrid)
             return repoGrid.Fields.Where(f => f is BaseInput).Cast<BaseInput>().Select(f => f.Property); // TODO this is probably wrong
-        if (view is SubPropertyGridView subGrid)
+        if (view is SubPropertyGridViewDefinition subGrid)
             return subGrid.Fields.Where(f => f is BaseInput).Cast<BaseInput>().Select(f => f.Property); // TODO this is probably wrong
         throw new NotImplementedException($"Validation for {view.GetType()} not implemented");
     }

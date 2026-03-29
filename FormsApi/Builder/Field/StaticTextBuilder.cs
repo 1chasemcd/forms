@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using FormsApi.Common.Types;
-using FormsApi.Form.Field;
+using FormsApi.Definition.Field;
 
 namespace FormsApi.Builder.Field;
 
@@ -18,9 +18,9 @@ public sealed class StaticTextBuilder<TModel>
         Label = new PropertyOrConstantBuilder<TModel, string>(text);
     }
 
-    protected override StaticTextField BuildField()
+    protected override StaticTextDefinition BuildField()
     {
-        return new StaticTextField()
+        return new StaticTextDefinition()
         {
             Label = _builder?.Build()
         };

@@ -1,13 +1,15 @@
 using System.ComponentModel.DataAnnotations;
-using FormsApi.Form.Field;
-using FormsApi.Form.Primitives;
+using FormsApi.Definition.Field;
+using FormsApi.Definition.Primitives;
 
-namespace FormsApi.Form.View;
+namespace FormsApi.Definition.View;
 
-public abstract record class GridView : BaseView
+public sealed record class SubPropertyGridViewDefinition
 {
+    public PropertyOrConstant? Title { get; init; }
+    public FormElementSize? Width { get; init; }
     [Required]
-    public required IEnumerable<BaseInput> Fields { get; init; }
+    public required IEnumerable<IFieldDefinition> Fields { get; init; }
     [Required]
     public required string IdProperty { get; init; }
     public PropertyOrConstant? CanAdd { get; init; }
@@ -16,4 +18,6 @@ public abstract record class GridView : BaseView
     public PropertyOrConstant? CanDelete { get; init; }
     public PropertyOrConstant? CanDeleteRow { get; init; }
     public FormDefinition? EditForm { get; init; }
+    [Required]
+    public required string SubPropertyName { get; init; }
 }

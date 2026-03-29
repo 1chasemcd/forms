@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using FormsApi.Common;
+using FormsApi.Definition.Field;
 using FormsApi.Form.Field;
 using FormsApi.Form.Primitives;
 using FormsApi.Recalculate;

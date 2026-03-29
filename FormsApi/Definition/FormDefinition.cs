@@ -1,13 +1,13 @@
 using System.ComponentModel.DataAnnotations;
-using FormsApi.Form.Primitives;
-using FormsApi.Form.View;
+using FormsApi.Definition.Primitives;
+using FormsApi.Definition.View;
 
-namespace FormsApi.Form;
+namespace FormsApi.Definition;
 
 public sealed class FormDefinition
 {
     [Required]
     public required SerializedType Type { get; init; }
     [Required]
-    public required BaseView View { get; init; }
+    public required IViewDefinition View { get; init; }
 }

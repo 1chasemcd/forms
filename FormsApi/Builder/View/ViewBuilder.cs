@@ -1,5 +1,5 @@
-using FormsApi.Form.Primitives;
-using FormsApi.Form.View;
+using FormsApi.Definition.Primitives;
+using FormsApi.Definition.View;
 
 namespace FormsApi.Builder.View;
 
@@ -7,9 +7,9 @@ public abstract class ViewBuilder<TModel>
 {
     public PropertyOrConstantBuilder<TModel, string>? Title { get; set; }
     public FormElementSize? Width { get; set; }
-    internal BaseView Build()
+    internal IViewDefinition Build()
     {
-        BaseView baseView = BuildImpl();
+        IViewDefinition baseView = BuildImpl();
         return baseView with
         {
             Title = Title?.Build(),

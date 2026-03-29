@@ -1,5 +1,5 @@
-using FormsApi.Form;
-using FormsApi.Form.Primitives;
+using FormsApi.Definition;
+using FormsApi.Definition.Primitives;
 
 namespace Tests.Builder.FormBuilder;
 

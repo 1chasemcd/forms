@@ -1,14 +1,14 @@
-using FormsApi.Form;
+using FormsApi.Definition;
+using FormsApi.Definition.View;
 using FormsApi.Form.Field;
-using FormsApi.Form.View;
 
 namespace Tests.Builder.FormBuilder;
 
 public class SubPropertyGridTests
 {
     private readonly FormDefinition _form = new TestFormBuilder().Build();
-    private SubPropertyGridView GridView => ((CombinedView)_form.View).Views
-        .Select(x => x as SubPropertyGridView).Where(x => x != null).ToList()[0]!;
+    private SubPropertyGridViewDefinition GridView => ((CombinedView)_form.View).Views
+        .Select(x => x as SubPropertyGridViewDefinition).Where(x => x != null).ToList()[0]!;
 
 
     [Test]
