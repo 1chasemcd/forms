@@ -28,6 +28,7 @@ public class TestModel
         });
     }
     public bool CheckBox { get; set; }
+    public LabelValue StaticTextAtTheBottom => "A static message to display at the bottom";
     public Currency CurrencyField { get; set; } = 0;
     public DateOnly? DateField { get; set; } = new DateOnly(2016, 01, 05);
     public decimal NumericField { get; set; }
@@ -38,6 +39,9 @@ public class TestModel
     public string SetTheLabelOnAnotherField { get; set; } = "Text Field";
     public TextArea TextAreaInput { get; set; } = "value in a text area\nnew line";
     public TimeOnly TimeInput { get; set; } = new TimeOnly(2, 15);
+    public Button ResetForm { get; set; }
+    public Button SetNumericValue { get; set; }
+
     public IList<Movie> Movies { get; set; } = [];
 }
 

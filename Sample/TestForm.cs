@@ -18,10 +18,14 @@ public class TestForm : FormBuilder<TestModel>
     {
         return new FieldViewBuilder<TestModel>(width: 4)
         {
-            { m => m.TextField, p => p.WithWidth(6).WithLabel(m => m.SetTheLabelOnAnotherField) },
-            { m => m.DateField, p => p.WithWidth(6) },
-            { m => Button.OnModel(m).WithRecalculate<TestService>(s => s.ResetForm) },
-            { m => Button.OnModel(m).WithRecalculate<TestService>(s => s.SetNumericValue) },
+            { m => m.TextField, p =>
+            {
+                p.Width = 6;
+                p.Label = Property(m => m.SetTheLabelOnAnotherField);
+            } },
+            { m => m.DateField, p => p.Width = 6 },
+            { m => m.ResetForm, p => p.AddRecalc<TestService>(s => s.ResetForm) },
+            { m => m.SetNumericValue, p => p.AddRecalc<TestService>(s => s.SetNumericValue) },
         };
     }
 
@@ -29,7 +33,7 @@ public class TestForm : FormBuilder<TestModel>
     {
         return new FieldViewBuilder<TestModel>(title: "Additional Fields", width: 8)
         {
-            {m => m.CurrencyField, p => p.WithRequired() },
+            {m => m.CurrencyField, p => p.Required = true },
             m => m.TextFieldWithInitialValue
         };
     }
@@ -38,12 +42,17 @@ public class TestForm : FormBuilder<TestModel>
     {
         return new FieldViewBuilder<TestModel>()
         {
-            {m => m.NumericField, p => p.WithWidth(6).WithRecalculate<TestService>(s => s.Reserialize)},
-            {m => m.ResultNumberPlus1, p => p.WithWidth(6)},
+            {m => m.NumericField, p =>
+                {
+                    p.Width = 6;
+                    p.AddRecalc<TestService>(s => s.Reserialize);
+                }
+            },
+            { m => m.ResultNumberPlus1, p => p.Width = 6},
             m => m.CheckBox,
-            "A static message to display at the bottom",
+            m => m.StaticTextAtTheBottom,
             m => m.AdditionalMessage,
-            {m => m.SetTheLabelOnAnotherField, p => p.WithDisabled(m => m.CheckBox) },
+            { m => m.SetTheLabelOnAnotherField, p => p.Enabled = Property(m => m.CheckBox) },
             m => m.TextAreaInput,
             m => m.TimeInput
         };
@@ -53,9 +62,13 @@ public class TestForm : FormBuilder<TestModel>
     {
         var view = new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies, r => r.Name)
         {
-            { m => m.Name, p => p.WithWidth(6).WithDisabled() },
-            { m => m.ReleaseDate, p => p.WithDisabled() },
-            { m => m.DirectorName, p => p.WithDisabled() },
+            { m => m.Name, p =>
+            {
+                p.Width = 6;
+                p.Enabled = false;
+            } },
+            { m => m.ReleaseDate, p => p.Enabled = false },
+            { m => m.DirectorName, p => p.Enabled = false },
             m => m.MyPersonalRating
         };
 

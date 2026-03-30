@@ -11,7 +11,7 @@ public static class FieldCollectionExtensions
     {
         var builder = new ButtonFieldBuilder<TModel>
         {
-            Property = selector
+            Property = new ModelMemberBuilder<TModel, Button?>(selector)
         };
         augment?.Invoke(builder);
         fieldCollection.Fields.Add(builder);

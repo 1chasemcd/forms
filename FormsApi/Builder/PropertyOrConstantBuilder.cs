@@ -5,7 +5,7 @@ namespace FormsApi.Builder;
 
 public sealed class PropertyOrConstantBuilder<TModel, TMember>
 {
-    public PropertyOrConstantBuilder(TMember value)
+    public PropertyOrConstantBuilder(TMember? value)
     {
         Value = value;
     }
