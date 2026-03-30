@@ -10,7 +10,7 @@ namespace FormsApi.Definition.View;
 [JsonDerivedType(typeof(FieldViewDefinition), "fieldview")]
 [JsonDerivedType(typeof(CombinedViewDefinition), "combinedview")]
 [JsonDerivedType(typeof(SubPropertyGridViewDefinition), "subpropertygridview")]
-public interface IViewDefinition
+public abstract record class BaseViewDefinition
 {
     public PropertyOrConstant? Title { get; init; }
     public FormElementSize? Width { get; init; }

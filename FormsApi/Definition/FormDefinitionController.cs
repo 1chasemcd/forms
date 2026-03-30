@@ -1,12 +1,11 @@
 using FormsApi.Common.Registry;
-using FormsApi.Definition;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FormsApi.Form;
+namespace FormsApi.Definition;
 
 [Route("api/[controller]")]
 [ApiController]
-public sealed class FormController(FormRegistry registry) : ControllerBase
+public sealed class FormDefinitionController(FormRegistry registry) : ControllerBase
 {
     [HttpGet("{path}")]
     public ActionResult<FormDefinition> GetForm([FromRoute] string path)

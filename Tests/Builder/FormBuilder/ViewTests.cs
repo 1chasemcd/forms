@@ -1,6 +1,6 @@
 using FormsApi.Definition;
+using FormsApi.Definition.Primitives;
 using FormsApi.Definition.View;
-using FormsApi.Form.Primitives;
 
 namespace Tests.Builder.FormBuilder;
 
@@ -11,7 +11,7 @@ public class ViewTests
     [Test]
     public void Build_SetsCorrectRootViewType()
     {
-        Assert.That(_form.View, Is.InstanceOf<CombinedView>());
+        Assert.That(_form.View, Is.InstanceOf<CombinedViewDefinition>());
     }
 
     [Test]

@@ -1,15 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using FormsApi.Definition.Field;
+using FormsApi.Definition.Metadata;
 using FormsApi.Definition.Primitives;
 
 namespace FormsApi.Definition.View;
 
-public sealed record class SubPropertyGridViewDefinition
+public sealed record class SubPropertyGridViewDefinition : BaseViewDefinition
 {
-    public PropertyOrConstant? Title { get; init; }
-    public FormElementSize? Width { get; init; }
     [Required]
-    public required IEnumerable<IFieldDefinition> Fields { get; init; }
+    public required IEnumerable<FieldDefinition> Fields { get; init; }
     [Required]
     public required string IdProperty { get; init; }
     public PropertyOrConstant? CanAdd { get; init; }

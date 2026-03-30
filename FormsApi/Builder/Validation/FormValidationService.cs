@@ -1,6 +1,5 @@
 using FormsApi.Definition;
 using FormsApi.Definition.View;
-using FormsApi.Form.Field;
 
 namespace FormsApi.Builder.Validation;
 
@@ -20,16 +19,14 @@ internal sealed class FormValidationService : IFormValidationService
             throw new InvalidFormException($"Duplicate field properties: {string.Join(", ", duplicateFields)}");
     }
 
-    private IEnumerable<string> GetAllFieldIdsInView(BaseView view)
+    private IEnumerable<string> GetAllFieldIdsInView(BaseViewDefinition view)
     {
-        if (view is CombinedView combined)
+        if (view is CombinedViewDefinition combined)
             return combined.Views.SelectMany(GetAllFieldIdsInView);
-        if (view is DataView data)
-            return data.Fields.Where(f => f is BaseInput).Cast<BaseInput>().Select(f => f.Property);
-        if (view is RepositoryGridView repoGrid)
-            return repoGrid.Fields.Where(f => f is BaseInput).Cast<BaseInput>().Select(f => f.Property); // TODO this is probably wrong
+        if (view is FieldViewDefinition data)
+            return data.Fields.Select(f => f.Property);
         if (view is SubPropertyGridViewDefinition subGrid)
-            return subGrid.Fields.Where(f => f is BaseInput).Cast<BaseInput>().Select(f => f.Property); // TODO this is probably wrong
+            return subGrid.Fields.Select(f => $"{subGrid.SubPropertyName}.{f.Property}").Append(subGrid.SubPropertyName);
         throw new NotImplementedException($"Validation for {view.GetType()} not implemented");
     }
 }

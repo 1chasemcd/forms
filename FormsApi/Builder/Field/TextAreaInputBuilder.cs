@@ -1,31 +1,20 @@
 using System.Linq.Expressions;
 using FormsApi.Common.Types;
-using FormsApi.Form.Field;
+using FormsApi.Definition.Field;
+using FormsApi.Recalculate;
 
 namespace FormsApi.Builder.Field;
 
-public sealed class TextAreaInputBuilder<TModel>(
-    ModelMemberBuilder<TModel, TextArea?> propertyBuilder)
-    : BaseInputBuilder<TModel, TextAreaInputBuilder<TModel>>
+public sealed class TextAreaInputBuilder<TModel>
+: BaseFieldBuilder<TModel, TextArea?>, IMaxLengthable<TModel>, IRequirable<TModel>, IEnablable<TModel>, IRecalculatable<TModel>
 {
-    public PropertyOrConstantBuilder<TModel, int>? MaxLength { get; set; }
-    protected override TextAreaInput BuildInput()
+    public PropertyOrConstantBuilder<TModel, bool?>? Enabled { get; set; }
+    public PropertyOrConstantBuilder<TModel, bool?>? Required { get; set; }
+    public PropertyOrConstantBuilder<TModel, int?>? MaxLength { get; set; }
+    public override FieldType Type => FieldType.TextArea;
+    public IRecalculateEventBuilder<TModel>? RecalculateEvent { get; private set; }
+    public void AddRecalc<TService>(Expression<Func<TService, Func<TModel, PostRecalculateEvent?>>> method)
     {
-        return new TextAreaInput()
-        {
-            Property = propertyBuilder.Build(),
-            MaxLength = MaxLength?.Build()
-        };
-    }
-
-    public TextAreaInputBuilder<TModel> WithMaxLength(int maxLength)
-    {
-        MaxLength = maxLength;
-        return This;
-    }
-    public TextAreaInputBuilder<TModel> WithMaxLength(Expression<Func<TModel, int>> maxLength)
-    {
-        MaxLength = maxLength;
-        return This;
+        RecalculateEvent = new RecalculateEventBuilder<TModel, TService>(method);
     }
 }

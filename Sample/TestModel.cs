@@ -34,7 +34,7 @@ public class TestModel
     public decimal ResultNumberPlus1 => NumericField + 1;
     public string TextField { get; set; } = string.Empty;
     public string TextFieldWithInitialValue { get; set; } = "Test Value";
-    public StaticText AdditionalMessage => "Another static message";
+    public LabelValue AdditionalMessage => "Another static message";
     public string SetTheLabelOnAnotherField { get; set; } = "Text Field";
     public TextArea TextAreaInput { get; set; } = "value in a text area\nnew line";
     public TimeOnly TimeInput { get; set; } = new TimeOnly(2, 15);

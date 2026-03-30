@@ -12,6 +12,6 @@ public class FormTests
 
         SerializedType? expectedType = new(typeof(TestModel));
 
-        Assert.That(form.Type, Is.EqualTo(expectedType));
+        Assert.That(form.ModelType, Is.EqualTo(expectedType));
     }
 }

@@ -4,14 +4,13 @@ using FormsApi.Definition.Primitives;
 namespace FormsApi.Builder;
 
 public sealed class PropertyOrConstantBuilder<TModel, TMember>
-    where TMember : notnull
 {
     public PropertyOrConstantBuilder(TMember value)
     {
         Value = value;
     }
 
-    public PropertyOrConstantBuilder(Expression<Func<TModel, TMember>> selector)
+    public PropertyOrConstantBuilder(Expression<Func<TModel, TMember?>> selector)
     {
         Selector = selector;
     }
@@ -29,9 +28,9 @@ public sealed class PropertyOrConstantBuilder<TModel, TMember>
 
     }
 
-    public Expression<Func<TModel, TMember>>? Selector { private get; set; }
+    public Expression<Func<TModel, TMember?>>? Selector { private get; set; }
     private TMember? Value { get; set; }
 
     public static implicit operator PropertyOrConstantBuilder<TModel, TMember>(TMember value) => new(value);
-    public static implicit operator PropertyOrConstantBuilder<TModel, TMember>(Expression<Func<TModel, TMember>> value) => new(value);
+    public static implicit operator PropertyOrConstantBuilder<TModel, TMember>(Expression<Func<TModel, TMember?>> value) => new(value);
 }

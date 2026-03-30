@@ -4,10 +4,8 @@ using FormsApi.Definition.Primitives;
 
 namespace FormsApi.Definition.View;
 
-public sealed record class FieldViewDefinition : IViewDefinition
+public sealed record class FieldViewDefinition : BaseViewDefinition
 {
-    public PropertyOrConstant? Title { get; init; }
-    public FormElementSize? Width { get; init; }
     [Required]
-    public required IEnumerable<IFieldDefinition> Fields { get; init; }
+    public required IEnumerable<FieldDefinition> Fields { get; init; }
 }

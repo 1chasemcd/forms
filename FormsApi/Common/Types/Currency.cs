@@ -4,7 +4,7 @@ using FormsApi.Json;
 namespace FormsApi.Common.Types;
 
 [JsonConverter(typeof(CurrencyJsonConverter))]
-public sealed record Currency
+public readonly struct Currency
 {
     public Currency() { _value = 0; }
     private readonly decimal _value;

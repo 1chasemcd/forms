@@ -5,18 +5,18 @@ using FormsApi.Definition.View;
 
 namespace FormsApi.Builder.View;
 
-public sealed class DataViewBuilder<TModel> : ViewBuilder<TModel>, IFieldCollection<TModel>
+public sealed class FieldViewBuilder<TModel> : ViewBuilder<TModel>, IFieldCollection<TModel>
 {
-    public DataViewBuilder(PropertyOrConstantBuilder<TModel, string>? title = null, FormElementSize? width = null)
+    public FieldViewBuilder(PropertyOrConstantBuilder<TModel, string?>? title = null, FormElementSize? width = null)
     {
         Title = title;
         Width = width;
     }
 
     public IList<BaseFieldBuilder<TModel>> Fields { get; } = [];
-    protected override DataView BuildImpl()
+    protected override FieldViewDefinition BuildImpl()
     {
-        var view = new DataView
+        var view = new FieldViewDefinition
         {
             Fields = Fields.Select(x => x.Build())
         };

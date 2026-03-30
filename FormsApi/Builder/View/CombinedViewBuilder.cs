@@ -9,21 +9,21 @@ public sealed class CombinedViewBuilder<TModel> : ViewBuilder<TModel>, IEnumerab
 {
     private readonly IList<ViewBuilder<TModel>> _views = [];
 
-    public CombinedViewBuilder(PropertyOrConstantBuilder<TModel, string>? title = null, FormElementSize? width = null)
+    public CombinedViewBuilder(PropertyOrConstantBuilder<TModel, string?>? title = null, FormElementSize? width = null)
     {
         Title = title;
         Width = width;
     }
 
-    public CombinedViewBuilder(Expression<Func<TModel, string>> title, FormElementSize? width = null)
+    public CombinedViewBuilder(Expression<Func<TModel, string?>> title, FormElementSize? width = null)
     {
         Title = title;
         Width = width;
     }
 
-    protected override CombinedView BuildImpl()
+    protected override CombinedViewDefinition BuildImpl()
     {
-        var view = new CombinedView
+        var view = new CombinedViewDefinition
         {
             Views = _views.Select(x => x.Build())
         };

@@ -2,8 +2,6 @@ using FormsApi.Definition;
 using FormsApi.Definition.Field;
 using FormsApi.Definition.Primitives;
 using FormsApi.Definition.View;
-using FormsApi.Form.Field;
-using FormsApi.Form.Primitives;
 
 namespace Tests.Builder.FormBuilder;
 
@@ -21,44 +19,30 @@ public class DataViewTests
     [TestCase(nameof(TestModel.TimeProperty), 7)]
     public void DataView_MaintainsCorrectFieldOrder(string propertyName, int expectedIndex)
     {
-        var fields = ((CombinedView)_form.View).Views
-                    .Select(x => x as DataView).Where(x => x != null).ToList()[0]!.Fields.ToList();
+        var fields = ((CombinedViewDefinition)_form.View).Views
+                    .Select(x => x as FieldViewDefinition).Where(x => x != null).ToList()[0]!.Fields.ToList();
 
         Assert.That(fields, Is.Not.Null);
         Assert.That(fields, Has.ItemAt(expectedIndex)
-            .With.Property(nameof(BaseInput.Property)).EqualTo(propertyName));
+            .With.Property(nameof(FieldDefinition.Property)).EqualTo(propertyName));
     }
 
-    [TestCase(nameof(TestModel.BoolProperty), typeof(CheckBoxInput))]
-    [TestCase(nameof(TestModel.CurrencyProperty), typeof(CurrencyInput))]
-    [TestCase(nameof(TestModel.DateProperty), typeof(DateInput))]
-    [TestCase(nameof(TestModel.DecimalProperty), typeof(NumericInput))]
-    [TestCase(nameof(TestModel.IntProperty), typeof(NumericInput))]
-    [TestCase(nameof(TestModel.TextAreaProperty), typeof(TextAreaInput))]
-    [TestCase(nameof(TestModel.StringProperty), typeof(TextInput))]
-    [TestCase(nameof(TestModel.TimeProperty), typeof(TimeInput))]
-    public void DataView_MapsInputFieldTypesCorrectly(string inputName, Type expectedInputType)
+    [TestCase(nameof(TestModel.BoolProperty), FieldType.CheckBox)]
+    [TestCase(nameof(TestModel.CurrencyProperty), FieldType.Currency)]
+    [TestCase(nameof(TestModel.DateProperty), FieldType.Date)]
+    [TestCase(nameof(TestModel.DecimalProperty), FieldType.Numeric)]
+    [TestCase(nameof(TestModel.IntProperty), FieldType.Numeric)]
+    [TestCase(nameof(TestModel.TextAreaProperty), FieldType.TextArea)]
+    [TestCase(nameof(TestModel.StringProperty), FieldType.Text)]
+    [TestCase(nameof(TestModel.TimeProperty), FieldType.Time)]
+    [TestCase(nameof(TestModel.Button), FieldType.Button)]
+    [TestCase(nameof(TestModel.StaticText), FieldType.LabelValue)]
+    public void DataView_MapsInputFieldTypesCorrectly(string inputName, FieldType expectedInputType)
     {
-        List<BaseField> fields = ((CombinedView)_form.View).Views
-            .Select(x => x as DataView).Where(x => x != null).ToList()[0]?.Fields.ToList()!;
+        List<FieldDefinition> fields = ((CombinedViewDefinition)_form.View).Views
+            .Select(x => x as FieldViewDefinition).Where(x => x != null).ToList()[0]?.Fields.ToList()!;
 
-        Assert.That(fields, Has.One.With.InstanceOf(expectedInputType)
-            .With.Property(nameof(BaseInput.Property)).EqualTo(inputName));
-    }
-
-    [Test]
-    public void DataView_RendersButtonFieldCorrectly()
-    {
-        ButtonField? button = ((CombinedView)_form.View).Views
-            .Select(x => x as DataView).First(x => x != null)?.Fields.SingleOrDefault(f => f is ButtonField) as ButtonField;
-
-
-        Assert.That(button, Has.Property(nameof(ButtonField.RecalculateEvent))
-            .With.Property(nameof(RecalculateEvent.Service))
-            .EqualTo(new SerializedType(typeof(TestService))));
-
-        Assert.That(button, Has.Property(nameof(ButtonField.RecalculateEvent))
-            .With.Property(nameof(RecalculateEvent.Method))
-            .EqualTo(nameof(TestService.PerformAction)));
+        Assert.That(fields, Has.One.With.Property(nameof(FieldDefinition.Type)).EqualTo(expectedInputType)
+            .And.With.Property(nameof(FieldDefinition.Property)).EqualTo(inputName));
     }
 }

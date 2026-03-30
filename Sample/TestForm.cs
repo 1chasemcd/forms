@@ -16,7 +16,7 @@ public class TestForm : FormBuilder<TestModel>
 
     private static ViewBuilder<TestModel> TopLeftView()
     {
-        return new DataViewBuilder<TestModel>(width: 4)
+        return new FieldViewBuilder<TestModel>(width: 4)
         {
             { m => m.TextField, p => p.WithWidth(6).WithLabel(m => m.SetTheLabelOnAnotherField) },
             { m => m.DateField, p => p.WithWidth(6) },
@@ -27,7 +27,7 @@ public class TestForm : FormBuilder<TestModel>
 
     private static ViewBuilder<TestModel> TopRightView()
     {
-        return new DataViewBuilder<TestModel>(title: "Additional Fields", width: 8)
+        return new FieldViewBuilder<TestModel>(title: "Additional Fields", width: 8)
         {
             {m => m.CurrencyField, p => p.WithRequired() },
             m => m.TextFieldWithInitialValue
@@ -36,7 +36,7 @@ public class TestForm : FormBuilder<TestModel>
 
     private static ViewBuilder<TestModel> BottomView()
     {
-        return new DataViewBuilder<TestModel>()
+        return new FieldViewBuilder<TestModel>()
         {
             {m => m.NumericField, p => p.WithWidth(6).WithRecalculate<TestService>(s => s.Reserialize)},
             {m => m.ResultNumberPlus1, p => p.WithWidth(6)},

@@ -2,6 +2,7 @@ using FormsApi.Builder;
 using FormsApi.Builder.Field;
 using FormsApi.Builder.View;
 using FormsApi.Common.Types;
+using FormsApi.Definition.Primitives;
 using FormsApi.Recalculate;
 
 namespace Tests.Builder;
@@ -15,9 +16,9 @@ public class TestFormBuilder : FormBuilder<TestModel>
         SubPropertyGridView()
     };
 
-    private static DataViewBuilder<TestModel> DataView()
+    private static FieldViewBuilder<TestModel> DataView()
     {
-        return new DataViewBuilder<TestModel>() {
+        return new FieldViewBuilder<TestModel>() {
             { m => m.BoolProperty },
             { m => m.CurrencyProperty },
             { m => m.DateProperty },
@@ -27,22 +28,22 @@ public class TestFormBuilder : FormBuilder<TestModel>
             { m => m.StringProperty },
             { m => m.TimeProperty },
 
-            { m => Button.OnModel(m), p => p.WithRecalculate<TestService>(s => s.PerformAction) },
-            { "Static Text" },
+            { m => m.Button, p => p.AddRecalc<TestService>(s => s.PerformAction) },
+            { m => m.StaticText }
         };
     }
 
-    private static DataViewBuilder<TestModel> DataViewWithAugments()
+    private static FieldViewBuilder<TestModel> DataViewWithAugments()
     {
-        return new DataViewBuilder<TestModel>() {
-            { m => m.BoolProperty, p => p.WithWidth(50) },
-            { m => m.CurrencyProperty, p => p.WithDisabled(true) },
-            { m => m.DateProperty, p => p.WithMaxValue(new DateOnly(2025, 01, 01)) },
+        return new FieldViewBuilder<TestModel>() {
+            { m => m.BoolProperty, p => p.Width = 6 },
+            { m => m.CurrencyProperty, p => p.Enabled = false },
+            { m => m.DateProperty, p => p.MaxValue = new DateOnly(2025, 01, 01) },
 
-            { m => m.DecimalProperty, p => p.WithPrecision(4) },
-            { m => m.IntProperty, p => p.WithMinValue(m => m.MinValueProperty) },
-            { m => m.TextAreaProperty, p => p.WithHidden(true) },
-            { m => m.StringProperty, p => p.WithLabel("Test Label")},
+            { m => m.DecimalProperty, p => p.Precision = 4 },
+            { m => m.IntProperty, p => p.MinValue = Property(m => m.MinValueProperty) },
+            { m => m.TextAreaProperty, p => p.Visible = false },
+            { m => m.StringProperty, p => p.Label = "Test Label" },
         };
     }
 
@@ -66,6 +67,8 @@ public class TestModel
     public bool BoolProperty { get; set; }
     public DateOnly DateProperty { get; set; }
     public TimeOnly TimeProperty { get; set; }
+    public Button? Button { get; set; }
+    public LabelValue StaticText => "Static Text";
     public int DisabledProperty { get; }
     internal int InternalProperty { get; set; }
     private int _noGetterField;

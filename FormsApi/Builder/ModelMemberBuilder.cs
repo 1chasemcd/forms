@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 
 namespace FormsApi.Builder;
 
-public sealed class ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, TMember>> selector)
+public sealed class ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, TMember?>> selector)
 {
     public string Build()
     {
@@ -16,6 +16,7 @@ public sealed class ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, 
         throw new InvalidOperationException($"Expression '{selector}' must be a member access");
     }
 
-    public static implicit operator ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, TMember>> selector) => new(selector);
+    public static implicit operator ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, TMember?>> selector) => new(selector);
+
 
 }

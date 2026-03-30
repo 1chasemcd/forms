@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using FormsApi.Builder.View;
 using FormsApi.Definition;
 
@@ -14,7 +15,7 @@ public abstract class FormBuilder<TModel> : FormBuilder
     {
         var form = new FormDefinition()
         {
-            Type = new(typeof(TModel)),
+            ModelType = new(typeof(TModel)),
             View = View.Build()
         };
 
@@ -22,4 +23,14 @@ public abstract class FormBuilder<TModel> : FormBuilder
     }
 
     protected abstract ViewBuilder<TModel> View { get; }
+
+    protected static PropertyOrConstantBuilder<TModel, TMember> Property<TMember>(Expression<Func<TModel, TMember?>> selector)
+    {
+        return new PropertyOrConstantBuilder<TModel, TMember>(selector);
+    }
+
+    protected static PropertyOrConstantBuilder<TSubModel, TMember> Property<TSubModel, TMember>(Expression<Func<TSubModel, TMember?>> selector)
+    {
+        return new PropertyOrConstantBuilder<TSubModel, TMember>(selector);
+    }
 }

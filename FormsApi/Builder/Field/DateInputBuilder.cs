@@ -1,43 +1,21 @@
 using System.Linq.Expressions;
-using FormsApi.Form.Field;
+using FormsApi.Definition.Field;
+using FormsApi.Recalculate;
 
 namespace FormsApi.Builder.Field;
 
-public sealed class DateInputBuilder<TModel>(
-    ModelMemberBuilder<TModel, DateOnly?> propertyBuilder)
-    : BaseInputBuilder<TModel, DateInputBuilder<TModel>>
+public sealed class DateInputBuilder<TModel>
+: BaseFieldBuilder<TModel, DateOnly?>, IEnablable<TModel>, IRequirable<TModel>, IValueRangable<TModel, DateOnly?>, IRecalculatable<TModel>
 {
-    public PropertyOrConstantBuilder<TModel, DateOnly>? MaxValue { get; set; }
-    public PropertyOrConstantBuilder<TModel, DateOnly>? MinValue { get; set; }
-    protected override DateInput BuildInput()
-    {
-        return new DateInput()
-        {
-            Property = propertyBuilder.Build(),
-            MaxValue = MaxValue?.Build(),
-            MinValue = MinValue?.Build(),
-        };
-    }
+    public override FieldType Type => FieldType.Date;
 
-    public DateInputBuilder<TModel> WithMaxValue(DateOnly maxValue)
+    public PropertyOrConstantBuilder<TModel, bool?>? Enabled { get; set; }
+    public PropertyOrConstantBuilder<TModel, bool?>? Required { get; set; }
+    public PropertyOrConstantBuilder<TModel, DateOnly?>? MaxValue { get; set; }
+    public PropertyOrConstantBuilder<TModel, DateOnly?>? MinValue { get; set; }
+    public IRecalculateEventBuilder<TModel>? RecalculateEvent { get; private set; }
+    public void AddRecalc<TService>(Expression<Func<TService, Func<TModel, PostRecalculateEvent?>>> method)
     {
-        MaxValue = maxValue;
-        return This;
-    }
-    public DateInputBuilder<TModel> WithMaxValue(Expression<Func<TModel, DateOnly>> maxValueProperty)
-    {
-        MaxValue = maxValueProperty;
-        return This;
-    }
-
-    public DateInputBuilder<TModel> WithMinValue(DateOnly minValue)
-    {
-        MinValue = minValue;
-        return This;
-    }
-    public DateInputBuilder<TModel> WithMinValue(Expression<Func<TModel, DateOnly>> minValueProperty)
-    {
-        MinValue = minValueProperty;
-        return This;
+        RecalculateEvent = new RecalculateEventBuilder<TModel, TService>(method);
     }
 }

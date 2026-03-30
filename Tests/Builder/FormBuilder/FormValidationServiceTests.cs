@@ -1,8 +1,7 @@
 using FormsApi.Builder.Validation;
 using FormsApi.Definition;
 using FormsApi.Definition.Field;
-using FormsApi.Form.Field;
-using FormsApi.Form.View;
+using FormsApi.Definition.View;
 
 namespace Tests.Builder.FormBuilder;
 
@@ -22,30 +21,30 @@ public class FormValidationServiceTests
 
     private readonly FormDefinition _form = new()
     {
-        Type = new(typeof(FormValidationServiceTests)),
-        View = new CombinedView
+        ModelType = new(typeof(FormValidationServiceTests)),
+        View = new CombinedViewDefinition
         {
-            Views = new BaseView[]
+            Views = new BaseViewDefinition[]
             {
-                new DataView
+                new FieldViewDefinition
                 {
-                    Fields = new BaseField[]
+                    Fields = new FieldDefinition[]
                     {
-                        new TextInput() { Property = "Property1" },
-                        new TextInput() { Property = "Property2" },
-                        new TextInput() { Property = "Property3" }
+                        new() { Property = "Property1" },
+                        new() { Property = "Property2" },
+                        new() { Property = "Property3" }
                     }
                 },
-                new CombinedView
+                new CombinedViewDefinition
                 {
-                    Views = new BaseView[]
+                    Views = new BaseViewDefinition[]
                     {
-                        new DataView
+                        new FieldViewDefinition
                         {
-                            Fields = new BaseField[]
+                            Fields = new FieldDefinition[]
                             {
-                                new TextInput() { Property = "Property1" },
-                                new TextInput() { Property = "Property3" }
+                                new() { Property = "Property1" },
+                                new() { Property = "Property3" }
                             }
                         }
                     }

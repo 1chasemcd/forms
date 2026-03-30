@@ -9,6 +9,4 @@ public sealed class RecalculateEvent
     public required SerializedType Service { get; init; }
     [Required]
     public required string Method { get; init; }
-    [Required]
-    public bool DontSendModel { get; init; }
 }

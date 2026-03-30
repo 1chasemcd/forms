@@ -5,11 +5,11 @@ namespace FormsApi.Builder.View;
 
 public abstract class ViewBuilder<TModel>
 {
-    public PropertyOrConstantBuilder<TModel, string>? Title { get; set; }
+    public PropertyOrConstantBuilder<TModel, string?>? Title { get; set; }
     public FormElementSize? Width { get; set; }
-    internal IViewDefinition Build()
+    internal BaseViewDefinition Build()
     {
-        IViewDefinition baseView = BuildImpl();
+        BaseViewDefinition baseView = BuildImpl();
         return baseView with
         {
             Title = Title?.Build(),
@@ -17,5 +17,5 @@ public abstract class ViewBuilder<TModel>
         };
     }
 
-    protected abstract BaseView BuildImpl();
+    protected abstract BaseViewDefinition BuildImpl();
 }

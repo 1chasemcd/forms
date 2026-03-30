@@ -17,7 +17,7 @@ internal sealed class FormElementSizeJsonConverter : JsonConverter<FormElementSi
     {
         if (value is AutoSize)
             writer.WriteNumberValue(AutoSize);
-        else if (value is PercentSize pct)
+        else if (value is NumericSize pct)
             writer.WriteNumberValue(pct.Size);
     }
 }

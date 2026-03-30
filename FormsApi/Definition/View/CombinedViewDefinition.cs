@@ -1,12 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using FormsApi.Definition.Primitives;
 
 namespace FormsApi.Definition.View;
 
-public sealed record class CombinedViewDefinition : IViewDefinition
+public sealed record class CombinedViewDefinition : BaseViewDefinition
 {
-    public PropertyOrConstant? Title { get; init; }
-    public FormElementSize? Width { get; init; }
     [Required]
-    public required IEnumerable<IViewDefinition> Views { get; init; }
+    public required IEnumerable<BaseViewDefinition> Views { get; init; }
 }

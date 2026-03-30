@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Linq.Expressions;
 using FormsApi.Builder.Field;
-using FormsApi.Form.Field;
-using FormsApi.Form.View;
+using FormsApi.Definition.View;
 
 namespace FormsApi.Builder.View;
 
@@ -21,13 +20,12 @@ public class SubPropertyGridViewBuilder<TModel, TSub>(
     public IList<BaseFieldBuilder<TSub>> Fields { get; } = [];
 
     public IEnumerator GetEnumerator() => Fields.GetEnumerator();
-    protected override BaseView BuildImpl()
+    protected override BaseViewDefinition BuildImpl()
     {
-        return new SubPropertyGridView()
+        return new SubPropertyGridViewDefinition()
         {
             IdProperty = IdProperty.Build(),
-            // TODO this will need fixing sometime
-            Fields = Fields.Select(x => x.Build()).Where(x => x is BaseInput).Cast<BaseInput>(),
+            Fields = Fields.Select(x => x.Build()),
             SubPropertyName = SubProperty.Build(),
             CanAdd = CanAdd?.Build(),
             CanEdit = CanEdit?.Build(),

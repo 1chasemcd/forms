@@ -1,13 +1,13 @@
 using FormsApi.Definition;
+using FormsApi.Definition.Field;
 using FormsApi.Definition.View;
-using FormsApi.Form.Field;
 
 namespace Tests.Builder.FormBuilder;
 
 public class SubPropertyGridTests
 {
     private readonly FormDefinition _form = new TestFormBuilder().Build();
-    private SubPropertyGridViewDefinition GridView => ((CombinedView)_form.View).Views
+    private SubPropertyGridViewDefinition GridView => ((CombinedViewDefinition)_form.View).Views
         .Select(x => x as SubPropertyGridViewDefinition).Where(x => x != null).ToList()[0]!;
 
 
@@ -23,6 +23,6 @@ public class SubPropertyGridTests
     {
         Assert.That(GridView.Fields, Is.Not.Null);
         Assert.That(GridView.Fields.ToList(), Has.ItemAt(expectedIndex)
-            .With.Property(nameof(BaseInput.Property)).EqualTo(propertyName));
+            .With.Property(nameof(FieldDefinition.Property)).EqualTo(propertyName));
     }
 }

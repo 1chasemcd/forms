@@ -6,9 +6,9 @@ namespace FormsApi.Definition.Primitives;
 [JsonConverter(typeof(FormElementSizeJsonConverter))]
 public abstract record FormElementSize
 {
-    public static implicit operator FormElementSize(int size) => new PercentSize(size);
+    public static implicit operator FormElementSize(int size) => new NumericSize(size);
     public static AutoSize AutoSize => new();
 }
 
-public record PercentSize(int Size = 0) : FormElementSize;
+public record NumericSize(int Size = 0) : FormElementSize;
 public record AutoSize : FormElementSize;

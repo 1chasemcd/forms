@@ -1,44 +1,22 @@
 using System.Linq.Expressions;
 using FormsApi.Common.Types;
-using FormsApi.Form.Field;
+using FormsApi.Definition.Field;
+using FormsApi.Recalculate;
 
 namespace FormsApi.Builder.Field;
 
-public sealed class CurrencyInputBuilder<TModel>(
-    ModelMemberBuilder<TModel, Currency?> propertyBuilder)
-    : BaseInputBuilder<TModel, CurrencyInputBuilder<TModel>>
+public sealed class CurrencyInputBuilder<TModel>
+    : BaseFieldBuilder<TModel, Currency?>, IEnablable<TModel>, IRequirable<TModel>, IValueRangable<TModel, Currency>, IRecalculatable<TModel>
 {
-    public PropertyOrConstantBuilder<TModel, int>? MaxValue { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? MinValue { get; set; }
-    protected override CurrencyInput BuildInput()
-    {
-        return new CurrencyInput()
-        {
-            Property = propertyBuilder.Build(),
-            MaxValue = MaxValue?.Build(),
-            MinValue = MinValue?.Build()
-        };
-    }
+    public override FieldType Type => FieldType.Currency;
 
-    public CurrencyInputBuilder<TModel> WithMaxValue(int maxValue)
+    public PropertyOrConstantBuilder<TModel, bool?>? Enabled { get; set; }
+    public PropertyOrConstantBuilder<TModel, bool?>? Required { get; set; }
+    public PropertyOrConstantBuilder<TModel, Currency>? MaxValue { get; set; }
+    public PropertyOrConstantBuilder<TModel, Currency>? MinValue { get; set; }
+    public IRecalculateEventBuilder<TModel>? RecalculateEvent { get; private set; }
+    public void AddRecalc<TService>(Expression<Func<TService, Func<TModel, PostRecalculateEvent?>>> method)
     {
-        MaxValue = maxValue;
-        return This;
-    }
-    public CurrencyInputBuilder<TModel> WithMaxValue(Expression<Func<TModel, int>> maxValueProperty)
-    {
-        MaxValue = maxValueProperty;
-        return This;
-    }
-
-    public CurrencyInputBuilder<TModel> WithMinValue(int minValue)
-    {
-        MinValue = minValue;
-        return This;
-    }
-    public CurrencyInputBuilder<TModel> WithMinValue(Expression<Func<TModel, int>> minValueProperty)
-    {
-        MinValue = minValueProperty;
-        return This;
+        RecalculateEvent = new RecalculateEventBuilder<TModel, TService>(method);
     }
 }

@@ -7,31 +7,42 @@ namespace FormsApi.Builder.View;
 
 public static class FieldCollectionExtensions
 {
-    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Func<TModel, ButtonFieldBuilder<TModel>> builderSelector, Action<ButtonFieldBuilder<TModel>>? augment = null)
+    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, Button?>> selector, Action<ButtonFieldBuilder<TModel>>? augment = null)
     {
-        TModel? inst = Activator.CreateInstance<TModel>();
-        ButtonFieldBuilder<TModel> builder = builderSelector.Invoke(inst);
+        var builder = new ButtonFieldBuilder<TModel>
+        {
+            Property = selector
+        };
         augment?.Invoke(builder);
         fieldCollection.Fields.Add(builder);
     }
 
     public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, bool?>> selector, Action<CheckBoxInputBuilder<TModel>>? augment = null)
     {
-        var field = new CheckBoxInputBuilder<TModel>(selector);
+        var field = new CheckBoxInputBuilder<TModel>
+        {
+            Property = selector
+        };
         augment?.Invoke(field);
         fieldCollection.Fields.Add(field);
     }
 
     public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, Currency?>> selector, Action<CurrencyInputBuilder<TModel>>? augment = null)
     {
-        var field = new CurrencyInputBuilder<TModel>(selector);
+        var field = new CurrencyInputBuilder<TModel>
+        {
+            Property = selector
+        };
         augment?.Invoke(field);
         fieldCollection.Fields.Add(field);
     }
 
     public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, DateOnly?>> selector, Action<DateInputBuilder<TModel>>? augment = null)
     {
-        var field = new DateInputBuilder<TModel>(selector);
+        var field = new DateInputBuilder<TModel>
+        {
+            Property = selector
+        };
         augment?.Invoke(field);
         fieldCollection.Fields.Add(field);
     }
@@ -39,42 +50,50 @@ public static class FieldCollectionExtensions
     public static void Add<TModel, TMember>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, TMember?>> selector, Action<NumericInputBuilder<TModel, TMember>>? augment = null)
         where TMember : INumber<TMember>
     {
-        var field = new NumericInputBuilder<TModel, TMember>(selector);
+        var field = new NumericInputBuilder<TModel, TMember>
+        {
+            Property = selector
+        };
         augment?.Invoke(field);
         fieldCollection.Fields.Add(field);
     }
 
-    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, string text, Action<StaticTextBuilder<TModel>>? augment = null)
+    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, LabelValue?>> selector, Action<LabelValueBuilder<TModel>>? augment = null)
     {
-        var field = new StaticTextBuilder<TModel>(text);
-        augment?.Invoke(field);
-        fieldCollection.Fields.Add(field);
-    }
-
-    public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, StaticText>> selector, Action<StaticTextBuilder<TModel>>? augment = null)
-    {
-        var field = new StaticTextBuilder<TModel>(selector);
+        var field = new LabelValueBuilder<TModel>
+        {
+            Property = selector
+        };
         augment?.Invoke(field);
         fieldCollection.Fields.Add(field);
     }
 
     public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, string?>> selector, Action<TextInputBuilder<TModel>>? augment = null)
     {
-        var field = new TextInputBuilder<TModel>(selector);
+        var field = new TextInputBuilder<TModel>
+        {
+            Property = selector
+        };
         augment?.Invoke(field);
         fieldCollection.Fields.Add(field);
     }
 
     public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, TextArea?>> selector, Action<TextAreaInputBuilder<TModel>>? augment = null)
     {
-        var field = new TextAreaInputBuilder<TModel>(selector);
+        var field = new TextAreaInputBuilder<TModel>
+        {
+            Property = selector
+        };
         augment?.Invoke(field);
         fieldCollection.Fields.Add(field);
     }
 
     public static void Add<TModel>(this IFieldCollection<TModel> fieldCollection, Expression<Func<TModel, TimeOnly?>> selector, Action<TimeInputBuilder<TModel>>? augment = null)
     {
-        var field = new TimeInputBuilder<TModel>(selector);
+        var field = new TimeInputBuilder<TModel>
+        {
+            Property = selector
+        };
         augment?.Invoke(field);
         fieldCollection.Fields.Add(field);
     }

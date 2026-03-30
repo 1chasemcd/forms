@@ -1,73 +1,26 @@
 
 using System.Linq.Expressions;
 using System.Numerics;
-using FormsApi.Form.Field;
+using FormsApi.Definition.Field;
+using FormsApi.Recalculate;
 
 namespace FormsApi.Builder.Field;
 
-public sealed class NumericInputBuilder<TModel, TInput>(
-    ModelMemberBuilder<TModel, TInput?> propertyBuilder)
-    : BaseInputBuilder<TModel, NumericInputBuilder<TModel, TInput>>
-    where TInput : INumber<TInput>
+public sealed class NumericInputBuilder<TModel, TInput>
+: BaseFieldBuilder<TModel, TInput?>, IEnablable<TModel>, IRequirable<TModel>, IValueRangable<TModel, TInput>, IPrecisionAndScalable<TModel>, IRecalculatable<TModel>
+  where TInput : INumber<TInput>
 {
-    public PropertyOrConstantBuilder<TModel, int>? MaxValue { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? MinValue { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? Precision { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? Scale { get; set; }
-    protected override NumericInput BuildInput()
-    {
-        return new NumericInput()
-        {
-            Property = propertyBuilder.Build(),
-            MaxValue = MaxValue?.Build(),
-            MinValue = MinValue?.Build(),
-            Precision = Precision?.Build(),
-            Scale = Scale?.Build()
-        };
-    }
+    public override FieldType Type => FieldType.Numeric;
 
-
-    public NumericInputBuilder<TModel, TInput> WithMaxValue(int maxValue)
+    public PropertyOrConstantBuilder<TModel, bool?>? Enabled { get; set; }
+    public PropertyOrConstantBuilder<TModel, bool?>? Required { get; set; }
+    public PropertyOrConstantBuilder<TModel, TInput?>? MaxValue { get; set; }
+    public PropertyOrConstantBuilder<TModel, TInput?>? MinValue { get; set; }
+    public PropertyOrConstantBuilder<TModel, int?>? Precision { get; set; }
+    public PropertyOrConstantBuilder<TModel, int?>? Scale { get; set; }
+    public IRecalculateEventBuilder<TModel>? RecalculateEvent { get; private set; }
+    public void AddRecalc<TService>(Expression<Func<TService, Func<TModel, PostRecalculateEvent?>>> method)
     {
-        MaxValue = maxValue;
-        return This;
-    }
-    public NumericInputBuilder<TModel, TInput> WithMaxValue(Expression<Func<TModel, int>> maxValueProperty)
-    {
-        MaxValue = maxValueProperty;
-        return This;
-    }
-
-    public NumericInputBuilder<TModel, TInput> WithMinValue(int minValue)
-    {
-        MinValue = minValue;
-        return This;
-    }
-    public NumericInputBuilder<TModel, TInput> WithMinValue(Expression<Func<TModel, int>> minValueProperty)
-    {
-        MinValue = minValueProperty;
-        return This;
-    }
-
-    public NumericInputBuilder<TModel, TInput> WithPrecision(int precision)
-    {
-        Precision = precision;
-        return This;
-    }
-    public NumericInputBuilder<TModel, TInput> WithPrecision(Expression<Func<TModel, int>> precision)
-    {
-        Precision = precision;
-        return This;
-    }
-
-    public NumericInputBuilder<TModel, TInput> WithScale(int scale)
-    {
-        Scale = scale;
-        return This;
-    }
-    public NumericInputBuilder<TModel, TInput> WithScale(Expression<Func<TModel, int>> scale)
-    {
-        Scale = scale;
-        return This;
+        RecalculateEvent = new RecalculateEventBuilder<TModel, TService>(method);
     }
 }
