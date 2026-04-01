@@ -19,9 +19,8 @@ public class RecalculateEventBuilderTests
     [Test]
     public void MethodWithModelParameter_ShouldSendAll()
     {
-        RecalculateEvent? recalculate = ((_form.View as FieldViewDefinition)?.Fields.ToList()[0]
-            .FieldMetadatas?.SingleOrDefault(x => x is RecalculateEventMetadata)
-            as RecalculateEventMetadata)?.RecalculateEvent;
+        RecalculateEvent? recalculate = (_form.View as FieldViewDefinition)?.Fields.ToList()[0]
+            .FieldMetadatas?.SingleOrDefault(x => x.Type == MetadataType.RecalculateEvent)?.Value as RecalculateEvent;
         Assert.That(recalculate, Is.Not.Null);
         using (Assert.EnterMultipleScope())
         {

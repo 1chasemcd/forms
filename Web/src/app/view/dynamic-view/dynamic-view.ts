@@ -1,10 +1,10 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
-import { BaseView } from '../../api/api.g';
 import { widthToCss } from '../../utils/width-utils';
 import { DynamicField } from '../../dynamic-field/dynamic-field/dynamic-field';
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
 import { applyPropertyOrConstant } from '../../utils/api-utils';
 import { SubpropertyGridViewComponent } from '../../grid/subproperty-grid-view/subproperty-grid-view';
+import { BaseViewDefinition } from '../../api/api.g';
 
 @Component({
   selector: 'app-dynamic-view',
@@ -16,7 +16,7 @@ import { SubpropertyGridViewComponent } from '../../grid/subproperty-grid-view/s
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class DynamicView implements OnInit {
-  readonly formView = input.required<BaseView>();
+  readonly formView = input.required<BaseViewDefinition>();
   title = signal('');
   private readonly parentForm = inject(ControlContainer) as FormGroupDirective;
 
@@ -29,9 +29,9 @@ export class DynamicView implements OnInit {
     return view.$type === 'combinedview' ? view.Views : null;
   });
 
-  readonly dataView = computed(() => {
+  readonly fieldView = computed(() => {
     const view = this.formView();
-    return view.$type === 'dataview' ? view : null;
+    return view.$type === 'fieldview' ? view : null;
   });
   readonly subpropertyGridView = computed(() => {
     const view = this.formView();

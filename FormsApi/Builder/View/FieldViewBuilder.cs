@@ -13,7 +13,7 @@ public sealed class FieldViewBuilder<TModel> : ViewBuilder<TModel>, IFieldCollec
         Width = width;
     }
 
-    public IList<BaseFieldBuilder<TModel>> Fields { get; } = [];
+    public IList<IFieldBuilder<TModel>> Fields { get; } = [];
     protected override FieldViewDefinition BuildImpl()
     {
         var view = new FieldViewDefinition

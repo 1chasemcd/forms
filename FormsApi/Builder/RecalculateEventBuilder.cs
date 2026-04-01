@@ -5,11 +5,7 @@ using FormsApi.Recalculate;
 
 namespace FormsApi.Builder;
 
-public interface IRecalculateEventBuilder<TModel>
-{
-    RecalculateEvent Build();
-}
-
+public interface IRecalculateEventBuilder<TModel> : IBuildable<RecalculateEvent>;
 internal sealed class RecalculateEventBuilder<TModel, TService>(Expression<Func<TService, Func<TModel, PostRecalculateEvent?>>> method) : IRecalculateEventBuilder<TModel>
 {
 

@@ -1,6 +1,5 @@
 import { Component, computed, inject, input, OnInit } from '@angular/core';
 import { Grid } from '@angular/aria/grid';
-import { SubPropertyGridView } from '../../api/api.g';
 import {
   ControlContainer,
   FormArray,
@@ -8,8 +7,9 @@ import {
   FormGroupDirective,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { applyPropertyOrConstant } from '../../utils/api-utils';
+import { applyPropertyOrConstant, getMetadata } from '../../utils/api-utils';
 import { GridCell } from '../grid-cell/grid-cell';
+import { MetadataType, SubPropertyGridViewDefinition } from '../../api/api.g';
 
 @Component({
   selector: 'app-subproperty-grid-view',
@@ -18,7 +18,7 @@ import { GridCell } from '../grid-cell/grid-cell';
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class SubpropertyGridViewComponent implements OnInit {
-  readonly gridView = input.required<SubPropertyGridView>();
+  readonly gridView = input.required<SubPropertyGridViewDefinition>();
   readonly labels: string[] = [];
   private readonly parentForm = inject(ControlContainer) as FormGroupDirective;
 
@@ -30,7 +30,7 @@ export class SubpropertyGridViewComponent implements OnInit {
     for (const field of this.gridView().Fields) {
       const index = this.labels.push('') - 1;
       applyPropertyOrConstant(
-        field.Label,
+        getMetadata(field, MetadataType.Label),
         this.parentForm.control,
         (label: string) => (this.labels[index] = label),
       );

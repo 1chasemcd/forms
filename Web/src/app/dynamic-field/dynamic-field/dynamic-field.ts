@@ -1,11 +1,11 @@
-import { Component, computed, input } from '@angular/core';
-import { BaseField } from '../../api/api.g';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { widthToCss } from '../../utils/width-utils';
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
 import { DynamicInputField } from '../dynamic-input-field/dynamic-input-field';
-import { isBaseInput } from '../../utils/api-utils';
+import { applyPropertyOrConstant, getMetadata } from '../../utils/api-utils';
 import { DynamicButtonField } from '../dynamic-button-field/dynamic-button-field';
 import { DynamicTextField } from '../dynamic-text-field/dynamic-text-field';
+import { FieldDefinition, FieldType, MetadataType } from '../../api/api.g';
 @Component({
   selector: 'app-dynamic-field',
   host: {
@@ -15,22 +15,32 @@ import { DynamicTextField } from '../dynamic-text-field/dynamic-text-field';
   imports: [DynamicInputField, DynamicButtonField, DynamicTextField],
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
-export class DynamicField {
-  readonly field = input.required<BaseField>();
-  readonly width = computed(() => widthToCss(this.field().Width));
+export class DynamicField implements OnInit {
+  ngOnInit() {
+    applyPropertyOrConstant(
+      getMetadata(this.field(), MetadataType.Visible),
+      this.parentForm.control,
+      this.visible.set,
+    );
+  }
+  readonly field = input.required<FieldDefinition>();
+  readonly width = computed(() => widthToCss(getMetadata(this.field(), MetadataType.Width)));
+  private parentForm = inject(ControlContainer) as FormGroupDirective;
+
+  visible = signal(true);
 
   readonly buttonField = computed(() => {
     const f = this.field();
-    return f.$type === 'buttonfield' ? f : null;
+    return f.Type === FieldType.Button ? f : null;
   });
 
   readonly staticTextField = computed(() => {
     const f = this.field();
-    return f.$type === 'statictextfield' ? f : null;
+    return f.Type === FieldType.LabelValue ? f : null;
   });
 
   readonly inputField = computed(() => {
     const f = this.field();
-    return isBaseInput(f) ? f : null;
+    return f.Type !== FieldType.Button && f.Type !== FieldType.LabelValue ? f : null;
   });
 }

@@ -1,6 +1,8 @@
 using FormsApi.Definition.Primitives;
 using NJsonSchema;
 using NJsonSchema.Generation;
+using NSwag.Generation.Processors;
+using NSwag.Generation.Processors.Contexts;
 
 namespace FormsApi.Host;
 
@@ -18,6 +20,7 @@ public static class Program
         {
             config.SchemaSettings.SchemaProcessors.Add(new RepositoryTypeSchemaProcessor());
             config.SchemaSettings.SchemaProcessors.Add(new FormElementSizeSchemaProcessor());
+            config.DocumentProcessors.Add(new IncludeTypesDocumentProcessor());
         });
         WebApplication app = builder.Build();
         app.UseOpenApi();
@@ -47,5 +50,18 @@ public class RepositoryTypeSchemaProcessor : ISchemaProcessor
             context.Schema.Properties.Clear();
 
         }
+    }
+}
+
+public class IncludeTypesDocumentProcessor : IDocumentProcessor
+{
+    public void Process(DocumentProcessorContext context)
+    {
+        JsonSchema schema = context.SchemaGenerator.Generate(
+            typeof(RecalculateEvent),
+            context.SchemaResolver
+        );
+
+        context.Document.Components.Schemas["RecalculateEvent"] = schema;
     }
 }

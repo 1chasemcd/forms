@@ -19,7 +19,7 @@ import { CustomNumberInput } from './custom-field/custom-number-input/custom-num
 import { CustomDateInput } from './custom-field/custom-date-input/custom-date-input';
 import { CustomTextAreaInput } from './custom-field/custom-text-area-input/custom-text-area-input';
 import { CustomTimeInput } from './custom-field/custom-time-input/custom-time-input';
-import { RecalculateEventClient } from './api/api.g';
+import { FieldType, RecalculateEventClient } from './api/api.g';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,12 +30,12 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideCustomStaticText(CustomStaticText),
     provideCustomButton(CustomButton),
-    provideCustomInput('checkboxinput', CustomCheckbox),
-    provideCustomInput('textinput', CustomTextInput),
-    provideCustomInput('numericinput', CustomNumberInput),
-    provideCustomInput('currencyinput', CustomNumberInput),
-    provideCustomInput('dateinput', CustomDateInput),
-    provideCustomInput('textareainput', CustomTextAreaInput),
-    provideCustomInput('timeinput', CustomTimeInput),
+    provideCustomInput(FieldType.CheckBox, CustomCheckbox),
+    provideCustomInput(FieldType.Text, CustomTextInput),
+    provideCustomInput(FieldType.Numeric, CustomNumberInput),
+    provideCustomInput(FieldType.Currency, CustomNumberInput),
+    provideCustomInput(FieldType.Date, CustomDateInput),
+    provideCustomInput(FieldType.TextArea, CustomTextAreaInput),
+    provideCustomInput(FieldType.Time, CustomTimeInput),
   ],
 };

@@ -1,21 +1,5 @@
 import { FormGroup } from '@angular/forms';
-import { BaseField, BaseInput, PropertyOrConstant } from '../api/api.g';
-
-export type BaseFieldType = BaseField['$type'];
-export type BaseInputType = BaseInput['$type'];
-export const baseInputTypes: Record<BaseInputType, true> = {
-  checkboxinput: true,
-  textinput: true,
-  textareainput: true,
-  currencyinput: true,
-  numericinput: true,
-  dateinput: true,
-  timeinput: true,
-};
-
-export function isBaseInput(field?: BaseField): field is BaseInput {
-  return field != undefined && field.$type in baseInputTypes;
-}
+import { FieldDefinition, MetadataType, PropertyOrConstant } from '../api/api.g';
 
 export function applyPropertyOrConstant<T>(
   poc: PropertyOrConstant | null | undefined,
@@ -28,4 +12,9 @@ export function applyPropertyOrConstant<T>(
     const propertyControl = formGroup.get(poc.Value);
     propertyControl?.valueChanges.subscribe(callback);
   }
+}
+
+export function getMetadata<T>(field: FieldDefinition, type: MetadataType) {
+  const metadata = field.FieldMetadatas?.find((x) => x.Type == type);
+  return metadata?.Value as T | undefined;
 }

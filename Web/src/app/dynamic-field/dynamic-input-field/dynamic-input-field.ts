@@ -1,5 +1,4 @@
 import { Component, computed, inject, input, OnInit, signal, Type } from '@angular/core';
-import { BaseInput } from '../../api/api.g';
 import {
   ControlContainer,
   FormControl,
@@ -10,7 +9,8 @@ import { CUSTOM_FIELDS } from '../../field-resolution/custom-field-provider';
 import { CustomInputComponent } from '../../field-resolution/custom-field-registration';
 import { NgComponentOutlet } from '@angular/common';
 import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
-import { applyPropertyOrConstant } from '../../utils/api-utils';
+import { applyPropertyOrConstant, getMetadata } from '../../utils/api-utils';
+import { FieldDefinition, MetadataType, RecalculateEvent } from '../../api/api.g';
 
 @Component({
   selector: 'app-dynamic-input-field',
@@ -31,29 +31,32 @@ import { applyPropertyOrConstant } from '../../utils/api-utils';
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class DynamicInputField implements OnInit {
-  readonly baseInput = input.required<BaseInput>();
+  readonly field = input.required<FieldDefinition>();
   private parentForm = inject(ControlContainer) as FormGroupDirective;
   private registry = inject(CUSTOM_FIELDS);
   private recalculateEventService = inject(RecalculateEventService);
 
   readonly label = signal('');
   readonly control = computed(
-    () => this.parentForm.control.get(this.baseInput().Property) as FormControl,
+    () => this.parentForm.control.get(this.field().Property) as FormControl,
   );
 
   inputComponent = computed(() => {
-    return this.registry.find((r) => r.type === this.baseInput().$type)
+    return this.registry.find((r) => r.type === this.field().Type)
       ?.component as Type<CustomInputComponent>;
   });
 
   onFocusOut() {
-    const recalculate = this.baseInput().RecalculateEvent;
-    if (recalculate)
-      this.recalculateEventService.runRecalculate(this.parentForm.control, recalculate);
+    const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
+    if (recalc) this.recalculateEventService.runRecalculate(this.parentForm.control, recalc);
   }
 
   ngOnInit(): void {
-    const i = this.baseInput();
-    applyPropertyOrConstant(i.Label, this.parentForm.control, this.label.set);
+    const i = this.field();
+    applyPropertyOrConstant(
+      getMetadata(i, MetadataType.Label),
+      this.parentForm.control,
+      this.label.set,
+    );
   }
 }

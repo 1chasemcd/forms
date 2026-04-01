@@ -11,7 +11,7 @@ internal sealed class FormSetupService(
 {
     public void SetupForms(IEnumerable<FormSetupOptions> setups)
     {
-        foreach (KeyValuePair<string, FormBuilder> builder in setups.SelectMany(s => s.GetFormBuilders()))
+        foreach (KeyValuePair<string, IBuildable<FormDefinition>> builder in setups.SelectMany(s => s.GetFormBuilders()))
         {
             FormDefinition form = builder.Value.Build();
             validationService.Validate(form);

@@ -1,9 +1,9 @@
-@if (!field().Hidden) {
+@if (visible()) {
   @if (buttonField(); as button) {
-    <app-dynamic-button-field [button]="button"></app-dynamic-button-field>
+    <app-dynamic-button-field [field]="button"></app-dynamic-button-field>
   } @else if (inputField(); as input) {
-    <app-dynamic-input-field [baseInput]="input"></app-dynamic-input-field>
+    <app-dynamic-input-field [field]="input"></app-dynamic-input-field>
   } @else if (staticTextField(); as statictext) {
-    <app-dynamic-text-field [staticText]="statictext"></app-dynamic-text-field>
+    <app-dynamic-text-field [field]="statictext"></app-dynamic-text-field>
   }
 }

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FileResponse, FormClient, FormDefinition, RepositoryClient } from '../api/api.g';
+import { FileResponse, FormDefinitionClient, FormDefinition, RepositoryClient } from '../api/api.g';
 import { FormControlService } from './form-control-service';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -13,7 +13,7 @@ import { GridDefinitionService } from './grid-definition-service';
   imports: [ReactiveFormsModule, DynamicView],
   templateUrl: './dynamic-form.html',
   providers: [
-    FormClient,
+    FormDefinitionClient,
     RepositoryClient,
     FormControlService,
     FormModelService,
@@ -21,7 +21,7 @@ import { GridDefinitionService } from './grid-definition-service';
   ],
 })
 export class DynamicForm implements OnInit {
-  private readonly formClient = inject(FormClient);
+  private readonly formDefinitionClient = inject(FormDefinitionClient);
   private readonly repositoryClient = inject(RepositoryClient);
   private readonly formControlService = inject(FormControlService);
   private readonly formModelService = inject(FormModelService);
@@ -33,7 +33,7 @@ export class DynamicForm implements OnInit {
     const path = this.route.snapshot.paramMap.get('path');
     if (path == null) return;
 
-    this.formClient
+    this.formDefinitionClient
       .getForm(path)
       .pipe(
         catchError((error) => {
@@ -55,8 +55,10 @@ export class DynamicForm implements OnInit {
     if (form == null) return;
     this.formDefinition = form;
     this.formGroup = this.formControlService.createFromDefinition(form);
-    if (form.Type)
-      this.repositoryClient.create(form.Type).subscribe((r) => this.handleRepositoryResponse(r));
+    if (form.ModelType)
+      this.repositoryClient
+        .create(form.ModelType)
+        .subscribe((r) => this.handleRepositoryResponse(r));
   }
 
   private handleRepositoryResponse(resp: FileResponse) {

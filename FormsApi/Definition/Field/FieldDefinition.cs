@@ -9,5 +9,5 @@ public sealed record class FieldDefinition
     public FieldType Type { get; init; }
     [Required]
     public required string Property { get; init; }
-    public IEnumerable<BaseMetadataDefinition>? FieldMetadatas { get; init; }
+    public IEnumerable<MetadataDefinition>? FieldMetadatas { get; init; }
 }

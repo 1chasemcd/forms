@@ -1,65 +1,85 @@
 
+using FormsApi.Common;
 using FormsApi.Definition.Field;
 using FormsApi.Definition.Metadata;
 using FormsApi.Definition.Primitives;
 
 namespace FormsApi.Builder.Field;
 
-public abstract class BaseFieldBuilder<TModel>
-{
-    internal abstract FieldDefinition Build();
-}
-public abstract class BaseFieldBuilder<TModel, TField> : BaseFieldBuilder<TModel>
+public interface IFieldBuilder<TModel> : IBuildable<FieldDefinition>;
+public abstract class BaseFieldBuilder<TModel, TField> : IFieldBuilder<TModel>
 {
     public required ModelMemberBuilder<TModel, TField> Property { get; set; }
     public abstract FieldType Type { get; }
     public PropertyOrConstantBuilder<TModel, string>? Label { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Visible { get; set; }
     public FormElementSize? Width { get; set; }
-    internal override FieldDefinition Build()
+    private IList<MetadataDefinition> _metadatas = [];
+    public FieldDefinition Build()
     {
-        List<BaseMetadataDefinition> metadatas = [];
+        _metadatas = [];
 
-        if (Label != null)
-            metadatas.Add(new LabelMetadata { Label = Label.Build() });
+        string propertyName = Property.Build();
+        Label ??= propertyName.CamelCaseToWords();
 
-        if (Visible != null)
-            metadatas.Add(new VisibleMetadata { Visible = Visible.Build() });
-
-        if (Width != null)
-            metadatas.Add(new WidthMetadata { Width = Width });
-
-        if (this is IEnablable<TModel> enablable && enablable.Enabled != null)
-            metadatas.Add(new EnabledMetadata { Enabled = enablable.Enabled.Build() });
-
-        if (this is IMaxLengthable<TModel> maxLengthable && maxLengthable.MaxLength != null)
-            metadatas.Add(new MaxLengthMetadata { MaxLength = maxLengthable.MaxLength.Build() });
-
-        if (this is IPrecisionAndScalable<TModel> psable && (psable.Precision != null || psable.Scale != null))
-            metadatas.Add(new PrecisionScaleMetadata
-            {
-                Precision = psable.Precision?.Build(),
-                Scale = psable.Scale?.Build()
-            });
-
-        if (this is IRecalculatable<TModel> recalculatable && recalculatable.RecalculateEvent != null)
-            metadatas.Add(new RecalculateEventMetadata { RecalculateEvent = recalculatable.RecalculateEvent.Build() });
-
-        if (this is IRequirable<TModel> requirable && requirable.Required != null)
-            metadatas.Add(new RequiredMetadata { Required = requirable.Required.Build() });
-
-        if (this is IValueRangable<TModel, TField> rangable && (rangable.MaxValue != null || rangable.MinValue != null))
-            metadatas.Add(new ValueRangeMetadata
-            {
-                MaxValue = rangable.MaxValue?.Build(),
-                MinValue = rangable.MinValue?.Build()
-            });
+        AddMetadatas();
 
         return new()
         {
-            Property = Property.Build(),
+            Property = propertyName,
             Type = Type,
-            FieldMetadatas = metadatas.Count == 0 ? null : metadatas,
+            FieldMetadatas = _metadatas.Count == 0 ? null : _metadatas,
         };
+    }
+
+    private void AddMetadatas()
+    {
+        AddMetadata(MetadataType.Label, Label);
+        AddMetadata(MetadataType.Visible, Visible);
+        AddMetadata(MetadataType.Width, Width);
+
+        if (this is IEnablable<TModel> enablable)
+            AddMetadata(MetadataType.Enabled, enablable.Enabled);
+
+        if (this is IMaxLengthable<TModel> maxLengthable)
+            AddMetadata(MetadataType.MaxLength, maxLengthable.MaxLength);
+
+        if (this is IPrecisionAndScalable<TModel> psable)
+        {
+            AddMetadata(MetadataType.Precision, psable.Precision);
+            AddMetadata(MetadataType.Scale, psable.Scale);
+        }
+
+        if (this is IRecalculatable<TModel> recalculatable)
+            AddMetadata(MetadataType.RecalculateEvent, recalculatable.RecalculateEvent);
+
+        if (this is IRequirable<TModel> requirable)
+            AddMetadata(MetadataType.Required, requirable.Required);
+
+        if (this is IValueRangable<TModel, TField> rangable)
+        {
+            AddMetadata(MetadataType.MinValue, rangable.MinValue);
+            AddMetadata(MetadataType.MaxValue, rangable.MaxValue);
+        }
+    }
+
+    private void AddMetadata<T>(MetadataType type, IBuildable<T>? builder)
+    {
+        if (builder == null || builder.Build() is not { } value) return;
+        _metadatas.Add(new MetadataDefinition
+        {
+            Type = type,
+            Value = value
+        });
+    }
+
+    private void AddMetadata(MetadataType type, object? value)
+    {
+        if (value == null) return;
+        _metadatas.Add(new MetadataDefinition
+        {
+            Type = type,
+            Value = value
+        });
     }
 }

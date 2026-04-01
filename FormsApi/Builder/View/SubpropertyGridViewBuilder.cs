@@ -17,7 +17,7 @@ public class SubPropertyGridViewBuilder<TModel, TSub>(
     public PropertyOrConstantBuilder<TModel, bool>? CanDelete { get; set; }
     public PropertyOrConstantBuilder<TSub, bool>? CanDeleteRow { get; set; }
     public FormBuilder<TSub>? EditForm { get; set; }
-    public IList<BaseFieldBuilder<TSub>> Fields { get; } = [];
+    public IList<IFieldBuilder<TSub>> Fields { get; } = [];
 
     public IEnumerator GetEnumerator() => Fields.GetEnumerator();
     protected override BaseViewDefinition BuildImpl()

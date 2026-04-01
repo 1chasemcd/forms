@@ -5,12 +5,12 @@ import {
   CustomInputComponent,
   CustomStaticTextComponent,
 } from './custom-field-registration';
-import { BaseInputType } from '../utils/api-utils';
+import { FieldType } from '../api/api.g';
 
 export const CUSTOM_FIELDS = new InjectionToken<CustomFieldRegistration[]>('CUSTOM_FIELDS');
 
 export function provideCustomInput(
-  type: BaseInputType,
+  type: FieldType,
   component: Type<CustomInputComponent>,
 ): Provider {
   return {
@@ -21,7 +21,7 @@ export function provideCustomInput(
 }
 
 export function provideCustomButton(component: Type<CustomButtonComponent>): Provider {
-  const type = 'buttonfield';
+  const type = FieldType.Button;
   return {
     provide: CUSTOM_FIELDS,
     useValue: { type, component },
@@ -30,7 +30,7 @@ export function provideCustomButton(component: Type<CustomButtonComponent>): Pro
 }
 
 export function provideCustomStaticText(component: Type<CustomStaticTextComponent>): Provider {
-  const type = 'statictextfield';
+  const type = FieldType.CheckBox;
   return {
     provide: CUSTOM_FIELDS,
     useValue: { type, component },

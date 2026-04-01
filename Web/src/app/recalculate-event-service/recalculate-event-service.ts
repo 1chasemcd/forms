@@ -10,8 +10,7 @@ export class RecalculateEventService {
   private formModelService = inject(FormModelService);
 
   runRecalculate(model: FormGroup, recalculateEvent: RecalculateEvent) {
-    let propertiesToSend = {};
-    if (!recalculateEvent.DontSendModel) propertiesToSend = this.formModelService.toRecord(model);
+    const propertiesToSend = this.formModelService.toRecord(model);
 
     this.recalculateEventClient
       .performAction(recalculateEvent.Service, recalculateEvent.Method, propertiesToSend)

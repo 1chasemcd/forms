@@ -1,6 +1,6 @@
 import { Component, computed, input } from '@angular/core';
-import { BaseInput } from '../../api/api.g';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
+import { FieldDefinition, FieldType } from '../../api/api.g';
 
 @Component({
   selector: 'app-grid-cell',
@@ -9,21 +9,24 @@ import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angu
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class GridCell {
-  readonly field = input.required<BaseInput>();
+  readonly field = input.required<FieldDefinition>();
   readonly inputType = computed(() => {
-    switch (this.field().$type) {
-      case 'checkboxinput':
+    switch (this.field().Type) {
+      case FieldType.CheckBox:
         return 'checkbox';
-      case 'currencyinput':
-      case 'numericinput':
+      case FieldType.Currency:
+      case FieldType.Numeric:
         return 'numeric';
-      case 'dateinput':
+      case FieldType.Date:
         return 'date';
-      case 'textinput':
-      case 'textareainput':
+      case FieldType.Text:
+      case FieldType.TextArea:
+      case FieldType.LabelValue:
         return 'text';
-      case 'timeinput':
+      case FieldType.Time:
         return 'time';
+      case FieldType.Button:
+        return 'button';
     }
   });
 }

@@ -1,12 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+  BaseViewDefinition,
+  CombinedViewDefinition,
+  FieldDefinition,
+  FieldType,
   FormDefinition,
-  BaseView,
-  CombinedView,
-  BaseField,
-  SubPropertyGridView,
   PropertyOrConstant,
+  SubPropertyGridViewDefinition,
+  MetadataType,
 } from '../api/api.g';
 import {
   createMaxLengthValidator,
@@ -14,6 +16,7 @@ import {
   createRangeValidator,
 } from '../utils/validators';
 import { GridDefinitionService } from './grid-definition-service';
+import { getMetadata } from '../utils/api-utils';
 
 type FormRecord = Record<string, FormControl | FormArray<FormGroup>>;
 
@@ -28,95 +31,100 @@ export class FormControlService {
     return new FormGroup(formRecord);
   }
 
-  private processView(view: BaseView, formRecord: FormRecord) {
+  private processView(view: BaseViewDefinition, formRecord: FormRecord) {
     switch (view.$type) {
       case 'combinedview':
         this.processCombinedView(view, formRecord);
         break;
-      case 'dataview':
-        this.processFieldView(view, formRecord);
+      case 'fieldview':
+        view.Fields?.forEach((f) => this.processField(f, formRecord));
         break;
       case 'subpropertygridview':
         this.processGridView(view, formRecord);
         break;
-      case 'repositorygridview':
-        break;
     }
   }
 
-  private processCombinedView(view: CombinedView, formRecord: FormRecord) {
+  private processCombinedView(view: CombinedViewDefinition, formRecord: FormRecord) {
     view.Views?.forEach((v) => this.processView(v, formRecord));
   }
 
-  private processFieldView<T extends BaseView & { Fields: BaseField[] }>(
-    view: T,
-    formRecord: FormRecord,
-  ) {
-    view.Fields?.forEach((f) => this.processField(f, formRecord));
-  }
-
-  private processGridView(view: SubPropertyGridView, formRecord: FormRecord) {
+  private processGridView(view: SubPropertyGridViewDefinition, formRecord: FormRecord) {
     const formArray = new FormArray<FormGroup>([]);
     formRecord[view.SubPropertyName] = formArray;
 
     this.gridDefinitionService.registerDefinition(view.SubPropertyName, () => {
       const controls: Record<string, FormControl> = {};
-      this.processFieldView(view, controls);
+      view.Fields?.forEach((f) => this.processField(f, formRecord));
       return new FormGroup(controls);
     });
   }
 
-  private processField(field: BaseField, formRecord: FormRecord) {
-    if (field.$type == 'statictextfield' || field.$type == 'buttonfield') return;
+  private processField(field: FieldDefinition, formRecord: FormRecord) {
+    const hasMetadata = (type: MetadataType) =>
+      field.FieldMetadatas?.find((x) => x.Type == type) !== undefined;
+
+    const applyMetadata = <T>(type: MetadataType, callback: (value: T) => void) => {
+      const poc = getMetadata<PropertyOrConstant>(field, type);
+      if (poc === null || poc === undefined) return;
+
+      if (poc.$type === 'constant') callback(poc.Value);
+      else {
+        const propertyControl = this.getOrAddControl(poc.Value, formRecord);
+        propertyControl.valueChanges.subscribe(callback);
+      }
+    };
+
+    if (field.Type == FieldType.Button) return;
 
     const control = this.getOrAddControl(field.Property, formRecord);
 
-    this.handlePropertyOrConst(field.Required, formRecord, (required) => {
-      if (required) control.addValidators(Validators.required);
+    applyMetadata(MetadataType.Required, (value) => {
+      if (value) control.addValidators(Validators.required);
       else control.removeValidators(Validators.required);
     });
 
-    this.handlePropertyOrConst(field.Disabled, formRecord, (disabled) => {
-      if (disabled) control.disable();
-      else control.enable();
+    applyMetadata(MetadataType.Enabled, (value) => {
+      if (value) control.enable();
+      else control.disable();
     });
 
-    if (
-      field.$type === 'numericinput' ||
-      field.$type === 'currencyinput' ||
-      field.$type === 'dateinput' ||
-      field.$type === 'timeinput'
-    ) {
+    applyMetadata(MetadataType.Enabled, (value) => {
+      if (value) control.enable();
+      else control.disable();
+    });
+
+    if (hasMetadata(MetadataType.MinValue) || hasMetadata(MetadataType.MaxValue)) {
       const rangeValidator = createRangeValidator();
       control.addValidators(rangeValidator.validator);
 
-      this.handlePropertyOrConst(field.MaxValue, formRecord, (value: number) => {
+      applyMetadata(MetadataType.MinValue, (value: string | number) => {
         rangeValidator.setMax(value);
       });
 
-      this.handlePropertyOrConst(field.MinValue, formRecord, (value: number) => {
+      applyMetadata(MetadataType.MaxValue, (value: string | number) => {
         rangeValidator.setMin(value);
       });
     }
 
-    if (field.$type === 'textareainput' || field.$type === 'textinput') {
+    if (hasMetadata(MetadataType.MaxLength)) {
       const maxLengthValidator = createMaxLengthValidator();
       control.addValidators(maxLengthValidator.validator);
 
-      this.handlePropertyOrConst(field.MaxLength, formRecord, (value: number) => {
+      applyMetadata(MetadataType.MaxLength, (value: number) => {
         maxLengthValidator.setMaxLength(value);
       });
     }
 
-    if (field.$type === 'numericinput') {
+    if (hasMetadata(MetadataType.Precision) || hasMetadata(MetadataType.Scale)) {
       const psValidator = createPrecisionScaleValidator();
       control.addValidators(psValidator.validator);
 
-      this.handlePropertyOrConst(field.Precision, formRecord, (value: number) => {
+      applyMetadata(MetadataType.Precision, (value: number) => {
         psValidator.setPrecision(value);
       });
 
-      this.handlePropertyOrConst(field.Scale, formRecord, (value: number) => {
+      applyMetadata(MetadataType.Scale, (value: number) => {
         psValidator.setScale(value);
       });
     }
@@ -125,18 +133,5 @@ export class FormControlService {
   private getOrAddControl(key: string, formRecord: FormRecord) {
     if (!Object.hasOwn(formRecord, key)) formRecord[key] = new FormControl();
     return formRecord[key] as FormControl;
-  }
-
-  private handlePropertyOrConst<T>(
-    poc: PropertyOrConstant | null | undefined,
-    formRecord: FormRecord,
-    callback: (value: T) => void,
-  ) {
-    if (poc === null || poc === undefined) return;
-    if (poc.$type === 'constant') callback(poc.Value);
-    else {
-      const propertyControl = this.getOrAddControl(poc.Value, formRecord);
-      propertyControl.valueChanges.subscribe(callback);
-    }
   }
 }

@@ -4,14 +4,9 @@ using FormsApi.Definition;
 
 namespace FormsApi.Builder;
 
-public abstract class FormBuilder
+public abstract class FormBuilder<TModel> : IBuildable<FormDefinition>
 {
-    internal abstract FormDefinition Build();
-}
-
-public abstract class FormBuilder<TModel> : FormBuilder
-{
-    internal override FormDefinition Build()
+    public FormDefinition Build()
     {
         var form = new FormDefinition()
         {

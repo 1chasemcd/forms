@@ -3,7 +3,7 @@ using FormsApi.Definition.Primitives;
 
 namespace FormsApi.Builder;
 
-public sealed class PropertyOrConstantBuilder<TModel, TMember>
+public sealed class PropertyOrConstantBuilder<TModel, TMember> : IBuildable<PropertyOrConstant>
 {
     public PropertyOrConstantBuilder(TMember? value)
     {
@@ -15,7 +15,7 @@ public sealed class PropertyOrConstantBuilder<TModel, TMember>
         Selector = selector;
     }
 
-    internal PropertyOrConstant Build()
+    public PropertyOrConstant Build()
     {
         if (Selector is not null)
             return new Property(
