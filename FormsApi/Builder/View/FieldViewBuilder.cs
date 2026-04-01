@@ -7,7 +7,7 @@ namespace FormsApi.Builder.View;
 
 public sealed class FieldViewBuilder<TModel> : ViewBuilder<TModel>, IFieldCollection<TModel>
 {
-    public FieldViewBuilder(PropertyOrConstantBuilder<TModel, string?>? title = null, FormElementSize? width = null)
+    public FieldViewBuilder(PropertyOrConstantBuilder<TModel, string?>? title = null, int? width = null)
     {
         Title = title;
         Width = width;

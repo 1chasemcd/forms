@@ -1,4 +1,3 @@
-using System.Threading.RateLimiting;
 using FormsApi.Definition;
 using FormsApi.Definition.Field;
 using FormsApi.Definition.Metadata;
@@ -19,7 +18,7 @@ public class FieldMetadataTests
 
         using (Assert.EnterMultipleScope())
         {
-            AssertMetadataHasValue(fields, nameof(TestModel.BoolProperty), MetadataType.Width, new NumericSize(6));
+            AssertMetadataHasValue(fields, nameof(TestModel.BoolProperty), MetadataType.Width, 6);
             AssertMetadataHasValue(fields, nameof(TestModel.CurrencyProperty), MetadataType.Enabled, new Constant(false));
             AssertMetadataHasValue(fields, nameof(TestModel.DateProperty), MetadataType.MaxValue, new Constant(new DateOnly(2025, 01, 01)));
             AssertMetadataHasValue(fields, nameof(TestModel.DecimalProperty), MetadataType.Precision, new Constant(4));

@@ -9,13 +9,13 @@ public sealed class CombinedViewBuilder<TModel> : ViewBuilder<TModel>, IEnumerab
 {
     private readonly IList<ViewBuilder<TModel>> _views = [];
 
-    public CombinedViewBuilder(PropertyOrConstantBuilder<TModel, string?>? title = null, FormElementSize? width = null)
+    public CombinedViewBuilder(PropertyOrConstantBuilder<TModel, string?>? title = null, int? width = null)
     {
         Title = title;
         Width = width;
     }
 
-    public CombinedViewBuilder(Expression<Func<TModel, string?>> title, FormElementSize? width = null)
+    public CombinedViewBuilder(Expression<Func<TModel, string?>> title, int? width = null)
     {
         Title = title;
         Width = width;

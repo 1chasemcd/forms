@@ -13,7 +13,7 @@ public abstract class BaseFieldBuilder<TModel, TField> : IFieldBuilder<TModel>
     public abstract FieldType Type { get; }
     public PropertyOrConstantBuilder<TModel, string>? Label { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Visible { get; set; }
-    public FormElementSize? Width { get; set; }
+    public int? Width { get; set; }
     private IList<MetadataDefinition> _metadatas = [];
     public FieldDefinition Build()
     {

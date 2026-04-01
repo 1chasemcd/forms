@@ -14,29 +14,13 @@ public static class Program
 
         builder.Services.AddControllers().AddFormControllers();
 
-        var schema = JsonSchema.FromType<FormElementSize>();
-
         builder.Services.AddOpenApiDocument(config =>
         {
             config.SchemaSettings.SchemaProcessors.Add(new RepositoryTypeSchemaProcessor());
-            config.SchemaSettings.SchemaProcessors.Add(new FormElementSizeSchemaProcessor());
             config.DocumentProcessors.Add(new IncludeTypesDocumentProcessor());
         });
         WebApplication app = builder.Build();
         app.UseOpenApi();
-    }
-}
-
-
-public class FormElementSizeSchemaProcessor : ISchemaProcessor
-{
-    public void Process(SchemaProcessorContext context)
-    {
-        if (context.ContextualType == typeof(FormElementSize))
-        {
-            context.Schema.Type = JsonObjectType.Integer;
-            context.Schema.Properties.Clear();
-        }
     }
 }
 

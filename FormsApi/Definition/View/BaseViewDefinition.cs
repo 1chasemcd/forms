@@ -13,5 +13,5 @@ namespace FormsApi.Definition.View;
 public abstract record class BaseViewDefinition
 {
     public PropertyOrConstant? Title { get; init; }
-    public FormElementSize? Width { get; init; }
+    public int? Width { get; init; }
 }
