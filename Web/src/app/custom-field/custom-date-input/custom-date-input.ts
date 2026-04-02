@@ -1,19 +1,22 @@
 import { Component, computed, input } from '@angular/core';
 import { CustomInputComponent } from '../../field-resolution/custom-field-registration';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CustomInputBase } from '../custom-input-base/custom-input-base';
 
 @Component({
   selector: 'app-custom-date-input',
-  imports: [ReactiveFormsModule],
-  templateUrl: './custom-date-input.html',
+  imports: [ReactiveFormsModule, CustomInputBase],
+  template: `
+    <app-custom-input-base
+      [label]="label()"
+      [isRequired]="isRequired()"
+      [formControl]="formControl()"
+      inputType="date"
+    ></app-custom-input-base>
+  `,
 })
 export class CustomDateInput implements CustomInputComponent {
   formControl = input.required<FormControl>();
   readonly label = input.required<string>();
-  readonly isRequired = input<boolean>();
-
-  readonly requiredMark = computed(() => (this.isRequired() ? ' *' : ''));
-
-  private static _nextId = 0;
-  readonly id = `date-input-${CustomDateInput._nextId++}`;
+  readonly isRequired = computed(() => this.formControl().hasValidator(Validators.required));
 }

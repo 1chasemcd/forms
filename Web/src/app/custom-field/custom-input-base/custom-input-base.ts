@@ -8,21 +8,22 @@ import {
 } from '@angular/forms';
 
 @Component({
-  selector: 'app-custom-input',
+  selector: 'app-custom-input-base',
   imports: [ReactiveFormsModule, NgClass],
-  templateUrl: './custom-input.html',
+  templateUrl: './custom-input-base.html',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => CustomInput),
+      useExisting: forwardRef(() => CustomInputBase),
       multi: true,
     },
   ],
 })
-export class CustomInput<T> implements ControlValueAccessor {
+export class CustomInputBase<T> implements ControlValueAccessor {
   readonly label = input.required<string>();
   readonly isRequired = input<boolean>();
   readonly textAlign = input<'left' | 'right'>();
+  readonly inputType = input<string>('text');
   readonly transformDisplayOnChange = input<(value: string) => string>();
   readonly transformDisplayOnFocus = input<(value: string) => string>();
   readonly transformDisplayOnBlur = input<(value: string) => string>();
@@ -39,7 +40,7 @@ export class CustomInput<T> implements ControlValueAccessor {
   private _onTouched = () => {};
 
   private static _nextId = 0;
-  readonly id = `input-${CustomInput._nextId++}`;
+  readonly id = `input-${CustomInputBase._nextId++}`;
 
   private inputInProgress = false;
 

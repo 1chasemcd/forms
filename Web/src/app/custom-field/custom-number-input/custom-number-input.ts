@@ -1,13 +1,13 @@
 import { Component, computed, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomInputComponent } from '../../field-resolution/custom-field-registration';
-import { CustomInput } from '../custom-input/custom-input';
+import { CustomInputBase } from '../custom-input-base/custom-input-base';
 
 @Component({
   selector: 'app-custom-number-input',
-  imports: [CustomInput, ReactiveFormsModule],
+  imports: [CustomInputBase, ReactiveFormsModule],
   template: `
-    <app-custom-input
+    <app-custom-input-base
       [label]="label()"
       [isRequired]="isRequired()"
       [formControl]="formControl()"
@@ -15,7 +15,7 @@ import { CustomInput } from '../custom-input/custom-input';
       [controlToDisplay]="controlToDisplay"
       [displayToControl]="displayToControl"
       [transformDisplayOnChange]="onInput"
-    ></app-custom-input>
+    ></app-custom-input-base>
   `,
 })
 export class CustomNumberInput implements CustomInputComponent {

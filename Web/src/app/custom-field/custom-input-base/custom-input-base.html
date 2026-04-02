@@ -10,9 +10,15 @@
 
   <input
     [id]="id"
-    [formControl]="formControl()"
-    type="date"
+    [formControl]="displayControl"
+    (focus)="handleFocus()"
+    (blur)="handleBlur()"
+    (input)="handleInput($event)"
+    [type]="inputType()"
     autocomplete="off"
     class="peer w-full bg-transparent text-base text-black outline-none disabled:text-gray-500"
+    [ngClass]="{
+      'text-right': textAlign() === 'right',
+    }"
   />
 </div>

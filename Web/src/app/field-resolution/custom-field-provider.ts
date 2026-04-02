@@ -3,7 +3,6 @@ import {
   CustomButtonComponent,
   CustomFieldRegistration,
   CustomInputComponent,
-  CustomStaticTextComponent,
 } from './custom-field-registration';
 import { FieldType } from '../api/api.g';
 
@@ -22,15 +21,6 @@ export function provideCustomInput(
 
 export function provideCustomButton(component: Type<CustomButtonComponent>): Provider {
   const type = FieldType.Button;
-  return {
-    provide: CUSTOM_FIELDS,
-    useValue: { type, component },
-    multi: true,
-  };
-}
-
-export function provideCustomStaticText(component: Type<CustomStaticTextComponent>): Provider {
-  const type = FieldType.CheckBox;
   return {
     provide: CUSTOM_FIELDS,
     useValue: { type, component },

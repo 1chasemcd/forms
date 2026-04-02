@@ -12,11 +12,6 @@ export interface CustomButtonComponent {
   disabled: InputSignal<boolean | undefined>;
   clicked: OutputEmitterRef<void>;
 }
-
-export interface CustomStaticTextComponent {
-  label: InputSignal<string>;
-}
-
 export interface CustomInputRegistration {
   type: FieldType;
   component: Type<CustomInputComponent>;
@@ -27,12 +22,4 @@ export interface CustomButtonRegistration {
   component: Type<CustomButtonComponent>;
 }
 
-export interface CustomStaticTextRegistration {
-  type: FieldType.LabelValue;
-  component: Type<CustomStaticTextComponent>;
-}
-
-export type CustomFieldRegistration =
-  | CustomInputRegistration
-  | CustomButtonRegistration
-  | CustomStaticTextRegistration;
+export type CustomFieldRegistration = CustomInputRegistration | CustomButtonRegistration;

@@ -6,12 +6,8 @@ import {
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  provideCustomButton,
-  provideCustomInput,
-  provideCustomStaticText,
-} from './field-resolution/custom-field-provider';
-import { CustomStaticText } from './custom-field/custom-static-text/custom-static-text';
+import { provideCustomButton, provideCustomInput } from './field-resolution/custom-field-provider';
+import { CustomLabelValue } from './custom-field/custom-label-value/custom-label-value';
 import { CustomButton } from './custom-field/custom-button/custom-button';
 import { CustomCheckbox } from './custom-field/custom-checkbox/custom-checkbox';
 import { CustomTextInput } from './custom-field/custom-text-input/custom-text-input';
@@ -28,8 +24,8 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(),
-    provideCustomStaticText(CustomStaticText),
     provideCustomButton(CustomButton),
+    provideCustomInput(FieldType.LabelValue, CustomLabelValue),
     provideCustomInput(FieldType.CheckBox, CustomCheckbox),
     provideCustomInput(FieldType.Text, CustomTextInput),
     provideCustomInput(FieldType.Numeric, CustomNumberInput),

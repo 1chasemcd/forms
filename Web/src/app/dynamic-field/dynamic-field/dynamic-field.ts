@@ -4,7 +4,6 @@ import { ControlContainer, FormGroupDirective } from '@angular/forms';
 import { DynamicInputField } from '../dynamic-input-field/dynamic-input-field';
 import { applyPropertyOrConstant, getMetadata } from '../../utils/api-utils';
 import { DynamicButtonField } from '../dynamic-button-field/dynamic-button-field';
-import { DynamicTextField } from '../dynamic-text-field/dynamic-text-field';
 import { FieldDefinition, FieldType, MetadataType } from '../../api/api.g';
 @Component({
   selector: 'app-dynamic-field',
@@ -12,7 +11,7 @@ import { FieldDefinition, FieldType, MetadataType } from '../../api/api.g';
     '[class]': 'width() + " content-center"',
   },
   templateUrl: './dynamic-field.html',
-  imports: [DynamicInputField, DynamicButtonField, DynamicTextField],
+  imports: [DynamicInputField, DynamicButtonField],
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class DynamicField implements OnInit {
@@ -34,13 +33,8 @@ export class DynamicField implements OnInit {
     return f.Type === FieldType.Button ? f : null;
   });
 
-  readonly staticTextField = computed(() => {
-    const f = this.field();
-    return f.Type === FieldType.LabelValue ? f : null;
-  });
-
   readonly inputField = computed(() => {
     const f = this.field();
-    return f.Type !== FieldType.Button && f.Type !== FieldType.LabelValue ? f : null;
+    return f.Type !== FieldType.Button ? f : null;
   });
 }
