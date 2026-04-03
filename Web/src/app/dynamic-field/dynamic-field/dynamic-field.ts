@@ -1,19 +1,45 @@
-import { Component, computed, input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { widthToCss } from '../../utils/width-utils';
-import { FormGroup } from '@angular/forms';
-import { DynamicInputField } from '../dynamic-input-field/dynamic-input-field';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { applyPropertyOrConstant, getMetadata } from '../../utils/api-utils';
-import { DynamicButtonField } from '../dynamic-button-field/dynamic-button-field';
-import { FieldDefinition, FieldType, MetadataType } from '../../api/api.g';
+import { FieldDefinition, FieldType, MetadataType, RecalculateEvent } from '../../api/api.g';
+import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
+import { Button } from '../button/button';
+import { Checkbox } from '../checkbox/checkbox';
+import { StandardInputWrapper } from '../standard-input/standard-input-wrapper';
+import { StandardInputDirective } from '../standard-input/standard-input-directive';
+import { CustomLabelValue } from '../label-value/label-value';
 @Component({
   selector: 'app-dynamic-field',
   host: {
     '[class]': 'width() + " content-center"',
   },
   templateUrl: './dynamic-field.html',
-  imports: [DynamicInputField, DynamicButtonField],
+  imports: [
+    Button,
+    Checkbox,
+    StandardInputWrapper,
+    ReactiveFormsModule,
+    StandardInputDirective,
+    CustomLabelValue,
+  ],
+  providers: [RecalculateEventService],
 })
 export class DynamicField implements OnInit {
+  readonly FieldType = FieldType;
+
+  readonly field = input.required<FieldDefinition>();
+  readonly modelFormGroup = input.required<FormGroup>();
+
+  readonly width = computed(() => widthToCss(getMetadata(this.field(), MetadataType.Width)));
+  readonly control = computed(
+    () => this.modelFormGroup().get(this.field().Property) as FormControl,
+  );
+  readonly visible = signal(true);
+  readonly label = signal('');
+
+  private readonly recalculateEventService = inject(RecalculateEventService);
+
   ngOnInit() {
     applyPropertyOrConstant(
       getMetadata(this.field(), MetadataType.Visible),
@@ -27,11 +53,9 @@ export class DynamicField implements OnInit {
       this.label.set,
     );
   }
-  readonly FieldType = FieldType;
-  readonly field = input.required<FieldDefinition>();
-  readonly modelFormGroup = input.required<FormGroup>();
-  readonly width = computed(() => widthToCss(getMetadata(this.field(), MetadataType.Width)));
 
-  visible = signal(true);
-  label = signal('');
+  executeRecalculate() {
+    const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
+    if (recalc) this.recalculateEventService.runRecalculate(this.modelFormGroup(), recalc);
+  }
 }

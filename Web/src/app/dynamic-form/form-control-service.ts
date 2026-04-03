@@ -55,7 +55,7 @@ export class FormControlService {
 
     this.gridDefinitionService.registerDefinition(view.SubPropertyName, () => {
       const controls: Record<string, FormControl> = {};
-      view.Fields?.forEach((f) => this.processField(f, formRecord));
+      view.Fields?.forEach((f) => this.processField(f, controls));
       return new FormGroup(controls);
     });
   }
@@ -75,9 +75,8 @@ export class FormControlService {
       }
     };
 
-    if (field.Type == FieldType.Button) return;
-
     const control = this.getOrAddControl(field.Property, formRecord);
+    if (field.Type == FieldType.Button) return;
 
     applyMetadata(MetadataType.Required, (value) => {
       const original = control.hasValidator(Validators.required);

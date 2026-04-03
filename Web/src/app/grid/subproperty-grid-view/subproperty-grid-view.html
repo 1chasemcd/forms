@@ -11,7 +11,7 @@
       <tr ngGridRow [formGroup]="row">
         @for (column of gridView().Fields; track $index) {
           <td ngGridCell>
-            <app-grid-cell [field]="column"></app-grid-cell>
+            <app-grid-cell [field]="column" [formGroup]="row"></app-grid-cell>
           </td>
         }
       </tr>

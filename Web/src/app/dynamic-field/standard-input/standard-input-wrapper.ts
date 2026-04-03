@@ -1,11 +1,11 @@
 import { Component, computed, input, linkedSignal, Signal, signal } from '@angular/core';
 
 @Component({
-  selector: 'app-custom-input-container',
+  selector: 'app-standard-input-wrapper',
   imports: [],
-  templateUrl: './custom-input-container.html',
+  templateUrl: './standard-input-wrapper.html',
 })
-export class CustomInputContainer {
+export class StandardInputWrapper {
   readonly label = input.required<string>();
   readonly required = linkedSignal(() => false);
   readonly inputId = signal<string>('');

@@ -1,5 +1,5 @@
 import { Component, computed, input } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FieldDefinition, FieldType } from '../../api/api.g';
 
 @Component({
@@ -9,6 +9,9 @@ import { FieldDefinition, FieldType } from '../../api/api.g';
 })
 export class GridCell {
   readonly field = input.required<FieldDefinition>();
+  readonly formGroup = input.required<FormGroup>();
+
+  readonly formControl = computed(() => this.formGroup().get(this.field().Property) as FormControl);
   readonly inputType = computed(() => {
     switch (this.field().Type) {
       case FieldType.CheckBox:
