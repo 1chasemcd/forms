@@ -1,0 +1,17 @@
+@if (title(); as title) {
+  <h2 class="text-lg font-bold col-span-12 content-center">{{ title }}</h2>
+}
+@if (combinedViews(); as views) {
+  @for (childView of views; track $index) {
+    <app-dynamic-view [formView]="childView" [modelFormGroup]="modelFormGroup()"></app-dynamic-view>
+  }
+} @else if (fieldView(); as view) {
+  @for (field of view.Fields; track $index) {
+    <app-dynamic-field [field]="field" [modelFormGroup]="modelFormGroup()"></app-dynamic-field>
+  }
+} @else if (subpropertyGridView(); as view) {
+  <app-subproperty-grid-view
+    [gridView]="view"
+    [modelFormGroup]="modelFormGroup()"
+  ></app-subproperty-grid-view>
+}
