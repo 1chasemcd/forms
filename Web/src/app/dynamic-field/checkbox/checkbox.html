@@ -1,5 +1,10 @@
 <label class="flex h-12 items-center gap-2 cursor-pointer">
-  <input type="checkbox" class="peer sr-only" [formControl]="control()" />
+  <input
+    type="checkbox"
+    class="peer sr-only"
+    [formControl]="control()"
+    (change)="recalculateEvent.emit()"
+  />
 
   <div
     class="hidden h-5 w-5 items-center justify-center rounded border bg-violet-600 border-violet-600 peer-checked:flex"

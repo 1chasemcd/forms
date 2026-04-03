@@ -6,23 +6,16 @@ import { FieldDefinition, FieldType, MetadataType, RecalculateEvent } from '../.
 import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
 import { Button } from '../button/button';
 import { Checkbox } from '../checkbox/checkbox';
-import { StandardInputWrapper } from '../standard-input/standard-input-wrapper';
-import { StandardInputDirective } from '../standard-input/standard-input-directive';
 import { CustomLabelValue } from '../label-value/label-value';
+import { DynamicInput } from '../dynamic-input/dynamic-input';
+
 @Component({
   selector: 'app-dynamic-field',
   host: {
     '[class]': 'width() + " content-center"',
   },
   templateUrl: './dynamic-field.html',
-  imports: [
-    Button,
-    Checkbox,
-    StandardInputWrapper,
-    ReactiveFormsModule,
-    StandardInputDirective,
-    CustomLabelValue,
-  ],
+  imports: [Button, Checkbox, ReactiveFormsModule, CustomLabelValue, DynamicInput],
   providers: [RecalculateEventService],
 })
 export class DynamicField implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -9,4 +9,5 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 export class Checkbox {
   readonly label = input.required<string>();
   readonly control = input.required<FormControl>();
+  readonly recalculateEvent = output();
 }

@@ -5,6 +5,7 @@ import { NgControl } from '@angular/forms';
   selector: 'input[appNumberFormat]',
   host: {
     '(input)': 'onInput()',
+    class: 'text-right',
   },
 })
 export class NumberFormatDirective implements OnInit {

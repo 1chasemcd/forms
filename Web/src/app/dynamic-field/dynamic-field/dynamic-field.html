@@ -9,40 +9,22 @@
       ></app-button>
     }
     @case (FieldType.CheckBox) {
-      <app-checkbox [control]="control()" [label]="label()"></app-checkbox>
-    }
-    @case (FieldType.Currency) {
-      <app-standard-input-wrapper [label]="label()">
-        <input [formControl]="control()" appStandardInputDirective />
-      </app-standard-input-wrapper>
-    }
-    @case (FieldType.Numeric) {
-      <app-standard-input-wrapper [label]="label()">
-        <input [formControl]="control()" appStandardInputDirective />
-      </app-standard-input-wrapper>
-    }
-    @case (FieldType.Date) {
-      <app-standard-input-wrapper [label]="label()">
-        <input [formControl]="control()" type="date" appStandardInputDirective />
-      </app-standard-input-wrapper>
+      <app-checkbox
+        [control]="control()"
+        [label]="label()"
+        (recalculateEvent)="executeRecalculate()"
+      ></app-checkbox>
     }
     @case (FieldType.LabelValue) {
       <app-label-value [label]="label()" [control]="control()"></app-label-value>
     }
-    @case (FieldType.Text) {
-      <app-standard-input-wrapper [label]="label()">
-        <input [formControl]="control()" appStandardInputDirective />
-      </app-standard-input-wrapper>
-    }
-    @case (FieldType.TextArea) {
-      <app-standard-input-wrapper [label]="label()">
-        <textarea [formControl]="control()" rows="3" appStandardInputDirective></textarea>
-      </app-standard-input-wrapper>
-    }
-    @case (FieldType.Time) {
-      <app-standard-input-wrapper [label]="label()">
-        <input [formControl]="control()" type="time" appStandardInputDirective />
-      </app-standard-input-wrapper>
+    @default {
+      <app-dynamic-input
+        [control]="control()"
+        [fieldType]="field().Type"
+        [label]="label()"
+        (recalculateEvent)="executeRecalculate()"
+      ></app-dynamic-input>
     }
   }
 }
