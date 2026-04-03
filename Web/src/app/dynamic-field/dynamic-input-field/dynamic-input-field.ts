@@ -1,16 +1,11 @@
-import { Component, computed, inject, input, OnInit, signal, Type } from '@angular/core';
-import {
-  ControlContainer,
-  FormControl,
-  FormGroupDirective,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { CUSTOM_FIELDS } from '../../field-resolution/custom-field-provider';
+import { Component, computed, inject, input } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CustomInputComponent } from '../../field-resolution/custom-field-registration';
 import { NgComponentOutlet } from '@angular/common';
 import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
-import { applyPropertyOrConstant, getMetadata } from '../../utils/api-utils';
+import { getMetadata } from '../../utils/api-utils';
 import { FieldDefinition, MetadataType, RecalculateEvent } from '../../api/api.g';
+import { CustomFieldService } from '../../field-resolution/custom-field-service';
 
 @Component({
   selector: 'app-dynamic-input-field',
@@ -18,45 +13,40 @@ import { FieldDefinition, MetadataType, RecalculateEvent } from '../../api/api.g
   template: `
     @if (inputComponent(); as component) {
       <ng-container
-        (focusout)="onFocusOut()"
         *ngComponentOutlet="component; inputs: { label: label(), formControl: control() }"
       >
       </ng-container>
     }
   `,
   host: {
+    '(focusin)': 'onFocusIn()',
     '(focusout)': 'onFocusOut()',
   },
   providers: [RecalculateEventService],
-  viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
-export class DynamicInputField implements OnInit {
+export class DynamicInputField {
+  readonly label = input.required<string>();
   readonly field = input.required<FieldDefinition>();
-  private parentForm = inject(ControlContainer) as FormGroupDirective;
-  private registry = inject(CUSTOM_FIELDS);
-  private recalculateEventService = inject(RecalculateEventService);
+  readonly modelFormGroup = input.required<FormGroup>();
+  private originalValue: unknown;
 
-  readonly label = signal('');
+  private readonly customFieldService = inject(CustomFieldService);
+  private readonly recalculateEventService = inject(RecalculateEventService);
+
   readonly control = computed(
-    () => this.parentForm.control.get(this.field().Property) as FormControl,
+    () => this.modelFormGroup().get(this.field().Property) as FormControl,
   );
 
   inputComponent = computed(() => {
-    return this.registry.find((r) => r.type === this.field().Type)
-      ?.component as Type<CustomInputComponent>;
+    return this.customFieldService.getField<CustomInputComponent>(this.field().Type);
   });
 
-  onFocusOut() {
-    const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
-    if (recalc) this.recalculateEventService.runRecalculate(this.parentForm.control, recalc);
+  onFocusIn() {
+    this.originalValue = this.control().value;
   }
-
-  ngOnInit(): void {
-    const i = this.field();
-    applyPropertyOrConstant(
-      getMetadata(i, MetadataType.Label),
-      this.parentForm.control,
-      this.label.set,
-    );
+  onFocusOut() {
+    if (this.originalValue === this.control().value) return;
+    const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
+    if (recalc) this.recalculateEventService.runRecalculate(this.modelFormGroup(), recalc);
   }
 }

@@ -12,44 +12,39 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { CUSTOM_FIELDS } from '../../field-resolution/custom-field-provider';
 import { CustomButtonComponent } from '../../field-resolution/custom-field-registration';
 import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
 import { applyPropertyOrConstant, getMetadata } from '../../utils/api-utils';
-import { ControlContainer, FormGroupDirective } from '@angular/forms';
-import { FieldDefinition, FieldType, MetadataType, RecalculateEvent } from '../../api/api.g';
+import { FormGroup } from '@angular/forms';
+import { FieldDefinition, MetadataType, RecalculateEvent } from '../../api/api.g';
+import { CustomFieldService } from '../../field-resolution/custom-field-service';
 
 @Component({
   selector: 'app-dynamic-button-field',
   template: '<ng-container #container></ng-container>',
   providers: [RecalculateEventService],
-  viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class DynamicButtonField implements OnInit, AfterViewInit {
+  readonly label = input.required<string>();
   readonly field = input.required<FieldDefinition>();
-  readonly label = signal('');
+  readonly modelFormGroup = input.required<FormGroup>();
   readonly enabled = signal(true);
-  private registry = inject(CUSTOM_FIELDS);
+
   private injector = inject(Injector);
-  private recalculateEventService = inject(RecalculateEventService);
-  private parentForm = inject(ControlContainer) as FormGroupDirective;
+  private readonly customFieldService = inject(CustomFieldService);
+  private readonly recalculateEventService = inject(RecalculateEventService);
+
   @ViewChild('container', { read: ViewContainerRef })
   vcr!: ViewContainerRef;
 
   buttonComponent = computed(() => {
-    return this.registry.find((r) => r.type === FieldType.Button)
-      ?.component as Type<CustomButtonComponent>;
+    return this.customFieldService.getField<CustomButtonComponent>(this.field().Type);
   });
 
   ngOnInit(): void {
     applyPropertyOrConstant(
-      getMetadata(this.field(), MetadataType.Label),
-      this.parentForm.control,
-      this.label.set,
-    );
-    applyPropertyOrConstant(
       getMetadata(this.field(), MetadataType.Enabled),
-      this.parentForm.control,
+      this.modelFormGroup(),
       this.enabled.set,
     );
   }
@@ -74,6 +69,6 @@ export class DynamicButtonField implements OnInit, AfterViewInit {
 
   onClick = () => {
     const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
-    if (recalc) this.recalculateEventService.runRecalculate(this.parentForm.control, recalc);
+    if (recalc) this.recalculateEventService.runRecalculate(this.modelFormGroup(), recalc);
   };
 }

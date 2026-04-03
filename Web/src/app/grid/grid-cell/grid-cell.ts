@@ -1,12 +1,11 @@
 import { Component, computed, input } from '@angular/core';
-import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { FieldDefinition, FieldType } from '../../api/api.g';
 
 @Component({
   selector: 'app-grid-cell',
   imports: [ReactiveFormsModule],
   templateUrl: './grid-cell.html',
-  viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
 export class GridCell {
   readonly field = input.required<FieldDefinition>();

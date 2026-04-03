@@ -1,7 +1,18 @@
 @if (visible()) {
-  @if (buttonField(); as button) {
-    <app-dynamic-button-field [field]="button"></app-dynamic-button-field>
-  } @else if (inputField(); as input) {
-    <app-dynamic-input-field [field]="input"></app-dynamic-input-field>
+  @switch (field().Type) {
+    @case (FieldType.Button) {
+      <app-dynamic-button-field
+        [field]="field()"
+        [modelFormGroup]="modelFormGroup()"
+        [label]="label()"
+      ></app-dynamic-button-field>
+    }
+    @default {
+      <app-dynamic-input-field
+        [field]="field()"
+        [modelFormGroup]="modelFormGroup()"
+        [label]="label()"
+      ></app-dynamic-input-field>
+    }
   }
 }

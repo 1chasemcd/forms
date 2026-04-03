@@ -4,7 +4,7 @@ import { FormControlService } from './form-control-service';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { catchError, of, throwError } from 'rxjs';
-import { DynamicView } from '../view/dynamic-view/dynamic-view';
+import { DynamicView } from '../dynamic-view/dynamic-view';
 import { FormModelService } from './form-model-service';
 import { GridDefinitionService } from './grid-definition-service';
 
