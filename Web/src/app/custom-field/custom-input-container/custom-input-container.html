@@ -2,18 +2,10 @@
   class="group bg-white px-3 py-1 rounded-lg ring-1 ring-gray-400 transition-colors focus-within:ring-violet-600 has-disabled:bg-gray-100"
 >
   <label
-    [attr.for]="id"
+    [attr.for]="inputId()"
     class="block text-xs text-gray-500 transition-colors group-focus-within:text-violet-600"
   >
     {{ label() + requiredMark() }}
   </label>
-
-  <input
-    [id]="id"
-    [formControl]="formControl()"
-    type="time"
-    step="1"
-    autocomplete="off"
-    class="peer w-full bg-transparent text-base text-black outline-none disabled:text-gray-500"
-  />
+  <ng-content></ng-content>
 </div>

@@ -80,8 +80,11 @@ export class FormControlService {
     const control = this.getOrAddControl(field.Property, formRecord);
 
     applyMetadata(MetadataType.Required, (value) => {
+      const original = control.hasValidator(Validators.required);
+      if (original == value) return;
       if (value) control.addValidators(Validators.required);
       else control.removeValidators(Validators.required);
+      control.updateValueAndValidity();
     });
 
     applyMetadata(MetadataType.Enabled, (value) => {

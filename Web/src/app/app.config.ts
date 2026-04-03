@@ -10,12 +10,10 @@ import { provideCustomButton, provideCustomInput } from './field-resolution/cust
 import { CustomLabelValue } from './custom-field/custom-label-value/custom-label-value';
 import { CustomButton } from './custom-field/custom-button/custom-button';
 import { CustomCheckbox } from './custom-field/custom-checkbox/custom-checkbox';
-import { CustomTextInput } from './custom-field/custom-text-input/custom-text-input';
 import { CustomNumberInput } from './custom-field/custom-number-input/custom-number-input';
-import { CustomDateInput } from './custom-field/custom-date-input/custom-date-input';
-import { CustomTextAreaInput } from './custom-field/custom-text-area-input/custom-text-area-input';
-import { CustomTimeInput } from './custom-field/custom-time-input/custom-time-input';
+import { CustomTextArea } from './custom-field/custom-text-area/custom-text-area';
 import { FieldType, RecalculateEventClient } from './api/api.g';
+import { createStandardCustomInput } from './custom-field/standard-custom-input';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,11 +25,11 @@ export const appConfig: ApplicationConfig = {
     provideCustomButton(CustomButton),
     provideCustomInput(FieldType.LabelValue, CustomLabelValue),
     provideCustomInput(FieldType.CheckBox, CustomCheckbox),
-    provideCustomInput(FieldType.Text, CustomTextInput),
+    provideCustomInput(FieldType.Text, createStandardCustomInput('text')),
     provideCustomInput(FieldType.Numeric, CustomNumberInput),
     provideCustomInput(FieldType.Currency, CustomNumberInput),
-    provideCustomInput(FieldType.Date, CustomDateInput),
-    provideCustomInput(FieldType.TextArea, CustomTextAreaInput),
-    provideCustomInput(FieldType.Time, CustomTimeInput),
+    provideCustomInput(FieldType.Date, createStandardCustomInput('date')),
+    provideCustomInput(FieldType.TextArea, CustomTextArea),
+    provideCustomInput(FieldType.Time, createStandardCustomInput('time')),
   ],
 };
