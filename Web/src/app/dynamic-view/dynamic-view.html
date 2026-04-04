@@ -1,17 +1,30 @@
 @if (title(); as title) {
-  <h2 class="text-lg font-bold col-span-12 content-center">{{ title }}</h2>
+  <h2 class="h-12 col-span-12 text-lg font-semibold px-4 content-center border-b-gray-200 border-b">
+    {{ title }}
+  </h2>
 }
-@if (combinedViews(); as views) {
-  @for (childView of views; track $index) {
-    <app-dynamic-view [formView]="childView" [modelFormGroup]="modelFormGroup()"></app-dynamic-view>
+<div
+  [ngClass]="[
+    'grid grid-cols-12 gap-4 col-span-12 content-start',
+    shouldStyleUnifiedView() && !subpropertyGridView() ? 'm-4' : '',
+  ]"
+>
+  @if (combinedViews(); as views) {
+    @for (childView of views; track $index) {
+      <app-dynamic-view
+        [formView]="childView"
+        [modelFormGroup]="modelFormGroup()"
+        [alreadyInUnifiedView]="shouldStyleUnifiedView() || alreadyInUnifiedView()"
+      ></app-dynamic-view>
+    }
+  } @else if (fieldView(); as view) {
+    @for (field of view.Fields; track $index) {
+      <app-dynamic-field [field]="field" [modelFormGroup]="modelFormGroup()"></app-dynamic-field>
+    }
+  } @else if (subpropertyGridView(); as view) {
+    <app-subproperty-grid-view
+      [gridView]="view"
+      [modelFormGroup]="modelFormGroup()"
+    ></app-subproperty-grid-view>
   }
-} @else if (fieldView(); as view) {
-  @for (field of view.Fields; track $index) {
-    <app-dynamic-field [field]="field" [modelFormGroup]="modelFormGroup()"></app-dynamic-field>
-  }
-} @else if (subpropertyGridView(); as view) {
-  <app-subproperty-grid-view
-    [gridView]="view"
-    [modelFormGroup]="modelFormGroup()"
-  ></app-subproperty-grid-view>
-}
+</div>

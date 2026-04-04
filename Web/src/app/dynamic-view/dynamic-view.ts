@@ -5,22 +5,33 @@ import { FormGroup } from '@angular/forms';
 import { applyPropertyOrConstant } from '../utils/api-utils';
 import { SubpropertyGridViewComponent } from '../grid/subproperty-grid-view/subproperty-grid-view';
 import { BaseViewDefinition } from '../api/api.g';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-dynamic-view',
   host: {
-    '[class]': 'width() + " grid grid-cols-12 gap-4 content-start"',
+    '[class]': 'classes',
   },
-  imports: [DynamicField, SubpropertyGridViewComponent],
+  imports: [DynamicField, SubpropertyGridViewComponent, NgClass],
   templateUrl: './dynamic-view.html',
 })
 export class DynamicView implements OnInit {
   readonly formView = input.required<BaseViewDefinition>();
   readonly modelFormGroup = input.required<FormGroup>();
+  readonly alreadyInUnifiedView = input(false);
   title = signal('');
 
   ngOnInit(): void {
     applyPropertyOrConstant(this.formView().Title, this.modelFormGroup(), this.title.set);
+  }
+
+  get classes(): string {
+    return [
+      this.width(),
+      this.shouldStyleUnifiedView()
+        ? 'bg-white rounded-lg shadow'
+        : 'grid grid-cols-12 gap-4 content-start',
+    ].join(' ');
   }
 
   readonly combinedViews = computed(() => {
@@ -37,4 +48,9 @@ export class DynamicView implements OnInit {
     return view.$type == 'subpropertygridview' ? view : null;
   });
   readonly width = computed(() => widthToCss(this.formView().Width));
+
+  readonly shouldStyleUnifiedView = computed(() => {
+    const view = this.formView();
+    return !this.alreadyInUnifiedView() && (view.$type !== 'combinedview' || view.Unify);
+  });
 }

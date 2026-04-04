@@ -1,6 +1,6 @@
-<table ngGrid class="rounded-lg ring-1 ring-gray-400">
+<table ngGrid>
   <thead>
-    <tr ngGridRow>
+    <tr ngGridRow class="">
       @for (label of labels; track $index) {
         <th ngGridCell>{{ label }}</th>
       }

@@ -6,17 +6,17 @@ namespace Sample;
 
 public class TestForm : FormBuilder<TestModel>
 {
-    protected override ViewBuilder<TestModel> View => new CombinedViewBuilder<TestModel>("A Sample Form")
+    protected override ViewBuilder<TestModel> View => new CombinedViewBuilder<TestModel>()
     {
         TopLeftView(),
         TopRightView(),
-        BottomView(),
+        NestedCombinedView(),
         GridView()
     };
 
     private static ViewBuilder<TestModel> TopLeftView()
     {
-        return new FieldViewBuilder<TestModel>(width: 4)
+        return new FieldViewBuilder<TestModel>("Top left view", width: 4)
         {
             { m => m.TextField, p =>
             {
@@ -38,9 +38,18 @@ public class TestForm : FormBuilder<TestModel>
         };
     }
 
+    private static CombinedViewBuilder<TestModel> NestedCombinedView()
+    {
+        return new CombinedViewBuilder<TestModel>(unify: true)
+        {
+        BottomView(),
+        BottomViewRight()
+        };
+    }
+
     private static ViewBuilder<TestModel> BottomView()
     {
-        return new FieldViewBuilder<TestModel>()
+        return new FieldViewBuilder<TestModel>(width: 8)
         {
             {m => m.NumericField, p =>
                 {
@@ -49,12 +58,19 @@ public class TestForm : FormBuilder<TestModel>
                 }
             },
             { m => m.ResultNumberPlus1, p => p.Width = 6},
-            m => m.CheckBox,
-            m => m.StaticTextAtTheBottom,
-            m => m.AdditionalMessage,
             { m => m.SetTheLabelOnAnotherField, p => p.Enabled = Property(m => m.CheckBox) },
             m => m.TextAreaInput,
             m => m.TimeInput
+        };
+    }
+
+    private static ViewBuilder<TestModel> BottomViewRight()
+    {
+        return new FieldViewBuilder<TestModel>("Inner View", width: 4)
+        {
+            m => m.CheckBox,
+            m => m.StaticTextAtTheBottom,
+            m => m.AdditionalMessage,
         };
     }
 

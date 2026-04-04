@@ -6,4 +6,6 @@ public sealed record class CombinedViewDefinition : BaseViewDefinition
 {
     [Required]
     public required IEnumerable<BaseViewDefinition> Views { get; init; }
+    [Required]
+    public bool Unify { get; set; }
 }

@@ -1,5 +1,9 @@
 @if (formGroup && formDefinition) {
-  <form (ngSubmit)="onSubmit()" [formGroup]="formGroup" class="grid grid-cols-12 gap-4 p-4">
+  <form
+    (ngSubmit)="onSubmit()"
+    [formGroup]="formGroup"
+    class="p-4 min-[72rem]:max-w-6xl 2xl:max-w-3/4 w-full m-auto"
+  >
     <app-dynamic-view
       [formView]="formDefinition.View"
       [modelFormGroup]="formGroup"
