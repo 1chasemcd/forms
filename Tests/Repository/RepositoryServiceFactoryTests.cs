@@ -2,7 +2,6 @@ using System.Text.Json;
 using FormsApi.Definition.Primitives;
 using FormsApi.Repository;
 using FormsApi.Repository.Handler;
-using FormsApi.Repository.Query;
 using FormsApi.Repository.Service;
 using Moq;
 
@@ -24,8 +23,8 @@ public class RepositoryServiceFactoryTests
             .Setup(r => r.SaveAsync(It.IsAny<TestModel>()));
 
         _repoMock.As<IRepositoryQueryHandler<TestModel>>()
-            .Setup(r => r.QueryAsync(It.IsAny<QueryCriteria>()))
-            .ReturnsAsync(new List<TestModel>());
+            .Setup(r => r.QueryAsync())
+            .ReturnsAsync(new List<TestModel>().AsQueryable());
         _repoMock.As<IRepositoryDeleteHandler<TestModel>>()
             .Setup(r => r.DeleteAsync(It.IsAny<TestModel>()));
 
@@ -52,12 +51,11 @@ public class RepositoryServiceFactoryTests
     public void BuildQueryService_ReturnsQueryService()
     {
         var type = new SerializedType(typeof(TestModel));
-        var criteria = new QueryCriteria();
-        IRepositoryCallable service = _factory.BuildQueryService(type, criteria);
+        IRepositoryCallable service = _factory.BuildQueryService(type, "");
         Assert.That(service, Is.InstanceOf<RepositoryQueryService<TestModel>>());
 
         service.Invoke();
-        _repoMock.As<IRepositoryQueryHandler<TestModel>>().Verify(r => r.QueryAsync(criteria), Times.Once);
+        _repoMock.As<IRepositoryQueryHandler<TestModel>>().Verify(r => r.QueryAsync(), Times.Once);
     }
 
     [Test]

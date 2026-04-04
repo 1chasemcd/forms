@@ -1,5 +1,4 @@
 using FormsApi.Repository.Handler;
-using FormsApi.Repository.Query;
 using FormsApi.Repository.Service;
 using Moq;
 
@@ -89,7 +88,7 @@ public class RepositoryResolverTests
     private class TestRepository<T> : IRepositoryCreateHandler<T>, IRepositorySaveHandler<T>, IRepositoryQueryHandler<T>, IRepositoryDeleteHandler<T>
     {
         public Task DeleteAsync(T toDelete) => throw new NotImplementedException();
-        public Task<IEnumerable<T>> QueryAsync(QueryCriteria criteria) => throw new NotImplementedException();
+        public Task<IQueryable<T>> QueryAsync() => throw new NotImplementedException();
         public Task<T> CreateAsync() => throw new NotImplementedException();
         public Task SaveAsync(T toSave) => throw new NotImplementedException();
     }

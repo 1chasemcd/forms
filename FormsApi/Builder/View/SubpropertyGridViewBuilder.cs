@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq.Expressions;
 using FormsApi.Builder.Field;
+using FormsApi.Definition.Primitives;
 using FormsApi.Definition.View;
 
 namespace FormsApi.Builder.View;
@@ -19,6 +20,15 @@ public class SubPropertyGridViewBuilder<TModel, TSub>(
     public FormBuilder<TSub>? EditForm { get; set; }
     public IList<IFieldBuilder<TSub>> Fields { get; } = [];
 
+    private PropertyOrConstantBuilder<TSub, bool>? _selectionProperty;
+    private GridSelectionType _selectionType;
+    public SubPropertyGridViewBuilder<TModel, TSub> EnableSelection(Expression<Func<TSub, bool>> selectionProperty, GridSelectionType selectionType = GridSelectionType.Multiple)
+    {
+        _selectionProperty = selectionProperty;
+        _selectionType = selectionType;
+        return this;
+    }
+
     public IEnumerator GetEnumerator() => Fields.GetEnumerator();
     protected override BaseViewDefinition BuildImpl()
     {
@@ -32,7 +42,12 @@ public class SubPropertyGridViewBuilder<TModel, TSub>(
             CanEditRow = CanEditRow?.Build(),
             CanDelete = CanDelete?.Build(),
             CanDeleteRow = CanDeleteRow?.Build(),
-            EditForm = EditForm?.Build()
+            EditForm = EditForm?.Build(),
+            SelectionOptions = _selectionProperty != null ? new GridSelectionOptions
+            {
+                SelectionProperty = _selectionProperty.Build(),
+                SelectionType = _selectionType
+            } : null
         };
     }
 }

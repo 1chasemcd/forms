@@ -1,7 +1,6 @@
 using System.Text.Json;
 using FormsApi.Definition.Primitives;
 using FormsApi.Repository.Handler;
-using FormsApi.Repository.Query;
 
 namespace FormsApi.Repository.Service;
 
@@ -9,7 +8,7 @@ public interface IRepositoryServiceFactory
 {
     IRepositoryCallable BuildCreateService(SerializedType type);
     IRepositoryCallable BuildDeleteService(SerializedType type, object model);
-    IRepositoryCallable BuildQueryService(SerializedType type, QueryCriteria criteria);
+    IRepositoryCallable BuildQueryService(SerializedType type, string criteria);
     IRepositoryCallable BuildSaveService(SerializedType type, object model);
 }
 
@@ -19,7 +18,7 @@ internal sealed class RepositoryServiceFactory(IRepositoryResolver resolver) : I
         Build(typeof(RepositoryCreateService<>), typeof(IRepositoryCreateHandler<>), type);
     public IRepositoryCallable BuildDeleteService(SerializedType type, object model) =>
         Build(typeof(RepositoryDeleteService<>), typeof(IRepositoryDeleteHandler<>), type, model);
-    public IRepositoryCallable BuildQueryService(SerializedType type, QueryCriteria criteria) =>
+    public IRepositoryCallable BuildQueryService(SerializedType type, string criteria) =>
         Build(typeof(RepositoryQueryService<>), typeof(IRepositoryQueryHandler<>), type, criteria);
     public IRepositoryCallable BuildSaveService(SerializedType type, object model) =>
         Build(typeof(RepositorySaveService<>), typeof(IRepositorySaveHandler<>), type, model);

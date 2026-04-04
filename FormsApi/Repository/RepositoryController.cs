@@ -1,8 +1,10 @@
 using System.Text.Json;
 using FormsApi.Definition.Primitives;
-using FormsApi.Repository.Query;
 using FormsApi.Repository.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.OData.Edm;
+using Microsoft.OData.ModelBuilder;
 
 namespace FormsApi.Repository;
 
@@ -10,16 +12,17 @@ namespace FormsApi.Repository;
 [Route("api/[controller]")]
 public sealed class RepositoryController(IRepositoryServiceFactory factory) : ControllerBase
 {
-    [HttpPost("get/{type}")]
-    public async Task<IActionResult> GetAsync(
-        [FromRoute] SerializedType type,
-        [FromBody] QueryCriteria criteria)
+    [HttpPost("query/{type}")]
+    public async Task<IActionResult> QueryAsync(
+        [FromRoute] SerializedType type, ODataQueryOptions options)
     {
-        IRepositoryCallable service = factory.BuildQueryService(type, criteria);
-        if (await service.Invoke() is not IEnumerable<object> result)
+        IRepositoryCallable service = factory.BuildQueryService(type, "");
+
+        if (await service.Invoke() is not IQueryable result)
             return NotFound();
-        return SerializeResult(result);
+        return SerializeResult(options.ApplyTo(result));
     }
+
     [HttpPost("getnew/{type}")]
     public async Task<IActionResult> CreateAsync([FromRoute] SerializedType type)
     {

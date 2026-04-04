@@ -27,7 +27,10 @@ public static class Program
 
         builder.Services.AddForms(formsSetup => formsSetup
             .AddForm<TestForm>("home")
+            .AddForm<GridForm>("grid")
+            .AddForm<UserEditForm>("user")
             .AddRepository<ModelRepository>()
+            .AddRepository<UserRepository>()
         );
 
         builder.Services.AddSingleton<TestService>();
