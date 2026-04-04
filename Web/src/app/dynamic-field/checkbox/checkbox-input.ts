@@ -1,14 +1,12 @@
 import { Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { CheckboxInput } from './checkbox-input';
 
 @Component({
-  selector: 'app-checkbox',
-  imports: [ReactiveFormsModule, CheckboxInput],
-  templateUrl: './checkbox.html',
+  selector: 'app-checkbox-input',
+  imports: [ReactiveFormsModule],
+  templateUrl: './checkbox-input.html',
 })
-export class Checkbox {
-  readonly label = input.required<string>();
+export class CheckboxInput {
   readonly control = input.required<FormControl>();
   readonly recalculateEvent = output();
 }

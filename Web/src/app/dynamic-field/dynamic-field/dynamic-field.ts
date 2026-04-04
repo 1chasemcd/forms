@@ -24,7 +24,6 @@ import { StandardInputWrapper } from '../standard-input/standard-input-wrapper';
     DynamicInput,
     StandardInputWrapper,
   ],
-  providers: [RecalculateEventService],
 })
 export class DynamicField implements OnInit {
   readonly FieldType = FieldType;
@@ -53,17 +52,6 @@ export class DynamicField implements OnInit {
       this.modelFormGroup(),
       this.label.set,
     );
-  }
-
-  private initialValue = '';
-
-  onFocus() {
-    this.initialValue = this.control().value;
-  }
-
-  onBlur() {
-    if (this.initialValue === this.control().value) return;
-    this.executeRecalculate();
   }
 
   executeRecalculate() {

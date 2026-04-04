@@ -4,10 +4,11 @@ import { FieldDefinition, FieldType, MetadataType, RecalculateEvent } from '../.
 import { DynamicInput } from '../../dynamic-field/dynamic-input/dynamic-input';
 import { getMetadata } from '../../utils/api-utils';
 import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
+import { CheckboxInput } from '../../dynamic-field/checkbox/checkbox-input';
 
 @Component({
   selector: 'app-grid-cell',
-  imports: [ReactiveFormsModule, DynamicInput],
+  imports: [ReactiveFormsModule, DynamicInput, CheckboxInput],
   templateUrl: './grid-cell.html',
 })
 export class GridCell {

@@ -19,8 +19,12 @@
       <app-label-value [label]="label()" [control]="control()"></app-label-value>
     }
     @default {
-      <app-standard-input-wrapper (focusin)="onFocus()" (focusout)="onBlur()" [label]="label()">
-        <app-dynamic-input [control]="control()" [fieldType]="field().Type"></app-dynamic-input>
+      <app-standard-input-wrapper [label]="label()">
+        <app-dynamic-input
+          [control]="control()"
+          [fieldType]="field().Type"
+          (recalculateEvent)="executeRecalculate()"
+        ></app-dynamic-input>
       </app-standard-input-wrapper>
     }
   }

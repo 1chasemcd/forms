@@ -1,9 +1,24 @@
 @switch (field().Type) {
   @case (FieldType.Button) {}
-  @case (FieldType.CheckBox) {}
   @case (FieldType.LabelValue) {}
-  @case (FieldType.TextArea) {}
+  @case (FieldType.TextArea) {
+    <app-dynamic-input
+      [control]="control()"
+      [fieldType]="FieldType.Text"
+      (recalculateEvent)="executeRecalculate()"
+    ></app-dynamic-input>
+  }
+  @case (FieldType.CheckBox) {
+    <app-checkbox-input
+      [control]="control()"
+      (recalculateEvent)="executeRecalculate()"
+    ></app-checkbox-input>
+  }
   @default {
-    <app-dynamic-input [control]="control()" [fieldType]="field().Type"></app-dynamic-input>
+    <app-dynamic-input
+      [control]="control()"
+      [fieldType]="field().Type"
+      (recalculateEvent)="executeRecalculate()"
+    ></app-dynamic-input>
   }
 }
