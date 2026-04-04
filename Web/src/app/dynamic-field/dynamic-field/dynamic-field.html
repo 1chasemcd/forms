@@ -1,5 +1,5 @@
 @if (visible()) {
-  @switch (field().Type) {
+  @switch (field().type) {
     @case (FieldType.Button) {
       <app-button
         [field]="field()"
@@ -22,7 +22,7 @@
       <app-standard-input-wrapper [label]="label()">
         <app-dynamic-input
           [control]="control()"
-          [fieldType]="field().Type"
+          [fieldType]="field().type"
           (recalculateEvent)="executeRecalculate()"
         ></app-dynamic-input>
       </app-standard-input-wrapper>

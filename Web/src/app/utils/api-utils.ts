@@ -7,14 +7,14 @@ export function applyPropertyOrConstant<T>(
   callback: (value: T) => void,
 ) {
   if (poc === null || poc === undefined) return;
-  if (poc.$type === 'constant') callback(poc.Value);
+  if (poc.$type === 'constant') callback(poc.value);
   else {
-    const propertyControl = formGroup.get(poc.Value);
+    const propertyControl = formGroup.get(poc.value);
     propertyControl?.valueChanges.subscribe(callback);
   }
 }
 
 export function getMetadata<T>(field: FieldDefinition, type: MetadataType) {
-  const metadata = field.FieldMetadatas?.find((x) => x.Type == type);
-  return metadata?.Value as T | undefined;
+  const metadata = field.fieldMetadatas?.find((x) => x.type == type);
+  return metadata?.value as T | undefined;
 }

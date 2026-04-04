@@ -13,13 +13,13 @@ export class RecalculateEventService {
     const propertiesToSend = this.formModelService.toRecord(model);
 
     this.recalculateEventClient
-      .performAction(recalculateEvent.Service, recalculateEvent.Method, propertiesToSend)
+      .performAction(recalculateEvent.service, recalculateEvent.method, propertiesToSend)
       .pipe(
         catchError((error) => {
           console.log(error);
           return throwError(() => error);
         }),
       )
-      .subscribe((result) => this.formModelService.patchValues(model, result.Model));
+      .subscribe((result) => this.formModelService.patchValues(model, result.model));
   }
 }

@@ -22,7 +22,7 @@ export class DynamicView implements OnInit {
   title = signal('');
 
   ngOnInit(): void {
-    applyPropertyOrConstant(this.formView().Title, this.modelFormGroup(), this.title.set);
+    applyPropertyOrConstant(this.formView().title, this.modelFormGroup(), this.title.set);
   }
 
   get classes(): string {
@@ -36,7 +36,7 @@ export class DynamicView implements OnInit {
 
   readonly combinedViews = computed(() => {
     const view = this.formView();
-    return view.$type === 'combinedview' ? view.Views : null;
+    return view.$type === 'combinedview' ? view.views : null;
   });
 
   readonly fieldView = computed(() => {
@@ -47,10 +47,10 @@ export class DynamicView implements OnInit {
     const view = this.formView();
     return view.$type == 'subpropertygridview' ? view : null;
   });
-  readonly width = computed(() => widthToCss(this.formView().Width));
+  readonly width = computed(() => widthToCss(this.formView().width));
 
   readonly shouldStyleUnifiedView = computed(() => {
     const view = this.formView();
-    return !this.alreadyInUnifiedView() && (view.$type !== 'combinedview' || view.Unify);
+    return !this.alreadyInUnifiedView() && (view.$type !== 'combinedview' || view.unify);
   });
 }

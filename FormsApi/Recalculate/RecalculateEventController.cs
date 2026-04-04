@@ -45,7 +45,7 @@ public sealed class RecalculateEventController(IServiceProvider serviceProvider)
         object? model = args.Length > 0 ? args[0] : null;
         return Ok(new RecalculateEventResult
         {
-            Model = model,
+            Model = JsonSerializer.SerializeToElement(model),
             PostEvent = result as PostRecalculateEvent
         });
     }

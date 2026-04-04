@@ -26,7 +26,7 @@ export class FormControlService {
 
   createFromDefinition(form: FormDefinition) {
     const formRecord: FormRecord = {};
-    if (form.View) this.processView(form.View, formRecord);
+    if (form.view) this.processView(form.view, formRecord);
 
     return new FormGroup(formRecord);
   }
@@ -37,7 +37,7 @@ export class FormControlService {
         this.processCombinedView(view, formRecord);
         break;
       case 'fieldview':
-        view.Fields?.forEach((f) => this.processField(f, formRecord));
+        view.fields?.forEach((f) => this.processField(f, formRecord));
         break;
       case 'subpropertygridview':
         this.processGridView(view, formRecord);
@@ -46,37 +46,37 @@ export class FormControlService {
   }
 
   private processCombinedView(view: CombinedViewDefinition, formRecord: FormRecord) {
-    view.Views?.forEach((v) => this.processView(v, formRecord));
+    view.views?.forEach((v) => this.processView(v, formRecord));
   }
 
   private processGridView(view: SubPropertyGridViewDefinition, formRecord: FormRecord) {
     const formArray = new FormArray<FormGroup>([]);
-    formRecord[view.SubPropertyName] = formArray;
+    formRecord[view.subPropertyName] = formArray;
 
-    this.gridDefinitionService.registerDefinition(view.SubPropertyName, () => {
+    this.gridDefinitionService.registerDefinition(view.subPropertyName, () => {
       const controls: Record<string, FormControl> = {};
-      view.Fields?.forEach((f) => this.processField(f, controls));
+      view.fields?.forEach((f) => this.processField(f, controls));
       return new FormGroup(controls);
     });
   }
 
   private processField(field: FieldDefinition, formRecord: FormRecord) {
     const hasMetadata = (type: MetadataType) =>
-      field.FieldMetadatas?.find((x) => x.Type == type) !== undefined;
+      field.fieldMetadatas?.find((x) => x.type == type) !== undefined;
 
     const applyMetadata = <T>(type: MetadataType, callback: (value: T) => void) => {
       const poc = getMetadata<PropertyOrConstant>(field, type);
       if (poc === null || poc === undefined) return;
 
-      if (poc.$type === 'constant') callback(poc.Value);
+      if (poc.$type === 'constant') callback(poc.value);
       else {
-        const propertyControl = this.getOrAddControl(poc.Value, formRecord);
+        const propertyControl = this.getOrAddControl(poc.value, formRecord);
         propertyControl.valueChanges.subscribe(callback);
       }
     };
 
-    const control = this.getOrAddControl(field.Property, formRecord);
-    if (field.Type == FieldType.Button) return;
+    const control = this.getOrAddControl(field.property, formRecord);
+    if (field.type == FieldType.Button) return;
 
     applyMetadata(MetadataType.Required, (value) => {
       const original = control.hasValidator(Validators.required);

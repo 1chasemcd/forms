@@ -18,7 +18,7 @@
       ></app-dynamic-view>
     }
   } @else if (fieldView(); as view) {
-    @for (field of view.Fields; track $index) {
+    @for (field of view.fields; track $index) {
       <app-dynamic-field [field]="field" [modelFormGroup]="modelFormGroup()"></app-dynamic-field>
     }
   } @else if (subpropertyGridView(); as view) {

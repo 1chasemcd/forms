@@ -9,14 +9,14 @@
   </div>
 
   <!-- Rows -->
-  @for (row of formArray().controls; track row.get(gridView().IdProperty)) {
+  @for (row of formArray().controls; track row.get(gridView().idProperty)) {
     <div
       ngGridRow
       class="grid border-t border-gray-200 hover:bg-violet-50"
       [style.gridTemplateColumns]="gridTemplateColumns()"
       [formGroup]="row"
     >
-      @for (column of gridView().Fields; track $index) {
+      @for (column of gridView().fields; track $index) {
         <div
           ngGridCell
           class="px-4 py-2 has-enabled:hover:ring focus-within:ring focus-within:ring-violet-600 ring-gray-400 rounded-sm"

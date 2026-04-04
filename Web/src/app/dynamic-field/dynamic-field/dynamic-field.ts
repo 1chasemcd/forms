@@ -33,7 +33,7 @@ export class DynamicField implements OnInit {
 
   readonly width = computed(() => widthToCss(getMetadata(this.field(), MetadataType.Width)));
   readonly control = computed(
-    () => this.modelFormGroup().get(this.field().Property) as FormControl,
+    () => this.modelFormGroup().get(this.field().property) as FormControl,
   );
   readonly visible = signal(true);
   readonly label = signal('');

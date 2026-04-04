@@ -1,4 +1,6 @@
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Text.Json;
 
 namespace FormsApi.Builder;
 
@@ -6,14 +8,23 @@ public sealed class ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, 
 {
     public string Build()
     {
-        if (selector.Body is UnaryExpression unary &&
-            unary.Operand is MemberExpression member1)
-            return member1.Member.Name;
 
-        if (selector.Body is MemberExpression member2)
-            return member2.Member.Name;
+        var memberExpr = selector.Body switch
+        {
+            MemberExpression m => m,
+            UnaryExpression { Operand: MemberExpression m } => m,
+            _ => null
+        };
 
-        throw new InvalidOperationException($"Expression '{selector}' must be a member access");
+        if (memberExpr?.Member is not PropertyInfo prop)
+            throw new InvalidOperationException(
+                $"Expression '{selector}' must be a property access");
+
+        if (memberExpr.Expression is not ParameterExpression)
+            throw new InvalidOperationException(
+                $"Expression '{selector}' must access a direct property (no nesting)");
+
+        return prop.Name;
     }
 
     public static implicit operator ModelMemberBuilder<TModel, TMember>(Expression<Func<TModel, TMember?>> selector1) => new(selector1);

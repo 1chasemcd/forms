@@ -1,4 +1,4 @@
-@switch (field().Type) {
+@switch (field().type) {
   @case (FieldType.Button) {}
   @case (FieldType.LabelValue) {}
   @case (FieldType.TextArea) {
@@ -17,7 +17,7 @@
   @default {
     <app-dynamic-input
       [control]="control()"
-      [fieldType]="field().Type"
+      [fieldType]="field().type"
       (recalculateEvent)="executeRecalculate()"
     ></app-dynamic-input>
   }

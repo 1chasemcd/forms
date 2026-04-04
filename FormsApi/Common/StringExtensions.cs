@@ -18,10 +18,14 @@ internal static class StringExtensions
 
         for (int i = 0; i < input.Length; i++)
         {
-            if (char.IsUpper(input[i]))
-                words.Add("");
+            if (char.IsUpper(input[i]) || i == 0)
+                words.Add(string.Empty);
 
             words[words.Count - 1] += input[i];
+
+            // Ensure first character is alwasy capitalized
+            if (words.Last().Length == 1)
+                words[words.Count - 1] = words[words.Count - 1].ToUpper();
         }
 
         if (words.Count <= 2) return string.Join(' ', words);

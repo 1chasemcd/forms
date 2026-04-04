@@ -19,11 +19,11 @@ export class SubpropertyGridViewComponent implements OnInit {
   readonly labels: string[] = [];
 
   readonly formArray = computed(
-    () => this.modelFormGroup().get(this.gridView().SubPropertyName) as FormArray<FormGroup>,
+    () => this.modelFormGroup().get(this.gridView().subPropertyName) as FormArray<FormGroup>,
   );
 
   ngOnInit() {
-    for (const field of this.gridView().Fields) {
+    for (const field of this.gridView().fields) {
       const index = this.labels.push('') - 1;
       applyPropertyOrConstant(
         getMetadata(field, MetadataType.Label),
@@ -40,7 +40,7 @@ export class SubpropertyGridViewComponent implements OnInit {
   });
 
   private readonly columnSpans = computed(() => {
-    const columns = this.gridView().Fields;
+    const columns = this.gridView().fields;
 
     const explicit = columns.map((c) => this.getFieldWidth(c));
     const definedTotal = explicit.reduce((sum, w) => (sum ?? 0) + (w ?? 0), 0) ?? 0;

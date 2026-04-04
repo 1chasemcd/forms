@@ -57,9 +57,9 @@ export class DynamicForm implements OnInit {
     if (form == null) return;
     this.formDefinition = form;
     this.formGroup = this.formControlService.createFromDefinition(form);
-    if (form.ModelType)
+    if (form.modelType)
       this.repositoryClient
-        .create(form.ModelType)
+        .create(form.modelType)
         .subscribe((r) => this.handleRepositoryResponse(r));
   }
 

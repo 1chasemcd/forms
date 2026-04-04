@@ -19,7 +19,7 @@ export class GridCell {
 
   private readonly recalculateEventService = inject(RecalculateEventService);
 
-  readonly control = computed(() => this.rowFormGroup().get(this.field().Property) as FormControl);
+  readonly control = computed(() => this.rowFormGroup().get(this.field().property) as FormControl);
 
   executeRecalculate() {
     const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
