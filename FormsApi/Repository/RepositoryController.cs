@@ -1,10 +1,8 @@
+using System.Collections;
 using System.Text.Json;
 using FormsApi.Definition.Primitives;
 using FormsApi.Repository.Service;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
-using Microsoft.OData.Edm;
-using Microsoft.OData.ModelBuilder;
 
 namespace FormsApi.Repository;
 
@@ -12,29 +10,40 @@ namespace FormsApi.Repository;
 [Route("api/[controller]")]
 public sealed class RepositoryController(IRepositoryServiceFactory factory) : ControllerBase
 {
-    [HttpPost("query/{type}")]
-    public async Task<IActionResult> QueryAsync(
-        [FromRoute] SerializedType type, ODataQueryOptions options)
+    [HttpPost("getall/{type}")]
+    public async Task<IActionResult> GetAllAsync([FromRoute] SerializedType type)
     {
-        IRepositoryCallable service = factory.BuildQueryService(type, "");
+        IRepositoryCallable service = factory.BuildQueryService(type);
 
-        if (await service.Invoke() is not IQueryable result)
+        if (await service.Invoke() is not IEnumerable result)
             return NotFound();
-        return SerializeResult(options.ApplyTo(result));
+        return SerializeResult(result.Cast<object>().ToList());
+    }
+    [HttpPost("get/{type}/{id}")]
+    public async Task<IActionResult> GetAsync(
+    [FromRoute] SerializedType type, [FromRoute] string id)
+    {
+        IRepositoryCallable service = factory.BuildQueryService(type, id);
+
+        if (await service.Invoke() is not { } result)
+            return NotFound();
+        return SerializeResult(result);
     }
 
     [HttpPost("getnew/{type}")]
     public async Task<IActionResult> CreateAsync([FromRoute] SerializedType type)
     {
         IRepositoryCallable service = factory.BuildCreateService(type);
-        object result = await service.Invoke();
+        if (await service.Invoke() is not { } result)
+            return Problem();
         return SerializeResult(result);
     }
 
     [HttpPost("save/{type}")]
     public async Task<IActionResult> SaveAsync([FromRoute] SerializedType type, [FromBody] JsonElement body)
     {
-        object obj = body.Deserialize(type.GetRuntimeType()) ?? throw new InvalidOperationException("Could not deserialize to type");
+        if (body.Deserialize(type.GetRuntimeType()) is not { } obj)
+            return Problem();
         IRepositoryCallable service = factory.BuildSaveService(type, obj);
         await service.Invoke();
         return NoContent();
@@ -45,7 +54,8 @@ public sealed class RepositoryController(IRepositoryServiceFactory factory) : Co
         [FromRoute] SerializedType type,
         [FromBody] JsonElement body)
     {
-        object obj = body.Deserialize(type.GetRuntimeType()) ?? throw new InvalidOperationException("Could not deserialize to type");
+        if (body.Deserialize(type.GetRuntimeType()) is not { } obj)
+            return Problem();
         IRepositoryCallable service = factory.BuildDeleteService(type, obj);
         await service.Invoke();
         return NoContent();

@@ -88,8 +88,9 @@ public class RepositoryResolverTests
     private class TestRepository<T> : IRepositoryCreateHandler<T>, IRepositorySaveHandler<T>, IRepositoryQueryHandler<T>, IRepositoryDeleteHandler<T>
     {
         public Task DeleteAsync(T toDelete) => throw new NotImplementedException();
-        public Task<IQueryable<T>> QueryAsync() => throw new NotImplementedException();
         public Task<T> CreateAsync() => throw new NotImplementedException();
         public Task SaveAsync(T toSave) => throw new NotImplementedException();
+        public Task<IEnumerable<T>> GetAllAsync() => throw new NotImplementedException();
+        public Task<T?> GetAsync(string id) => throw new NotImplementedException();
     }
 }

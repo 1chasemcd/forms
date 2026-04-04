@@ -21,10 +21,12 @@ public class RepositoryServiceFactoryTests
             .ReturnsAsync(new TestModel());
         _repoMock.As<IRepositorySaveHandler<TestModel>>()
             .Setup(r => r.SaveAsync(It.IsAny<TestModel>()));
-
         _repoMock.As<IRepositoryQueryHandler<TestModel>>()
-            .Setup(r => r.QueryAsync())
-            .ReturnsAsync(new List<TestModel>().AsQueryable());
+            .Setup(r => r.GetAllAsync())
+            .ReturnsAsync(new List<TestModel>());
+        _repoMock.As<IRepositoryQueryHandler<TestModel>>()
+            .Setup(r => r.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync(new TestModel());
         _repoMock.As<IRepositoryDeleteHandler<TestModel>>()
             .Setup(r => r.DeleteAsync(It.IsAny<TestModel>()));
 
@@ -48,14 +50,25 @@ public class RepositoryServiceFactoryTests
     }
 
     [Test]
-    public void BuildQueryService_ReturnsQueryService()
+    public void BuildQueryService_ReturnsQueryService_GetAllMethod()
     {
         var type = new SerializedType(typeof(TestModel));
-        IRepositoryCallable service = _factory.BuildQueryService(type, "");
+        IRepositoryCallable service = _factory.BuildQueryService(type);
         Assert.That(service, Is.InstanceOf<RepositoryQueryService<TestModel>>());
 
         service.Invoke();
-        _repoMock.As<IRepositoryQueryHandler<TestModel>>().Verify(r => r.QueryAsync(), Times.Once);
+        _repoMock.As<IRepositoryQueryHandler<TestModel>>().Verify(r => r.GetAllAsync(), Times.Once);
+    }
+
+    [Test]
+    public void BuildQueryService_ReturnsQueryService_GetMethod()
+    {
+        var type = new SerializedType(typeof(TestModel));
+        IRepositoryCallable service = _factory.BuildQueryService(type, "1");
+        Assert.That(service, Is.InstanceOf<RepositoryQueryService<TestModel>>());
+
+        service.Invoke();
+        _repoMock.As<IRepositoryQueryHandler<TestModel>>().Verify(r => r.GetAsync("1"), Times.Once);
     }
 
     [Test]

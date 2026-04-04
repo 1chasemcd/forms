@@ -14,8 +14,4 @@
     <Folder Include="Definition/Metadata/" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OData" Version="9.4.1" />
-  </ItemGroup>
-
 </Project>

@@ -8,7 +8,8 @@ public interface IRepositoryServiceFactory
 {
     IRepositoryCallable BuildCreateService(SerializedType type);
     IRepositoryCallable BuildDeleteService(SerializedType type, object model);
-    IRepositoryCallable BuildQueryService(SerializedType type, string criteria);
+    IRepositoryCallable BuildQueryService(SerializedType type);
+    IRepositoryCallable BuildQueryService(SerializedType type, string id);
     IRepositoryCallable BuildSaveService(SerializedType type, object model);
 }
 
@@ -18,17 +19,19 @@ internal sealed class RepositoryServiceFactory(IRepositoryResolver resolver) : I
         Build(typeof(RepositoryCreateService<>), typeof(IRepositoryCreateHandler<>), type);
     public IRepositoryCallable BuildDeleteService(SerializedType type, object model) =>
         Build(typeof(RepositoryDeleteService<>), typeof(IRepositoryDeleteHandler<>), type, model);
-    public IRepositoryCallable BuildQueryService(SerializedType type, string criteria) =>
-        Build(typeof(RepositoryQueryService<>), typeof(IRepositoryQueryHandler<>), type, criteria);
+    public IRepositoryCallable BuildQueryService(SerializedType type) =>
+        Build(typeof(RepositoryQueryService<>), typeof(IRepositoryQueryHandler<>), type, [null]);
+    public IRepositoryCallable BuildQueryService(SerializedType type, string id) =>
+        Build(typeof(RepositoryQueryService<>), typeof(IRepositoryQueryHandler<>), type, id ?? string.Empty);
     public IRepositoryCallable BuildSaveService(SerializedType type, object model) =>
         Build(typeof(RepositorySaveService<>), typeof(IRepositorySaveHandler<>), type, model);
 
-    private IRepositoryCallable Build(Type serviceType, Type handlerType, SerializedType modelType, params object[] additionalArgs)
+    private IRepositoryCallable Build(Type serviceType, Type handlerType, SerializedType modelType, params object?[] additionalArgs)
     {
         object repository = resolver.Resolve(handlerType, modelType.GetRuntimeType());
         Type repositoryType = GetHandlerTypeArgument(handlerType, repository);
         Type closedGeneric = serviceType.MakeGenericType(repositoryType);
-        object[] args = [.. additionalArgs.AsEnumerable().Prepend(repository)];
+        object?[] args = [.. additionalArgs.AsEnumerable().Prepend(repository)];
         object? service = Activator.CreateInstance(closedGeneric, args);
         return service as IRepositoryCallable ?? throw new InvalidOperationException("Could not construct service");
     }

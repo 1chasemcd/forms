@@ -167,13 +167,14 @@ public class UserRepository : IRepositoryQueryHandler<User>
             Id = 24,
             UserName = "Mickey Mouse",
         },
-        new User() {
-            Id = 24,
-            UserName = "Mickey Mouse",
-        },
     ];
-    public async Task<IQueryable<User>> QueryAsync()
+
+    public async Task<IEnumerable<User>> GetAllAsync() => users;
+    public async Task<User?> GetAsync(string id)
     {
-        return users.AsQueryable();
+        if (!int.TryParse(id, out int result))
+            return null;
+        return users.SingleOrDefault(x => x.Id == result);
     }
+
 }
