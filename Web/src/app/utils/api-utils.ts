@@ -1,5 +1,6 @@
 import { FormGroup } from '@angular/forms';
 import { FieldDefinition, MetadataType, PropertyOrConstant } from '../api/api.g';
+import { pascalCaseToWords } from './string-utils';
 
 export function applyPropertyOrConstant<T>(
   poc: PropertyOrConstant | null | undefined,
@@ -17,4 +18,13 @@ export function applyPropertyOrConstant<T>(
 export function getMetadata<T>(field: FieldDefinition, type: MetadataType) {
   const metadata = field.fieldMetadatas?.find((x) => x.type == type);
   return metadata?.value as T | undefined;
+}
+
+export function getLabel(field: FieldDefinition): PropertyOrConstant {
+  const metadataLabel = getMetadata<PropertyOrConstant>(field, MetadataType.Label);
+  if (metadataLabel !== null && metadataLabel !== undefined) return metadataLabel;
+  return {
+    $type: 'constant',
+    value: pascalCaseToWords(field.property),
+  };
 }

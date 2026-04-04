@@ -1,7 +1,7 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { widthToCss } from '../../utils/width-utils';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { applyPropertyOrConstant, getMetadata } from '../../utils/api-utils';
+import { applyPropertyOrConstant, getLabel, getMetadata } from '../../utils/api-utils';
 import { FieldDefinition, FieldType, MetadataType, RecalculateEvent } from '../../api/api.g';
 import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
 import { Button } from '../button/button';
@@ -47,11 +47,7 @@ export class DynamicField implements OnInit {
       this.visible.set,
     );
 
-    applyPropertyOrConstant(
-      getMetadata(this.field(), MetadataType.Label),
-      this.modelFormGroup(),
-      this.label.set,
-    );
+    applyPropertyOrConstant(getLabel(this.field()), this.modelFormGroup(), this.label.set);
   }
 
   executeRecalculate() {

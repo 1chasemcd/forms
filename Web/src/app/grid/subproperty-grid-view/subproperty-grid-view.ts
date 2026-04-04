@@ -1,7 +1,7 @@
 import { Component, computed, input, OnInit } from '@angular/core';
 import { Grid } from '@angular/aria/grid';
 import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { applyPropertyOrConstant, getMetadata } from '../../utils/api-utils';
+import { applyPropertyOrConstant, getLabel, getMetadata } from '../../utils/api-utils';
 import { GridCell } from '../grid-cell/grid-cell';
 import { FieldDefinition, MetadataType, SubPropertyGridViewDefinition } from '../../api/api.g';
 
@@ -26,7 +26,7 @@ export class SubpropertyGridViewComponent implements OnInit {
     for (const field of this.gridView().fields) {
       const index = this.labels.push('') - 1;
       applyPropertyOrConstant(
-        getMetadata(field, MetadataType.Label),
+        getLabel(field),
         this.modelFormGroup(),
         (label: string) => (this.labels[index] = label),
       );

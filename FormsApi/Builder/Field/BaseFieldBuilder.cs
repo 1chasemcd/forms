@@ -19,14 +19,11 @@ public abstract class BaseFieldBuilder<TModel, TField> : IFieldBuilder<TModel>
     {
         _metadatas = [];
 
-        string propertyName = Property.Build();
-        Label ??= propertyName.CamelCaseToWords();
-
         AddMetadatas();
 
         return new()
         {
-            Property = propertyName,
+            Property = Property.Build(),
             Type = Type,
             FieldMetadatas = _metadatas.Count == 0 ? null : _metadatas,
         };
