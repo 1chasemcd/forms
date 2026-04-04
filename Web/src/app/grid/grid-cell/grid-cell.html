@@ -1,3 +1,4 @@
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
 @switch (field().type) {
   @case (FieldType.Button) {}
   @case (FieldType.LabelValue) {}
@@ -9,10 +10,12 @@
     ></app-dynamic-input>
   }
   @case (FieldType.CheckBox) {
-    <app-checkbox-input
-      [control]="control()"
-      (recalculateEvent)="executeRecalculate()"
-    ></app-checkbox-input>
+    <label>
+      <app-checkbox-input
+        [control]="control()"
+        (recalculateEvent)="executeRecalculate()"
+      ></app-checkbox-input>
+    </label>
   }
   @default {
     <app-dynamic-input

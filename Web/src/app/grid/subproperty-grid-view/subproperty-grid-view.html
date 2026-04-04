@@ -2,7 +2,7 @@
   <!-- Header -->
   <div ngGridRow class="grid min-w-full" [style.gridTemplateColumns]="gridTemplateColumns()">
     @for (label of labels; track $index) {
-      <div class="font-semibold px-4 py-1">
+      <div class="font-semibold px-4 h-8 content-center">
         {{ label }}
       </div>
     }
@@ -19,7 +19,7 @@
       @for (column of gridView().fields; track $index) {
         <div
           ngGridCell
-          class="px-4 py-2 has-enabled:hover:ring focus-within:ring focus-within:ring-violet-600 ring-gray-400 rounded-sm"
+          class="px-4 h-10 has-enabled:hover:ring focus-within:ring focus-within:ring-violet-600 ring-gray-400 rounded-sm"
         >
           <app-grid-cell [field]="column" [rowFormGroup]="row"> </app-grid-cell>
         </div>
