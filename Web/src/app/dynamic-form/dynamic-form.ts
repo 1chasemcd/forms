@@ -7,6 +7,7 @@ import { catchError, of, throwError } from 'rxjs';
 import { DynamicView } from '../dynamic-view/dynamic-view';
 import { FormModelService } from './form-model-service';
 import { GridDefinitionService } from './grid-definition-service';
+import { RecalculateEventService } from '../recalculate-event-service/recalculate-event-service';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -18,6 +19,7 @@ import { GridDefinitionService } from './grid-definition-service';
     FormControlService,
     FormModelService,
     GridDefinitionService,
+    RecalculateEventService,
   ],
 })
 export class DynamicForm implements OnInit {

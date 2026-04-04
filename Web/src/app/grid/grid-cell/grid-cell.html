@@ -1,1 +1,9 @@
-<input [type]="inputType()" [formControl]="formControl()" class="outline-none" />
+@switch (field().Type) {
+  @case (FieldType.Button) {}
+  @case (FieldType.CheckBox) {}
+  @case (FieldType.LabelValue) {}
+  @case (FieldType.TextArea) {}
+  @default {
+    <app-dynamic-input [control]="control()" [fieldType]="field().Type"></app-dynamic-input>
+  }
+}

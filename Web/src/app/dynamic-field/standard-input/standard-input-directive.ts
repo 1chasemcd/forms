@@ -8,7 +8,7 @@ import { StandardInputWrapper } from './standard-input-wrapper';
   selector: 'input[appStandardInputDirective], textarea[appStandardInputDirective]',
   host: {
     '[id]': 'inputId',
-    class: 'w-full bg-transparent text-base text-black outline-none disabled:text-gray-500',
+    class: 'w-full bg-transparent text-inherit outline-none',
   },
 })
 export class StandardInputDirective implements OnInit {

@@ -8,6 +8,7 @@ import { Button } from '../button/button';
 import { Checkbox } from '../checkbox/checkbox';
 import { CustomLabelValue } from '../label-value/label-value';
 import { DynamicInput } from '../dynamic-input/dynamic-input';
+import { StandardInputWrapper } from '../standard-input/standard-input-wrapper';
 
 @Component({
   selector: 'app-dynamic-field',
@@ -15,7 +16,14 @@ import { DynamicInput } from '../dynamic-input/dynamic-input';
     '[class]': 'width() + " content-center"',
   },
   templateUrl: './dynamic-field.html',
-  imports: [Button, Checkbox, ReactiveFormsModule, CustomLabelValue, DynamicInput],
+  imports: [
+    Button,
+    Checkbox,
+    ReactiveFormsModule,
+    CustomLabelValue,
+    DynamicInput,
+    StandardInputWrapper,
+  ],
   providers: [RecalculateEventService],
 })
 export class DynamicField implements OnInit {
@@ -45,6 +53,17 @@ export class DynamicField implements OnInit {
       this.modelFormGroup(),
       this.label.set,
     );
+  }
+
+  private initialValue = '';
+
+  onFocus() {
+    this.initialValue = this.control().value;
+  }
+
+  onBlur() {
+    if (this.initialValue === this.control().value) return;
+    this.executeRecalculate();
   }
 
   executeRecalculate() {

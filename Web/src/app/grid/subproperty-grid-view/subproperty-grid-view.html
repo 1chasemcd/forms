@@ -1,17 +1,20 @@
-<table ngGrid>
+<table ngGrid class="w-full [&_td,&_th]:px-4 [&_th]:py-0.5 [&_td]:py-2">
   <thead>
-    <tr ngGridRow class="">
+    <tr ngGridRow>
       @for (label of labels; track $index) {
-        <th ngGridCell>{{ label }}</th>
+        <th class="text-left font-semibold" ngGridCell>{{ label }}</th>
       }
     </tr>
   </thead>
   <tbody>
     @for (row of formArray().controls; track row.get(gridView().IdProperty)) {
-      <tr ngGridRow [formGroup]="row">
+      <tr class="border-t border-t-gray-200 hover:bg-violet-50" ngGridRow [formGroup]="row">
         @for (column of gridView().Fields; track $index) {
-          <td ngGridCell>
-            <app-grid-cell [field]="column" [formGroup]="row"></app-grid-cell>
+          <td
+            ngGridCell
+            class="[&:has(input:enabled)]:hover:outline focus-within:outline focus-within:outline-violet-600 outline-gray-400 rounded-sm"
+          >
+            <app-grid-cell [field]="column" [rowFormGroup]="row"></app-grid-cell>
           </td>
         }
       </tr>

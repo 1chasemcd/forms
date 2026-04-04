@@ -9,6 +9,9 @@ import { MetadataType, SubPropertyGridViewDefinition } from '../../api/api.g';
   selector: 'app-subproperty-grid-view',
   imports: [Grid, ReactiveFormsModule, GridCell],
   templateUrl: './subproperty-grid-view.html',
+  host: {
+    class: 'col-span-12',
+  },
 })
 export class SubpropertyGridViewComponent implements OnInit {
   readonly gridView = input.required<SubPropertyGridViewDefinition>();

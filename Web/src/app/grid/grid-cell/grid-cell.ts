@@ -1,34 +1,27 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FieldDefinition, FieldType } from '../../api/api.g';
+import { FieldDefinition, FieldType, MetadataType, RecalculateEvent } from '../../api/api.g';
+import { DynamicInput } from '../../dynamic-field/dynamic-input/dynamic-input';
+import { getMetadata } from '../../utils/api-utils';
+import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
 
 @Component({
   selector: 'app-grid-cell',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, DynamicInput],
   templateUrl: './grid-cell.html',
 })
 export class GridCell {
-  readonly field = input.required<FieldDefinition>();
-  readonly formGroup = input.required<FormGroup>();
+  readonly FieldType = FieldType;
 
-  readonly formControl = computed(() => this.formGroup().get(this.field().Property) as FormControl);
-  readonly inputType = computed(() => {
-    switch (this.field().Type) {
-      case FieldType.CheckBox:
-        return 'checkbox';
-      case FieldType.Currency:
-      case FieldType.Numeric:
-        return 'numeric';
-      case FieldType.Date:
-        return 'date';
-      case FieldType.Text:
-      case FieldType.TextArea:
-      case FieldType.LabelValue:
-        return 'text';
-      case FieldType.Time:
-        return 'time';
-      case FieldType.Button:
-        return 'button';
-    }
-  });
+  readonly field = input.required<FieldDefinition>();
+  readonly rowFormGroup = input.required<FormGroup>();
+
+  private readonly recalculateEventService = inject(RecalculateEventService);
+
+  readonly control = computed(() => this.rowFormGroup().get(this.field().Property) as FormControl);
+
+  executeRecalculate() {
+    const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
+    if (recalc) this.recalculateEventService.runRecalculate(this.rowFormGroup(), recalc);
+  }
 }
