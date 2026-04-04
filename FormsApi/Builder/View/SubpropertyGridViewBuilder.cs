@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq.Expressions;
 using FormsApi.Builder.Field;
+using FormsApi.Definition;
 using FormsApi.Definition.Primitives;
 using FormsApi.Definition.View;
 
@@ -17,7 +18,7 @@ public class SubPropertyGridViewBuilder<TModel, TSub>(
     public PropertyOrConstantBuilder<TSub, bool>? CanEditRow { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? CanDelete { get; set; }
     public PropertyOrConstantBuilder<TSub, bool>? CanDeleteRow { get; set; }
-    public FormBuilder<TSub>? EditForm { get; set; }
+    public IBuildable<FormDefinition>? EditForm { get; set; }
     public IList<IFieldBuilder<TSub>> Fields { get; } = [];
 
     private PropertyOrConstantBuilder<TSub, bool>? _selectionProperty;

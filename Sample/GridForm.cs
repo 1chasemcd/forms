@@ -11,19 +11,23 @@ public class GridForm : FormBuilder<GridFormModel>
     {
         TransactionGrid(),
         TransactionGrid2(),
+        UserGrid(),
     };
 
     private SubPropertyGridViewBuilder<GridFormModel, Transaction> TransactionGrid()
     {
-        return new SubPropertyGridViewBuilder<GridFormModel, Transaction>(x => x.Transactions, t => t.Id)
+        var grid = new SubPropertyGridViewBuilder<GridFormModel, Transaction>(x => x.Transactions, t => t.Id)
         {
-            t => t.Date,
-            t => t.Time,
-            t => t.Amount,
+            {t => t.Date, x => x.Width = 3},
+            {t => t.Time, x => x.Width = 3},
+            {t => t.Amount, x => x.Width = 3 },
+            {t => t.IncludeInCostSplitting, x => x.Width = 3},
             t => t.Description,
-            t => t.IncludeInCostSplitting,
             t => t.Notes
         }.EnableSelection(t => t.Selected);
+
+        grid.Title = "Transactions";
+        return grid;
     }
 
     private SubPropertyGridViewBuilder<GridFormModel, Transaction> TransactionGrid2()
@@ -45,12 +49,12 @@ public class GridForm : FormBuilder<GridFormModel>
     {
         var grid = new SubPropertyGridViewBuilder<GridFormModel, BasicUserModel>(x => x.Users, t => t.Id)
         {
-            u => u.Id,
+            {u => u.Id, x => x.Width = 1},
             u => u.UserName
         };
 
-        // TODO
-        // grid.EditForm = new UserEditForm();
+        grid.Title = "Users";
+        grid.EditForm = new UserEditForm();
 
         return grid;
     }
