@@ -3,7 +3,7 @@ import { Grid } from '@angular/aria/grid';
 import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { applyPropertyOrConstant, getMetadata } from '../../utils/api-utils';
 import { GridCell } from '../grid-cell/grid-cell';
-import { MetadataType, SubPropertyGridViewDefinition } from '../../api/api.g';
+import { FieldDefinition, MetadataType, SubPropertyGridViewDefinition } from '../../api/api.g';
 
 @Component({
   selector: 'app-subproperty-grid-view',
@@ -31,5 +31,33 @@ export class SubpropertyGridViewComponent implements OnInit {
         (label: string) => (this.labels[index] = label),
       );
     }
+  }
+
+  readonly gridTemplateColumns = computed(() => {
+    return this.columnSpans()
+      .map((span) => `minmax(calc(100% / 12 * ${span}), 1fr)`)
+      .join(' ');
+  });
+
+  private readonly columnSpans = computed(() => {
+    const columns = this.gridView().Fields;
+
+    const explicit = columns.map((c) => this.getFieldWidth(c));
+    const definedTotal = explicit.reduce((sum, w) => (sum ?? 0) + (w ?? 0), 0) ?? 0;
+
+    const undefinedCount = explicit.filter((w) => w == null).length;
+
+    const remaining = Math.max(12 - definedTotal, 0);
+
+    const autoWidth = undefinedCount > 0 ? remaining / undefinedCount : 0;
+
+    return columns.map((c, i) => {
+      const w = explicit[i];
+      return w ?? autoWidth;
+    });
+  });
+
+  getFieldWidth(field: FieldDefinition) {
+    return getMetadata<number>(field, MetadataType.Width);
   }
 }

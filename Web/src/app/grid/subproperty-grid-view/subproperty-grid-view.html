@@ -1,23 +1,29 @@
-<table ngGrid class="w-full [&_td,&_th]:px-4 [&_th]:py-0.5 [&_td]:py-2">
-  <thead>
-    <tr ngGridRow>
-      @for (label of labels; track $index) {
-        <th class="text-left font-semibold" ngGridCell>{{ label }}</th>
-      }
-    </tr>
-  </thead>
-  <tbody>
-    @for (row of formArray().controls; track row.get(gridView().IdProperty)) {
-      <tr class="border-t border-t-gray-200 hover:bg-violet-50" ngGridRow [formGroup]="row">
-        @for (column of gridView().Fields; track $index) {
-          <td
-            ngGridCell
-            class="[&:has(input:enabled)]:hover:outline focus-within:outline focus-within:outline-violet-600 outline-gray-400 rounded-sm"
-          >
-            <app-grid-cell [field]="column" [rowFormGroup]="row"></app-grid-cell>
-          </td>
-        }
-      </tr>
+<div ngGrid class="w-full overflow-x-auto px-px pb-px">
+  <!-- Header -->
+  <div ngGridRow class="grid min-w-full" [style.gridTemplateColumns]="gridTemplateColumns()">
+    @for (label of labels; track $index) {
+      <div class="font-semibold px-4 py-1">
+        {{ label }}
+      </div>
     }
-  </tbody>
-</table>
+  </div>
+
+  <!-- Rows -->
+  @for (row of formArray().controls; track row.get(gridView().IdProperty)) {
+    <div
+      ngGridRow
+      class="grid border-t border-gray-200 hover:bg-violet-50"
+      [style.gridTemplateColumns]="gridTemplateColumns()"
+      [formGroup]="row"
+    >
+      @for (column of gridView().Fields; track $index) {
+        <div
+          ngGridCell
+          class="px-4 py-2 has-enabled:hover:ring focus-within:ring focus-within:ring-violet-600 ring-gray-400 rounded-sm"
+        >
+          <app-grid-cell [field]="column" [rowFormGroup]="row"> </app-grid-cell>
+        </div>
+      }
+    </div>
+  }
+</div>
