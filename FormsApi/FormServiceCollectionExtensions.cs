@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using FormsApi.Builder.Validation;
 using FormsApi.Common.Registry;
 using FormsApi.Repository.Handler;
@@ -18,6 +20,7 @@ public static class FormServiceCollectionExtensions
             options.JsonSerializerOptions.DefaultIgnoreCondition =
                 System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
             options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
         });
 
         return builder;
