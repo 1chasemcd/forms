@@ -35,7 +35,7 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   readonly gridTemplateColumns = computed(() => {
     return this.columnSpans()
-      .map((span) => `minmax(calc(100% / 12 * ${span}), 1fr)`)
+      .map((span) => `${(100 * span) / 12}%`)
       .join(' ');
   });
 
@@ -49,7 +49,8 @@ export class SubpropertyGridViewComponent implements OnInit {
 
     const remaining = Math.max(12 - definedTotal, 0);
 
-    const autoWidth = undefinedCount > 0 ? remaining / undefinedCount : 0;
+    let autoWidth = undefinedCount > 0 ? remaining / undefinedCount : 0;
+    autoWidth = Math.max(autoWidth, 1);
 
     return columns.map((c, i) => {
       const w = explicit[i];
