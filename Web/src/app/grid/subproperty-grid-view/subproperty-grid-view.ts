@@ -35,7 +35,7 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   readonly gridTemplateColumns = computed(() => {
     return this.columnSpans()
-      .map((span) => `${(100 * span) / 12}%`)
+      .map((span) => `minmax(max-content, ${span}fr)`)
       .join(' ');
   });
 

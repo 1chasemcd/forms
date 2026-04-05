@@ -8,12 +8,6 @@ import { NumberFormatDirective } from '../../formatters/number-format-directive'
   selector: 'app-dynamic-input',
   imports: [ReactiveFormsModule, StandardInputDirective, NumberFormatDirective],
   templateUrl: './dynamic-input.html',
-  styles: `
-    @import 'tailwindcss';
-    input {
-      @apply h-full w-full;
-    }
-  `,
   host: {
     '(focusin)': 'onFocus()',
     '(focusout)': 'onBlur()',

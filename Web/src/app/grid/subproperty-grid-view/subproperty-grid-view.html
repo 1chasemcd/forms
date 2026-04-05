@@ -1,6 +1,6 @@
-<div ngGrid class="overflow-x-auto">
+<div ngGrid class="grid overflow-x-auto" [style.gridTemplateColumns]="gridTemplateColumns()">
   <!-- Header -->
-  <div ngGridRow class="grid" [style.gridTemplateColumns]="gridTemplateColumns()">
+  <div ngGridRow class="contents">
     @for (label of labels; track $index) {
       <div class="font-semibold px-4 h-8 content-center">
         {{ label }}
@@ -10,12 +10,7 @@
 
   <!-- Rows -->
   @for (row of formArray().controls; track row.get(gridView().idProperty)) {
-    <div
-      ngGridRow
-      class="grid group"
-      [style.gridTemplateColumns]="gridTemplateColumns()"
-      [formGroup]="row"
-    >
+    <div ngGridRow class="contents group" [formGroup]="row">
       @for (column of gridView().fields; track $index) {
         <div class="border-t border-t-gray-200 group-hover:bg-violet-50 p-px">
           <app-grid-cell
