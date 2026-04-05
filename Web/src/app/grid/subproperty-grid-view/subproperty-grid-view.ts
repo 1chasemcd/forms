@@ -1,19 +1,26 @@
 import { Component, computed, input, OnInit } from '@angular/core';
 import { Grid } from '@angular/aria/grid';
-import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { applyPropertyOrConstant, getLabel, getMetadata } from '../../utils/api-utils';
 import { GridCell } from '../grid-cell/grid-cell';
-import { FieldDefinition, MetadataType, SubPropertyGridViewDefinition } from '../../api/api.g';
+import {
+  FieldDefinition,
+  GridSelectionType,
+  MetadataType,
+  SubPropertyGridViewDefinition,
+} from '../../api/api.g';
+import { CheckboxInput } from '../../dynamic-field/checkbox/checkbox-input';
 
 @Component({
   selector: 'app-subproperty-grid-view',
-  imports: [Grid, ReactiveFormsModule, GridCell],
+  imports: [Grid, ReactiveFormsModule, GridCell, CheckboxInput],
   templateUrl: './subproperty-grid-view.html',
   host: {
     class: 'col-span-12',
   },
 })
 export class SubpropertyGridViewComponent implements OnInit {
+  readonly GridSelectionType = GridSelectionType;
   readonly gridView = input.required<SubPropertyGridViewDefinition>();
   readonly modelFormGroup = input.required<FormGroup>();
   readonly labels: string[] = [];
@@ -21,6 +28,8 @@ export class SubpropertyGridViewComponent implements OnInit {
   readonly formArray = computed(
     () => this.modelFormGroup().get(this.gridView().subPropertyName) as FormArray<FormGroup>,
   );
+
+  readonly selectAllControl = new FormControl(false);
 
   ngOnInit() {
     for (const field of this.gridView().fields) {
@@ -34,9 +43,13 @@ export class SubpropertyGridViewComponent implements OnInit {
   }
 
   readonly gridTemplateColumns = computed(() => {
-    return this.columnSpans()
+    let columns = this.columnSpans()
       .map((span) => `minmax(max-content, ${span}fr)`)
       .join(' ');
+
+    if (this.gridView().selectionOptions) columns = 'max-content ' + columns;
+
+    return columns;
   });
 
   private readonly columnSpans = computed(() => {
@@ -60,5 +73,51 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   getFieldWidth(field: FieldDefinition) {
     return getMetadata<number>(field, MetadataType.Width);
+  }
+
+  getRowId(row: FormGroup) {
+    return row.get(this.gridView().idProperty)?.value;
+  }
+
+  getControlFromRow(row: FormGroup, propertyName: string) {
+    return row.get(propertyName) as FormControl;
+  }
+
+  selectionPropertyUpdated(row: FormGroup) {
+    if (this.gridView().selectionOptions?.selectionType == GridSelectionType.Single) {
+      if (!this.getSelectionControl(row).value) return;
+      this.unselectAllOthers(this.getRowId(row));
+    } else if (this.gridView().selectionOptions?.selectionType == GridSelectionType.Multiple) {
+      this.updateSelectAllState();
+    }
+  }
+
+  selectAllUpdated() {
+    const value = this.selectAllControl.value;
+    for (const row of this.formArray().controls) {
+      this.getSelectionControl(row).setValue(value);
+    }
+  }
+
+  private unselectAllOthers(idToKeep: unknown) {
+    for (const row of this.formArray().controls) {
+      if (this.getRowId(row) === idToKeep) continue;
+      this.getSelectionControl(row).setValue(false);
+    }
+  }
+
+  private updateSelectAllState() {
+    let allSelected = true;
+    for (const row of this.formArray().controls) {
+      const value = this.getSelectionControl(row).value;
+      if (!value) allSelected = false;
+    }
+    if (allSelected) this.selectAllControl.setValue(true);
+    else this.selectAllControl.setValue(false);
+  }
+
+  private getSelectionControl(row: FormGroup) {
+    const selectionProperty = this.gridView().selectionOptions?.selectionProperty ?? '';
+    return this.getControlFromRow(row, selectionProperty);
   }
 }

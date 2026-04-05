@@ -56,6 +56,9 @@ export class FormControlService {
     this.gridDefinitionService.registerDefinition(view.subPropertyName, () => {
       const controls: Record<string, FormControl> = {};
       view.fields?.forEach((f) => this.processField(f, controls));
+      this.getOrAddControl(view.idProperty, controls);
+      if (view.selectionOptions)
+        this.getOrAddControl(view.selectionOptions.selectionProperty, controls);
       return new FormGroup(controls);
     });
   }

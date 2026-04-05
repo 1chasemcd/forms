@@ -1,6 +1,7 @@
 using FormsApi.Builder;
 using FormsApi.Builder.View;
 using FormsApi.Common.Types;
+using FormsApi.Definition.Primitives;
 using FormsApi.Repository.Handler;
 
 namespace Sample;
@@ -38,7 +39,7 @@ public class GridForm : FormBuilder<GridFormModel>
             t => t.Time,
             t => t.Amount,
             t => t.Description,
-        }.EnableSelection(t => t.Selected);
+        }.EnableSelection(t => t.Selected, GridSelectionType.Single);
 
         grid.EditForm = new TransactionEditForm();
 

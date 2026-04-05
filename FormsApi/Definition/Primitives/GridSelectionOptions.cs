@@ -8,5 +8,5 @@ public sealed record class GridSelectionOptions
     [Required]
     public GridSelectionType SelectionType { get; init; }
     [Required]
-    public required PropertyOrConstant SelectionProperty { get; init; }
+    public required string SelectionProperty { get; init; }
 }

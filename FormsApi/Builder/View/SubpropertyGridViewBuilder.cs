@@ -21,7 +21,7 @@ public class SubPropertyGridViewBuilder<TModel, TSub>(
     public IBuildable<FormDefinition>? EditForm { get; set; }
     public IList<IFieldBuilder<TSub>> Fields { get; } = [];
 
-    private PropertyOrConstantBuilder<TSub, bool>? _selectionProperty;
+    private ModelMemberBuilder<TSub, bool>? _selectionProperty;
     private GridSelectionType _selectionType;
     public SubPropertyGridViewBuilder<TModel, TSub> EnableSelection(Expression<Func<TSub, bool>> selectionProperty, GridSelectionType selectionType = GridSelectionType.Multiple)
     {
