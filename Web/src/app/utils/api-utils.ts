@@ -1,4 +1,4 @@
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FieldDefinition, MetadataType, PropertyOrConstant } from '../api/api.g';
 import { pascalCaseToWords } from './string-utils';
 
@@ -10,7 +10,7 @@ export function applyPropertyOrConstant<T>(
   if (poc === null || poc === undefined) return;
   if (poc.$type === 'constant') callback(poc.value);
   else {
-    const propertyControl = formGroup.get(poc.value);
+    const propertyControl = getOrAddControl(poc.value, formGroup);
     propertyControl?.valueChanges.subscribe(callback);
   }
 }
@@ -27,4 +27,9 @@ export function getLabel(field: FieldDefinition): PropertyOrConstant {
     $type: 'constant',
     value: pascalCaseToWords(field.property),
   };
+}
+
+export function getOrAddControl(key: string, formGroup: FormGroup) {
+  if (!formGroup.get(key)) formGroup.addControl(key, new FormControl({}));
+  return formGroup.get(key) as FormControl;
 }

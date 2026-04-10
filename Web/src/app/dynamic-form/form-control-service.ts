@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormGroup, Validators } from '@angular/forms';
 import {
   BaseViewDefinition,
   CombinedViewDefinition,
@@ -16,72 +16,89 @@ import {
   createRangeValidator,
 } from '../utils/validators';
 import { GridDefinitionService } from './grid-definition-service';
-import { getMetadata } from '../utils/api-utils';
-
-type FormRecord = Record<string, FormControl | FormArray<FormGroup>>;
+import { applyPropertyOrConstant, getMetadata, getOrAddControl } from '../utils/api-utils';
+import { combineLatest, map, of, startWith } from 'rxjs';
+import { FormEnablementService } from './form-enablement-service';
 
 @Injectable()
 export class FormControlService {
   private gridDefinitionService = inject(GridDefinitionService);
+  private formEnablementService = inject(FormEnablementService);
 
   createFromDefinition(form: FormDefinition) {
-    const formRecord: FormRecord = {};
-    if (form.view) this.processView(form.view, formRecord);
+    const formGroup = new FormGroup({});
+    if (form.view) this.processView(form.view, formGroup);
 
-    return new FormGroup(formRecord);
+    return formGroup;
   }
 
-  private processView(view: BaseViewDefinition, formRecord: FormRecord) {
+  private processView(view: BaseViewDefinition, formGroup: FormGroup) {
     switch (view.$type) {
       case 'combinedview':
-        this.processCombinedView(view, formRecord);
+        this.processCombinedView(view, formGroup);
         break;
       case 'fieldview':
-        view.fields?.forEach((f) => this.processField(f, formRecord));
+        view.fields?.forEach((f) => {
+          this.processField(f, formGroup);
+          this.formEnablementService.setControlEnablement(f, formGroup);
+        });
         break;
       case 'subpropertygridview':
-        this.processGridView(view, formRecord);
+        this.processGridView(view, formGroup);
         break;
     }
   }
 
-  private processCombinedView(view: CombinedViewDefinition, formRecord: FormRecord) {
-    view.views?.forEach((v) => this.processView(v, formRecord));
+  private processCombinedView(view: CombinedViewDefinition, formGroup: FormGroup) {
+    view.views?.forEach((v) => this.processView(v, formGroup));
   }
 
-  private processGridView(view: SubPropertyGridViewDefinition, formRecord: FormRecord) {
+  private processGridView(view: SubPropertyGridViewDefinition, formGroup: FormGroup) {
     const formArray = new FormArray<FormGroup>([]);
-    formRecord[view.subPropertyName] = formArray;
+    formGroup.addControl(view.subPropertyName, formArray);
+    let parentEnabled = of(true);
+    if (view.editForm) parentEnabled = of(false);
+    else if (view.canEdit?.$type === 'constant' && !view.canEdit.value) parentEnabled = of(false);
+    else if (view.canEdit?.$type === 'property') {
+      const parendEnabledControl = getOrAddControl(view.canEdit.value, formGroup);
+      parentEnabled = parendEnabledControl.valueChanges.pipe(startWith(parendEnabledControl.value));
+    }
 
-    this.gridDefinitionService.registerDefinition(view.subPropertyName, () => {
-      const controls: Record<string, FormControl> = {};
-      view.fields?.forEach((f) => this.processField(f, controls));
-      this.getOrAddControl(view.idProperty, controls);
-      if (view.selectionOptions)
-        this.getOrAddControl(view.selectionOptions.selectionProperty, controls);
-      return new FormGroup(controls);
+    this.gridDefinitionService.registerDefinition(view, parentEnabled, (view, parentEnabled) => {
+      const rowGroup = new FormGroup({});
+
+      let rowEnabled = of(true);
+      if (view.canEditRow?.$type === 'constant' && !view.canEditRow.value) rowEnabled = of(false);
+      else if (view.canEditRow?.$type === 'property') {
+        const rowEnabledControl = getOrAddControl(view.canEditRow.value, rowGroup);
+        rowEnabled = rowEnabledControl.valueChanges.pipe(startWith(rowEnabledControl.value));
+      }
+
+      view.fields?.forEach((f) => {
+        this.processField(f, rowGroup);
+        this.formEnablementService.setControlEnablement(
+          f,
+          rowGroup,
+          combineLatest([parentEnabled, rowEnabled]).pipe(map(([x, y]) => x && y)),
+        );
+      });
+
+      return rowGroup;
     });
   }
 
-  private processField(field: FieldDefinition, formRecord: FormRecord) {
+  private processField(field: FieldDefinition, formGroup: FormGroup) {
     const hasMetadata = (type: MetadataType) =>
-      field.fieldMetadatas?.find((x) => x.type == type) !== undefined;
-
-    const applyMetadata = <T>(type: MetadataType, callback: (value: T) => void) => {
+      getMetadata<PropertyOrConstant>(field, type) !== undefined;
+    const applyMetadataPoc = <T>(type: MetadataType, callback: (value: T) => void) => {
       const poc = getMetadata<PropertyOrConstant>(field, type);
-      if (poc === null || poc === undefined) return;
-
-      if (poc.$type === 'constant') callback(poc.value);
-      else {
-        const propertyControl = this.getOrAddControl(poc.value, formRecord);
-        propertyControl.valueChanges.subscribe(callback);
-      }
+      applyPropertyOrConstant(poc, formGroup, callback);
     };
 
-    const control = this.getOrAddControl(field.property, formRecord);
+    const control = getOrAddControl(field.property, formGroup);
     if (field.type == FieldType.Button) return;
 
-    applyMetadata(MetadataType.Required, (value) => {
+    applyMetadataPoc(MetadataType.Required, (value) => {
       const original = control.hasValidator(Validators.required);
       if (original == value) return;
       if (value) control.addValidators(Validators.required);
@@ -89,25 +106,15 @@ export class FormControlService {
       control.updateValueAndValidity();
     });
 
-    applyMetadata(MetadataType.Enabled, (value) => {
-      if (value) control.enable();
-      else control.disable();
-    });
-
-    applyMetadata(MetadataType.Enabled, (value) => {
-      if (value) control.enable();
-      else control.disable();
-    });
-
     if (hasMetadata(MetadataType.MinValue) || hasMetadata(MetadataType.MaxValue)) {
       const rangeValidator = createRangeValidator();
       control.addValidators(rangeValidator.validator);
 
-      applyMetadata(MetadataType.MinValue, (value: string | number) => {
+      applyMetadataPoc(MetadataType.MinValue, (value: string | number) => {
         rangeValidator.setMax(value);
       });
 
-      applyMetadata(MetadataType.MaxValue, (value: string | number) => {
+      applyMetadataPoc(MetadataType.MaxValue, (value: string | number) => {
         rangeValidator.setMin(value);
       });
     }
@@ -116,7 +123,7 @@ export class FormControlService {
       const maxLengthValidator = createMaxLengthValidator();
       control.addValidators(maxLengthValidator.validator);
 
-      applyMetadata(MetadataType.MaxLength, (value: number) => {
+      applyMetadataPoc(MetadataType.MaxLength, (value: number) => {
         maxLengthValidator.setMaxLength(value);
       });
     }
@@ -125,18 +132,13 @@ export class FormControlService {
       const psValidator = createPrecisionScaleValidator();
       control.addValidators(psValidator.validator);
 
-      applyMetadata(MetadataType.Precision, (value: number) => {
+      applyMetadataPoc(MetadataType.Precision, (value: number) => {
         psValidator.setPrecision(value);
       });
 
-      applyMetadata(MetadataType.Scale, (value: number) => {
+      applyMetadataPoc(MetadataType.Scale, (value: number) => {
         psValidator.setScale(value);
       });
     }
-  }
-
-  private getOrAddControl(key: string, formRecord: FormRecord) {
-    if (!Object.hasOwn(formRecord, key)) formRecord[key] = new FormControl();
-    return formRecord[key] as FormControl;
   }
 }

@@ -10,10 +10,24 @@ public class GridForm : FormBuilder<GridFormModel>
 {
     protected override ViewBuilder<GridFormModel> View => new CombinedViewBuilder<GridFormModel>
     {
-        TransactionGrid(),
+        new CombinedViewBuilder<GridFormModel>(unify: true)
+        {
+            GridSettings(),
+            TransactionGrid(),
+        },
         TransactionGrid2(),
         UserGrid(),
     };
+
+    private FieldViewBuilder<GridFormModel> GridSettings()
+    {
+        return new FieldViewBuilder<GridFormModel>()
+        {
+            {x => x.AllowAdd, x => x.Width = 3},
+            {x => x.AllowEdit, x => x.Width = 3},
+            {x => x.AllowDelete, x => x.Width = 3}
+        };
+    }
 
     private SubPropertyGridViewBuilder<GridFormModel, Transaction> TransactionGrid()
     {
@@ -24,10 +38,14 @@ public class GridForm : FormBuilder<GridFormModel>
             {t => t.Amount, x => x.Width = 3 },
             {t => t.IncludeInCostSplitting, x => x.Width = 3},
             t => t.Description,
-            t => t.Notes
+            t => t.Notes,
         }.EnableSelection(t => t.Selected);
 
         grid.Title = "Transactions";
+        grid.CanAdd = new PropertyOrConstantBuilder<GridFormModel, bool>(x => x.AllowAdd);
+        grid.CanEdit = new PropertyOrConstantBuilder<GridFormModel, bool>(x => x.AllowEdit);
+        grid.CanDelete = new PropertyOrConstantBuilder<GridFormModel, bool>(x => x.AllowDelete);
+        grid.CanEditRow = new PropertyOrConstantBuilder<Transaction, bool>(t => t.Archived);
         return grid;
     }
 
@@ -41,6 +59,7 @@ public class GridForm : FormBuilder<GridFormModel>
             t => t.Description,
         }.EnableSelection(t => t.Selected, GridSelectionType.Single);
 
+        grid.CanEdit = true;
         grid.EditForm = new TransactionEditForm();
 
         return grid;
@@ -56,6 +75,8 @@ public class GridForm : FormBuilder<GridFormModel>
 
         grid.Title = "Users";
         grid.EditForm = new UserEditForm();
+        grid.CanEdit = true;
+        grid.CanAdd = true;
 
         return grid;
     }
@@ -88,6 +109,9 @@ public class UserEditForm : FormBuilder<User>
 
 public class GridFormModel
 {
+    public bool AllowAdd { get; set; } = true;
+    public bool AllowEdit { get; set; } = true;
+    public bool AllowDelete { get; set; } = true;
     public IList<Transaction> Transactions { get; set; } = [
         new Transaction {
             Id = 1,
@@ -103,6 +127,7 @@ public class GridFormModel
             Time = new TimeOnly(9, 45),
             Amount = 96.24m,
             Description = "City market",
+            Archived = true
         }
     ];
 
@@ -137,6 +162,7 @@ public class Transaction
     public TimeOnly Time { get; set; }
     public string Description { get; set; } = string.Empty;
     public TextArea Notes { get; set; } = string.Empty;
+    public bool Archived { get; set; }
 }
 
 public class BasicUserModel

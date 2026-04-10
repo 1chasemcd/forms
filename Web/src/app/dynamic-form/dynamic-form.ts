@@ -8,6 +8,7 @@ import { DynamicView } from '../dynamic-view/dynamic-view';
 import { FormModelService } from './form-model-service';
 import { GridDefinitionService } from './grid-definition-service';
 import { RecalculateEventService } from '../recalculate-event-service/recalculate-event-service';
+import { FormEnablementService } from './form-enablement-service';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -20,6 +21,7 @@ import { RecalculateEventService } from '../recalculate-event-service/recalculat
     FormModelService,
     GridDefinitionService,
     RecalculateEventService,
+    FormEnablementService,
   ],
 })
 export class DynamicForm implements OnInit {

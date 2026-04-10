@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { GridDefinitionService } from './grid-definition-service';
 
 @Injectable()
@@ -8,8 +8,11 @@ export class FormModelService {
 
   patchValues(formGroup: FormGroup, values: Record<string, unknown>) {
     for (const [key, value] of Object.entries(values)) {
-      const toSet = formGroup.get(key);
-      if (toSet === null) continue;
+      let toSet = formGroup.get(key);
+      if (toSet === null) {
+        toSet = new FormControl(value);
+        formGroup.addControl(key, toSet);
+      }
       if (toSet instanceof FormArray) {
         if (Array.isArray(value)) {
           this.patchGridValues(key, toSet, value);
