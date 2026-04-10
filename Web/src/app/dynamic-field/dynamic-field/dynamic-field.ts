@@ -2,7 +2,13 @@ import { Component, computed, inject, input, OnInit, signal } from '@angular/cor
 import { widthToCss } from '../../utils/width-utils';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { applyPropertyOrConstant, getLabel, getMetadata } from '../../utils/api-utils';
-import { FieldDefinition, FieldType, MetadataType, RecalculateEvent } from '../../api/api.g';
+import {
+  FieldDefinition,
+  FieldType,
+  FormDefinition,
+  MetadataType,
+  RecalculateEvent,
+} from '../../api/api.g';
 import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
 import { Button } from '../button/button';
 import { Checkbox } from '../checkbox/checkbox';
@@ -28,6 +34,7 @@ import { StandardInputWrapper } from '../standard-input/standard-input-wrapper';
 export class DynamicField implements OnInit {
   readonly FieldType = FieldType;
 
+  readonly formDefinition = input.required<FormDefinition>();
   readonly field = input.required<FieldDefinition>();
   readonly modelFormGroup = input.required<FormGroup>();
 
@@ -52,6 +59,11 @@ export class DynamicField implements OnInit {
 
   executeRecalculate() {
     const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
-    if (recalc) this.recalculateEventService.runRecalculate(this.modelFormGroup(), recalc);
+    if (recalc)
+      this.recalculateEventService.runRecalculate(
+        this.modelFormGroup(),
+        recalc,
+        this.formDefinition(),
+      );
   }
 }

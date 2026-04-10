@@ -1,39 +1,33 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FileResponse, FormDefinitionClient, FormDefinition, RepositoryClient } from '../api/api.g';
-import { FormControlService } from './form-control-service';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { catchError, of, throwError } from 'rxjs';
 import { DynamicView } from '../dynamic-view/dynamic-view';
-import { FormModelService } from './form-model-service';
-import { GridDefinitionService } from './grid-definition-service';
-import { RecalculateEventService } from '../recalculate-event-service/recalculate-event-service';
-import { FormEnablementService } from './form-enablement-service';
+import { FormValueService } from './form-value-service';
+import { FormFactory, GridRegistry } from './form-factory';
+import { StandardProcessorsService } from './standard-processors.service';
 
 @Component({
   selector: 'app-dynamic-form',
   imports: [ReactiveFormsModule, DynamicView],
   templateUrl: './dynamic-form.html',
-  providers: [
-    FormDefinitionClient,
-    RepositoryClient,
-    FormControlService,
-    FormModelService,
-    GridDefinitionService,
-    RecalculateEventService,
-    FormEnablementService,
-  ],
+  providers: [FormDefinitionClient, RepositoryClient, FormValueService, FormFactory, GridRegistry],
 })
-export class DynamicForm implements OnInit {
+export class DynamicForm implements OnInit, OnDestroy {
   private readonly formDefinitionClient = inject(FormDefinitionClient);
   private readonly repositoryClient = inject(RepositoryClient);
-  private readonly formControlService = inject(FormControlService);
-  private readonly formModelService = inject(FormModelService);
+  private readonly formFactory = inject(FormFactory);
+  private readonly formValueService = inject(FormValueService);
+  private readonly standardProcessors = inject(StandardProcessorsService);
+  private readonly gridRegistry = inject(GridRegistry);
   private readonly route = inject(ActivatedRoute);
+
   formDefinition?: FormDefinition;
   formGroup?: FormGroup;
 
   ngOnInit() {
+    this.standardProcessors.register();
     const path = this.route.snapshot.paramMap.get('path');
     if (path == null) return;
 
@@ -51,6 +45,10 @@ export class DynamicForm implements OnInit {
       .subscribe((f) => this.handleFormResponse(f));
   }
 
+  ngOnDestroy() {
+    this.gridRegistry.clear();
+  }
+
   private handleFormPathNotFound() {
     console.log('Form not found');
   }
@@ -58,7 +56,7 @@ export class DynamicForm implements OnInit {
   private handleFormResponse(form: FormDefinition | null) {
     if (form == null) return;
     this.formDefinition = form;
-    this.formGroup = this.formControlService.createFromDefinition(form);
+    this.formGroup = this.formFactory.createFormGroup(form.view, form);
     if (form.modelType)
       this.repositoryClient
         .create(form.modelType)
@@ -67,7 +65,8 @@ export class DynamicForm implements OnInit {
 
   private handleRepositoryResponse(resp: FileResponse) {
     resp.data.text().then((text) => {
-      if (this.formGroup) this.formModelService.patchValues(this.formGroup, JSON.parse(text));
+      if (this.formGroup && this.formDefinition)
+        this.formValueService.patchValues(this.formGroup, JSON.parse(text), this.formDefinition);
     });
   }
 

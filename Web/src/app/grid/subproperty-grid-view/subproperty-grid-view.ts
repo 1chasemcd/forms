@@ -5,6 +5,7 @@ import { applyPropertyOrConstant, getLabel, getMetadata } from '../../utils/api-
 import { GridCell } from '../grid-cell/grid-cell';
 import {
   FieldDefinition,
+  FormDefinition,
   GridSelectionType,
   MetadataType,
   SubPropertyGridViewDefinition,
@@ -20,6 +21,7 @@ import { CheckboxInput } from '../../dynamic-field/checkbox/checkbox-input';
   },
 })
 export class SubpropertyGridViewComponent implements OnInit {
+  readonly formDefinition = input.required<FormDefinition>();
   readonly GridSelectionType = GridSelectionType;
   readonly gridView = input.required<SubPropertyGridViewDefinition>();
   readonly modelFormGroup = input.required<FormGroup>();

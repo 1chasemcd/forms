@@ -4,7 +4,7 @@ import { DynamicField } from '../dynamic-field/dynamic-field/dynamic-field';
 import { FormGroup } from '@angular/forms';
 import { applyPropertyOrConstant } from '../utils/api-utils';
 import { SubpropertyGridViewComponent } from '../grid/subproperty-grid-view/subproperty-grid-view';
-import { BaseViewDefinition } from '../api/api.g';
+import { BaseViewDefinition, FormDefinition } from '../api/api.g';
 import { NgClass } from '@angular/common';
 
 @Component({
@@ -16,6 +16,7 @@ import { NgClass } from '@angular/common';
   templateUrl: './dynamic-view.html',
 })
 export class DynamicView implements OnInit {
+  readonly formDefinition = input.required<FormDefinition>();
   readonly formView = input.required<BaseViewDefinition>();
   readonly modelFormGroup = input.required<FormGroup>();
   readonly alreadyInUnifiedView = input(false);

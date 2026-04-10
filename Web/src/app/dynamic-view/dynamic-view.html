@@ -12,6 +12,7 @@
   @if (combinedViews(); as views) {
     @for (childView of views; track $index) {
       <app-dynamic-view
+        [formDefinition]="formDefinition()"
         [formView]="childView"
         [modelFormGroup]="modelFormGroup()"
         [alreadyInUnifiedView]="shouldStyleUnifiedView() || alreadyInUnifiedView()"
@@ -19,10 +20,15 @@
     }
   } @else if (fieldView(); as view) {
     @for (field of view.fields; track $index) {
-      <app-dynamic-field [field]="field" [modelFormGroup]="modelFormGroup()"></app-dynamic-field>
+      <app-dynamic-field
+        [formDefinition]="formDefinition()"
+        [field]="field"
+        [modelFormGroup]="modelFormGroup()"
+      ></app-dynamic-field>
     }
   } @else if (subpropertyGridView(); as view) {
     <app-subproperty-grid-view
+      [formDefinition]="formDefinition()"
       [gridView]="view"
       [modelFormGroup]="modelFormGroup()"
     ></app-subproperty-grid-view>

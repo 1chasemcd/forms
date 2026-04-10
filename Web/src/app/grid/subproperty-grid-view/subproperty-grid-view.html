@@ -37,6 +37,7 @@
           <app-grid-cell
             class="block h-10 px-3 has-enabled:hover:ring focus-within:ring focus-within:border-violet-600 ring-gray-400 rounded-sm"
             ngGridCell
+            [formDefinition]="formDefinition()"
             [field]="column"
             [rowFormGroup]="row"
           >
