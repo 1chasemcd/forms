@@ -1,17 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { FormFactory } from './form-factory';
-import { FormDefinition } from '../api/api.g';
 
 @Injectable({ providedIn: 'root' })
 export class FormValueService {
   private formFactory = inject(FormFactory);
 
-  patchValues(
-    formGroup: FormGroup,
-    values: Record<string, unknown>,
-    formDefinition: FormDefinition,
-  ) {
+  patchValues(formGroup: FormGroup, values: Record<string, unknown>) {
     for (const [key, value] of Object.entries(values)) {
       let toSet = formGroup.get(key);
       if (toSet === null) {
@@ -20,7 +15,7 @@ export class FormValueService {
       }
       if (toSet instanceof FormArray) {
         if (Array.isArray(value)) {
-          this.patchGridValues(key, toSet, value as Record<string, unknown>[], formDefinition);
+          this.patchGridValues(key, toSet, value as Record<string, unknown>[]);
         } else toSet.clear();
         continue;
       }
@@ -33,15 +28,14 @@ export class FormValueService {
     gridId: string,
     formArray: FormArray<FormGroup>,
     valuesArray: Record<string, unknown>[],
-    formDefinition: FormDefinition,
   ) {
     formArray.clear();
 
     // TODO make this more efficient
     for (const row of valuesArray) {
-      const group = this.formFactory.createGridRowGroup(gridId, formDefinition);
+      const group = this.formFactory.createGridRowGroup(gridId);
       if (group === null) continue;
-      this.patchValues(group, row, formDefinition);
+      this.patchValues(group, row);
       formArray.push(group);
     }
   }

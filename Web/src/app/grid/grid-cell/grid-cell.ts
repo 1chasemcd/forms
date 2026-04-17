@@ -30,11 +30,6 @@ export class GridCell {
 
   executeRecalculate() {
     const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
-    if (recalc)
-      this.recalculateEventService.runRecalculate(
-        this.rowFormGroup(),
-        recalc,
-        this.formDefinition(),
-      );
+    if (recalc) this.recalculateEventService.runRecalculate(this.rowFormGroup(), recalc);
   }
 }

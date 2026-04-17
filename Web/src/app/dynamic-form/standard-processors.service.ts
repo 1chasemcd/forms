@@ -173,7 +173,7 @@ export class StandardProcessorsService {
       process: (metadata, field, group, context) => {
         const control = context.getOrAddControl(field.property, group);
         context.untilDestroyed(control.valueChanges).subscribe(() => {
-          this.recalculateService.runRecalculate(group, metadata.value, context.formDefinition);
+          this.recalculateService.runRecalculate(group, metadata.value);
         });
       },
     });

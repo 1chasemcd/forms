@@ -59,11 +59,6 @@ export class DynamicField implements OnInit {
 
   executeRecalculate() {
     const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
-    if (recalc)
-      this.recalculateEventService.runRecalculate(
-        this.modelFormGroup(),
-        recalc,
-        this.formDefinition(),
-      );
+    if (recalc) this.recalculateEventService.runRecalculate(this.modelFormGroup(), recalc);
   }
 }

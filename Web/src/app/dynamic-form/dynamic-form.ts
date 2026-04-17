@@ -12,7 +12,7 @@ import { StandardProcessorsService } from './standard-processors.service';
   selector: 'app-dynamic-form',
   imports: [ReactiveFormsModule, DynamicView],
   templateUrl: './dynamic-form.html',
-  providers: [FormDefinitionClient, RepositoryClient, FormValueService, FormFactory, GridRegistry],
+  providers: [FormDefinitionClient, RepositoryClient, FormFactory, GridRegistry],
 })
 export class DynamicForm implements OnInit, OnDestroy {
   private readonly formDefinitionClient = inject(FormDefinitionClient);
@@ -56,7 +56,7 @@ export class DynamicForm implements OnInit, OnDestroy {
   private handleFormResponse(form: FormDefinition | null) {
     if (form == null) return;
     this.formDefinition = form;
-    this.formGroup = this.formFactory.createFormGroup(form.view, form);
+    this.formGroup = this.formFactory.createFormGroup(form.view);
     if (form.modelType)
       this.repositoryClient
         .create(form.modelType)
@@ -66,7 +66,7 @@ export class DynamicForm implements OnInit, OnDestroy {
   private handleRepositoryResponse(resp: FileResponse) {
     resp.data.text().then((text) => {
       if (this.formGroup && this.formDefinition)
-        this.formValueService.patchValues(this.formGroup, JSON.parse(text), this.formDefinition);
+        this.formValueService.patchValues(this.formGroup, JSON.parse(text));
     });
   }
 

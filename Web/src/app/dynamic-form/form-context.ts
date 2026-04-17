@@ -1,13 +1,11 @@
 import { DestroyRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FormDefinition } from '../api/api.g';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 
 export class FormContext {
   constructor(
     public readonly formGroup: FormGroup,
-    public readonly formDefinition: FormDefinition,
     public readonly destroyRef: DestroyRef,
   ) {}
 

@@ -7,13 +7,15 @@ public abstract class ViewBuilder<TModel> : IBuildable<BaseViewDefinition>
 {
     public PropertyOrConstantBuilder<TModel, string?>? Title { get; set; }
     public int? Width { get; set; }
+    public PropertyOrConstantBuilder<TModel, bool>? Enabled { get; set; }
     public BaseViewDefinition Build()
     {
         BaseViewDefinition baseView = BuildImpl();
         return baseView with
         {
             Title = Title?.Build(),
-            Width = Width
+            Width = Width,
+            Enabled = Enabled?.Build()
         };
     }
 

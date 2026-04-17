@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   BaseViewDefinition,
   FieldDefinition,
+  FieldType,
   MetadataDefinition,
   MetadataType,
 } from '../api/api.g';
@@ -17,8 +18,8 @@ export class FormRegistryService {
     this.viewProcessors.set(type.toLowerCase(), processor);
   }
 
-  registerFieldProcessor(type: string, processor: FieldProcessor) {
-    this.fieldProcessors.set(type.toLowerCase(), processor);
+  registerFieldProcessor(type: FieldType, processor: FieldProcessor) {
+    this.fieldProcessors.set(type, processor);
   }
 
   registerMetadataProcessor(type: MetadataType, processor: MetadataProcessor) {

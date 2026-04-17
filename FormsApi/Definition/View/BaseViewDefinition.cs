@@ -14,4 +14,5 @@ public abstract record class BaseViewDefinition
 {
     public PropertyOrConstant? Title { get; init; }
     public int? Width { get; init; }
+    public PropertyOrConstant? Enabled { get; init; }
 }

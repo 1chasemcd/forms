@@ -32,11 +32,15 @@ public class TestForm : FormBuilder<TestModel>
 
     private static ViewBuilder<TestModel> TopRightView()
     {
-        return new FieldViewBuilder<TestModel>(title: "Additional Fields", width: 8)
+        var view = new FieldViewBuilder<TestModel>(title: "Additional Fields", width: 8)
         {
             {m => m.CurrencyField, p => p.Required = true },
             m => m.TextFieldWithInitialValue
         };
+
+        view.Enabled = false;
+
+        return view;
     }
 
     private static CombinedViewBuilder<TestModel> NestedCombinedView()
