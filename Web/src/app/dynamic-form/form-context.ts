@@ -10,7 +10,7 @@ export class FormContext {
   ) {}
 
   getOrAddControl(key: string) {
-    if (!this.formGroup.get(key)) this.formGroup.addControl(key, new FormControl({}));
+    if (!this.formGroup.get(key)) this.formGroup.addControl(key, new FormControl());
     return this.formGroup.get(key) as FormControl;
   }
 

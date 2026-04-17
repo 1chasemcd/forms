@@ -27,11 +27,11 @@ export class FormRegistryService {
   }
 
   getViewProcessor(view: BaseViewDefinition): ViewProcessor | undefined {
-    return this.viewProcessors.get(view.$type.toLowerCase());
+    return this.viewProcessors.get(view.$type);
   }
 
   getFieldProcessor(field: FieldDefinition): FieldProcessor | undefined {
-    return this.fieldProcessors.get(field.type.toLowerCase());
+    return this.fieldProcessors.get(field.type);
   }
 
   getMetadataProcessor(metadata: MetadataDefinition): MetadataProcessor | undefined {
