@@ -14,7 +14,7 @@
       <app-dynamic-view
         [formDefinition]="formDefinition()"
         [formView]="childView"
-        [modelFormGroup]="modelFormGroup()"
+        [formContext]="formContext()"
         [alreadyInUnifiedView]="shouldStyleUnifiedView() || alreadyInUnifiedView()"
       ></app-dynamic-view>
     }
@@ -23,14 +23,14 @@
       <app-dynamic-field
         [formDefinition]="formDefinition()"
         [field]="field"
-        [modelFormGroup]="modelFormGroup()"
+        [formContext]="formContext()"
       ></app-dynamic-field>
     }
   } @else if (subpropertyGridView(); as view) {
     <app-subproperty-grid-view
       [formDefinition]="formDefinition()"
       [gridView]="view"
-      [modelFormGroup]="modelFormGroup()"
+      [formContext]="formContext()"
     ></app-subproperty-grid-view>
   }
 </div>

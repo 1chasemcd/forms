@@ -22,8 +22,8 @@
   </div>
 
   <!-- Rows -->
-  @for (row of formArray().controls; track getRowId(row)) {
-    <div ngGridRow class="contents group" [formGroup]="row">
+  @for (row of rowContexts(); track getRowId(row)) {
+    <div ngGridRow class="contents group" [formGroup]="row.formGroup">
       @if (gridView().selectionOptions; as opts) {
         <label class="px-3 border-t border-t-gray-200 group-hover:bg-violet-50">
           <app-checkbox-input
@@ -39,7 +39,7 @@
             ngGridCell
             [formDefinition]="formDefinition()"
             [field]="column"
-            [rowFormGroup]="row"
+            [rowContext]="row"
           >
           </app-grid-cell>
         </div>

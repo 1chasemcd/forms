@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { BaseViewDefinition, SubPropertyGridViewDefinition } from '../api/api.g';
 import { FormProcessorService } from './form-processor-service';
 import { FormContext } from './form-context';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class FormFactory {
@@ -11,29 +11,26 @@ export class FormFactory {
   private gridRegistry = inject(GridRegistry);
   private destroyRef = inject(DestroyRef);
 
-  createFormGroup(
-    view: BaseViewDefinition,
-    parentEnabled: Observable<boolean> = of(true),
-  ): FormGroup {
+  createFormContext(view: BaseViewDefinition): FormContext {
     const group = new FormGroup({});
     const context = new FormContext(group, this.destroyRef);
-    this.processorService.processView(view, context, parentEnabled);
-    return group;
+    this.processorService.processView(view, context);
+    return context;
   }
 
-  createGridRowGroup(gridId: string): FormGroup | null {
+  createGridRowContext(gridId: string, parentContext: FormContext): FormContext | null {
     const entry = this.gridRegistry.get(gridId);
     if (!entry) return null;
 
     const group = new FormGroup({});
-    const context = new FormContext(group, this.destroyRef);
+    const context = new FormContext(group, this.destroyRef, parentContext);
 
     if (entry.definition.canEditRow?.$type === 'constant' && !entry.definition.canEditRow.value) {
       // Parent enablement can be combined with row enablement if we have a way to resolve it
     }
 
-    this.processorService.processView(entry.definition, context, entry.parentEnabled);
-    return group;
+    this.processorService.processView(entry.definition, context);
+    return context;
   }
 }
 

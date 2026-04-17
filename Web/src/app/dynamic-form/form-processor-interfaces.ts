@@ -1,20 +1,14 @@
 import { BaseViewDefinition, FieldDefinition, MetadataDefinition } from '../api/api.g';
 import { FormContext } from './form-context';
-import { Observable } from 'rxjs';
 
 export interface ViewProcessor {
-  process(view: BaseViewDefinition, context: FormContext, parentEnabled: Observable<boolean>): void;
+  process(view: BaseViewDefinition, context: FormContext): void;
 }
 
 export interface FieldProcessor {
-  process(field: FieldDefinition, context: FormContext, parentEnabled: Observable<boolean>): void;
+  process(field: FieldDefinition, context: FormContext): void;
 }
 
 export interface MetadataProcessor {
-  process(
-    metadata: MetadataDefinition,
-    field: FieldDefinition,
-    context: FormContext,
-    parentEnabled: Observable<boolean>,
-  ): void;
+  process(metadata: MetadataDefinition, field: FieldDefinition, context: FormContext): void;
 }

@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { widthToCss } from '../../utils/width-utils';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { applyPropertyOrConstant, getLabel, getMetadata } from '../../utils/api-utils';
 import {
   FieldDefinition,
@@ -15,6 +15,7 @@ import { Checkbox } from '../checkbox/checkbox';
 import { CustomLabelValue } from '../label-value/label-value';
 import { DynamicInput } from '../dynamic-input/dynamic-input';
 import { StandardInputWrapper } from '../standard-input/standard-input-wrapper';
+import { FormContext } from '../../dynamic-form/form-context';
 
 @Component({
   selector: 'app-dynamic-field',
@@ -36,11 +37,11 @@ export class DynamicField implements OnInit {
 
   readonly formDefinition = input.required<FormDefinition>();
   readonly field = input.required<FieldDefinition>();
-  readonly modelFormGroup = input.required<FormGroup>();
+  readonly formContext = input.required<FormContext>();
 
   readonly width = computed(() => widthToCss(getMetadata(this.field(), MetadataType.Width)));
   readonly control = computed(
-    () => this.modelFormGroup().get(this.field().property) as FormControl,
+    () => this.formContext().getOrAddControl(this.field().property) as FormControl,
   );
   readonly visible = signal(true);
   readonly label = signal('');
@@ -50,15 +51,15 @@ export class DynamicField implements OnInit {
   ngOnInit() {
     applyPropertyOrConstant(
       getMetadata(this.field(), MetadataType.Visible),
-      this.modelFormGroup(),
+      this.formContext(),
       this.visible.set,
     );
 
-    applyPropertyOrConstant(getLabel(this.field()), this.modelFormGroup(), this.label.set);
+    applyPropertyOrConstant(getLabel(this.field()), this.formContext(), this.label.set);
   }
 
   executeRecalculate() {
     const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
-    if (recalc) this.recalculateEventService.runRecalculate(this.modelFormGroup(), recalc);
+    if (recalc) this.recalculateEventService.runRecalculate(this.formContext(), recalc);
   }
 }

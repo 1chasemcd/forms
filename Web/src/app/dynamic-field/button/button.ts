@@ -1,7 +1,7 @@
 import { Component, input, OnInit, output, signal } from '@angular/core';
 import { applyPropertyOrConstant, getMetadata } from '../../utils/api-utils';
-import { FormGroup } from '@angular/forms';
 import { FieldDefinition, MetadataType } from '../../api/api.g';
+import { FormContext } from '../../dynamic-form/form-context';
 
 @Component({
   selector: 'app-button',
@@ -10,7 +10,7 @@ import { FieldDefinition, MetadataType } from '../../api/api.g';
 export class Button implements OnInit {
   readonly label = input.required<string>();
   readonly field = input.required<FieldDefinition>();
-  readonly modelFormGroup = input.required<FormGroup>();
+  readonly formContext = input.required<FormContext>();
   readonly recalculateEvent = output();
 
   readonly enabled = signal(true);
@@ -18,7 +18,7 @@ export class Button implements OnInit {
   ngOnInit(): void {
     applyPropertyOrConstant(
       getMetadata(this.field(), MetadataType.Enabled),
-      this.modelFormGroup(),
+      this.formContext(),
       this.enabled.set,
     );
   }

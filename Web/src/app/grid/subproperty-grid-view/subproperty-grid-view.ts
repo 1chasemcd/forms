@@ -1,4 +1,4 @@
-import { Component, computed, input, OnInit } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
 import { Grid } from '@angular/aria/grid';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { applyPropertyOrConstant, getLabel, getMetadata } from '../../utils/api-utils';
@@ -11,6 +11,7 @@ import {
   SubPropertyGridViewDefinition,
 } from '../../api/api.g';
 import { CheckboxInput } from '../../dynamic-field/checkbox/checkbox-input';
+import { FormContext } from '../../dynamic-form/form-context';
 
 @Component({
   selector: 'app-subproperty-grid-view',
@@ -24,11 +25,12 @@ export class SubpropertyGridViewComponent implements OnInit {
   readonly formDefinition = input.required<FormDefinition>();
   readonly GridSelectionType = GridSelectionType;
   readonly gridView = input.required<SubPropertyGridViewDefinition>();
-  readonly modelFormGroup = input.required<FormGroup>();
+  readonly formContext = input.required<FormContext>();
   readonly labels: string[] = [];
-
-  readonly formArray = computed(
-    () => this.modelFormGroup().get(this.gridView().subPropertyName) as FormArray<FormGroup>,
+  private destroyRef = inject(DestroyRef);
+  readonly rowContexts = signal<FormContext[]>([]);
+  private readonly formArray = computed(
+    () => this.formContext().formGroup.get(this.gridView().subPropertyName) as FormArray<FormGroup>,
   );
 
   readonly selectAllControl = new FormControl(false);
@@ -38,10 +40,18 @@ export class SubpropertyGridViewComponent implements OnInit {
       const index = this.labels.push('') - 1;
       applyPropertyOrConstant(
         getLabel(field),
-        this.modelFormGroup(),
+        this.formContext(),
         (label: string) => (this.labels[index] = label),
       );
     }
+
+    this.formArray().valueChanges.subscribe(() =>
+      this.rowContexts.set(
+        this.formArray().controls.map(
+          (c) => new FormContext(c, this.destroyRef, this.formContext()),
+        ),
+      ),
+    );
   }
 
   readonly gridTemplateColumns = computed(() => {
@@ -77,18 +87,18 @@ export class SubpropertyGridViewComponent implements OnInit {
     return getMetadata<number>(field, MetadataType.Width);
   }
 
-  getRowId(row: FormGroup) {
-    return row.get(this.gridView().idProperty)?.value;
+  getRowId(rowContext: FormContext) {
+    return rowContext.formGroup.get(this.gridView().idProperty)?.value;
   }
 
-  getControlFromRow(row: FormGroup, propertyName: string) {
-    return row.get(propertyName) as FormControl;
+  getControlFromRow(rowContext: FormContext, propertyName: string) {
+    return rowContext.formGroup.get(propertyName) as FormControl;
   }
 
-  selectionPropertyUpdated(row: FormGroup) {
+  selectionPropertyUpdated(rowContext: FormContext) {
     if (this.gridView().selectionOptions?.selectionType == GridSelectionType.Single) {
-      if (!this.getSelectionControl(row).value) return;
-      this.unselectAllOthers(this.getRowId(row));
+      if (!this.getSelectionControl(rowContext).value) return;
+      this.unselectAllOthers(this.getRowId(rowContext));
     } else if (this.gridView().selectionOptions?.selectionType == GridSelectionType.Multiple) {
       this.updateSelectAllState();
     }
@@ -96,30 +106,30 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   selectAllUpdated() {
     const value = this.selectAllControl.value;
-    for (const row of this.formArray().controls) {
-      this.getSelectionControl(row).setValue(value);
+    for (const context of this.rowContexts()) {
+      this.getSelectionControl(context).setValue(value);
     }
   }
 
   private unselectAllOthers(idToKeep: unknown) {
-    for (const row of this.formArray().controls) {
-      if (this.getRowId(row) === idToKeep) continue;
-      this.getSelectionControl(row).setValue(false);
+    for (const context of this.rowContexts()) {
+      if (this.getRowId(context) === idToKeep) continue;
+      this.getSelectionControl(context).setValue(false);
     }
   }
 
   private updateSelectAllState() {
     let allSelected = true;
-    for (const row of this.formArray().controls) {
-      const value = this.getSelectionControl(row).value;
+    for (const context of this.rowContexts()) {
+      const value = this.getSelectionControl(context).value;
       if (!value) allSelected = false;
     }
     if (allSelected) this.selectAllControl.setValue(true);
     else this.selectAllControl.setValue(false);
   }
 
-  private getSelectionControl(row: FormGroup) {
+  private getSelectionControl(rowContext: FormContext) {
     const selectionProperty = this.gridView().selectionOptions?.selectionProperty ?? '';
-    return this.getControlFromRow(row, selectionProperty);
+    return this.getControlFromRow(rowContext, selectionProperty);
   }
 }

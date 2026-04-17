@@ -34,34 +34,34 @@ export class StandardProcessorsService {
 
   private registerViewProcessors() {
     this.registry.registerViewProcessor('combinedview', {
-      process: (view, context, parentEnabled) => {
+      process: (view, context) => {
         (view as CombinedViewDefinition).views?.forEach((v) =>
-          this.formProcessorService.processView(v, context, parentEnabled),
+          this.formProcessorService.processView(v, context),
         );
       },
     });
 
     this.registry.registerViewProcessor('fieldview', {
-      process: (view, context, parentEnabled) => {
+      process: (view, context) => {
         (view as FieldViewDefinition).fields?.forEach((f) =>
-          this.formProcessorService.processField(f, context, parentEnabled),
+          this.formProcessorService.processField(f, context),
         );
       },
     });
 
     this.registry.registerViewProcessor('subpropertygridview', {
-      process: (view, context, parentEnabled) => {
+      process: (view, context) => {
         const gridView = view as SubPropertyGridViewDefinition;
         const formArray = new FormArray<FormGroup>([]);
         context.formGroup.addControl(gridView.subPropertyName, formArray);
 
-        let gridEnabled = parentEnabled;
+        let gridEnabled = of(true);
         if (gridView.canEdit?.$type === 'constant' && !gridView.canEdit.value)
           gridEnabled = of(false);
         else if (gridView.canEdit?.$type === 'property') {
           const control = context.getOrAddControl(gridView.canEdit.value);
           gridEnabled = combineLatest([
-            parentEnabled,
+            of(true),
             control.valueChanges.pipe(startWith(control.value)),
           ]).pipe(map(([p, c]) => p && c));
         }
@@ -97,11 +97,11 @@ export class StandardProcessorsService {
     });
 
     this.registry.registerMetadataProcessor(MetadataType.Enabled, {
-      process: (metadata, field, context, parentEnabled) => {
+      process: (metadata, field, context) => {
         const control = context.getOrAddControl(field.property);
         const fieldEnabled = this.getPocObservable(metadata.value, context);
 
-        context.untilDestroyed(combineLatest([parentEnabled, fieldEnabled])).subscribe(([p, f]) => {
+        context.untilDestroyed(combineLatest([of(true), fieldEnabled])).subscribe(([p, f]) => {
           const shouldEnable = p && (f as boolean);
           if (shouldEnable && control.disabled) control.enable({ emitEvent: false });
           else if (!shouldEnable && control.enabled) control.disable({ emitEvent: false });

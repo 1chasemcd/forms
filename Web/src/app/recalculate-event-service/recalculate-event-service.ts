@@ -1,16 +1,16 @@
 import { inject, Injectable } from '@angular/core';
 import { RecalculateEvent, RecalculateEventClient } from '../api/api.g';
 import { catchError, throwError } from 'rxjs';
-import { FormGroup } from '@angular/forms';
 import { FormValueService } from '../dynamic-form/form-value-service';
+import { FormContext } from '../dynamic-form/form-context';
 
 @Injectable({ providedIn: 'root' })
 export class RecalculateEventService {
   private recalculateEventClient = inject(RecalculateEventClient);
   private formValueService = inject(FormValueService);
 
-  runRecalculate(model: FormGroup, recalculateEvent: RecalculateEvent) {
-    const propertiesToSend = this.formValueService.toRecord(model);
+  runRecalculate(context: FormContext, recalculateEvent: RecalculateEvent) {
+    const propertiesToSend = this.formValueService.toRecord(context.formGroup);
 
     this.recalculateEventClient
       .performAction(recalculateEvent.service, recalculateEvent.method, propertiesToSend)
@@ -21,7 +21,7 @@ export class RecalculateEventService {
         }),
       )
       .subscribe((result) => {
-        this.formValueService.patchValues(model, result.model);
+        this.formValueService.patchValues(context, result.model);
       });
   }
 }

@@ -3,7 +3,7 @@
     @case (FieldType.Button) {
       <app-button
         [field]="field()"
-        [modelFormGroup]="modelFormGroup()"
+        [formContext]="formContext()"
         [label]="label()"
         (recalculateEvent)="executeRecalculate()"
       ></app-button>

@@ -1,12 +1,13 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FileResponse, FormDefinitionClient, FormDefinition, RepositoryClient } from '../api/api.g';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { catchError, of, throwError } from 'rxjs';
 import { DynamicView } from '../dynamic-view/dynamic-view';
 import { FormValueService } from './form-value-service';
 import { FormFactory, GridRegistry } from './form-factory';
 import { StandardProcessorsService } from './standard-processors.service';
+import { FormContext } from './form-context';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -24,7 +25,7 @@ export class DynamicForm implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
 
   formDefinition?: FormDefinition;
-  formGroup?: FormGroup;
+  formContext?: FormContext;
 
   ngOnInit() {
     this.standardProcessors.register();
@@ -56,7 +57,7 @@ export class DynamicForm implements OnInit, OnDestroy {
   private handleFormResponse(form: FormDefinition | null) {
     if (form == null) return;
     this.formDefinition = form;
-    this.formGroup = this.formFactory.createFormGroup(form.view);
+    this.formContext = this.formFactory.createFormContext(form.view);
     if (form.modelType)
       this.repositoryClient
         .create(form.modelType)
@@ -65,8 +66,8 @@ export class DynamicForm implements OnInit, OnDestroy {
 
   private handleRepositoryResponse(resp: FileResponse) {
     resp.data.text().then((text) => {
-      if (this.formGroup && this.formDefinition)
-        this.formValueService.patchValues(this.formGroup, JSON.parse(text));
+      if (this.formContext && this.formDefinition)
+        this.formValueService.patchValues(this.formContext, JSON.parse(text));
     });
   }
 
