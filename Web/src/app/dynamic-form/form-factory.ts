@@ -17,7 +17,7 @@ export class FormFactory {
   ): FormGroup {
     const group = new FormGroup({});
     const context = new FormContext(group, this.destroyRef);
-    this.processorService.processView(view, group, context, parentEnabled);
+    this.processorService.processView(view, context, parentEnabled);
     return group;
   }
 
@@ -32,7 +32,7 @@ export class FormFactory {
       // Parent enablement can be combined with row enablement if we have a way to resolve it
     }
 
-    this.processorService.processView(entry.definition, group, context, entry.parentEnabled);
+    this.processorService.processView(entry.definition, context, entry.parentEnabled);
     return group;
   }
 }

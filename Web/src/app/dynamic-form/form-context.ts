@@ -9,9 +9,9 @@ export class FormContext {
     public readonly destroyRef: DestroyRef,
   ) {}
 
-  getOrAddControl(key: string, group: FormGroup = this.formGroup) {
-    if (!group.get(key)) group.addControl(key, new FormControl({}));
-    return group.get(key) as FormControl;
+  getOrAddControl(key: string) {
+    if (!this.formGroup.get(key)) this.formGroup.addControl(key, new FormControl({}));
+    return this.formGroup.get(key) as FormControl;
   }
 
   untilDestroyed<T>(observable: Observable<T>): Observable<T> {

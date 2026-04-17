@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { BaseViewDefinition, FieldDefinition } from '../api/api.g';
 import { FormRegistryService } from './form-registry-service';
 import { FormContext } from './form-context';
@@ -9,29 +8,19 @@ import { Observable } from 'rxjs';
 export class FormProcessorService {
   private registry = inject(FormRegistryService);
 
-  processView(
-    view: BaseViewDefinition,
-    formGroup: FormGroup,
-    context: FormContext,
-    parentEnabled: Observable<boolean>,
-  ) {
+  processView(view: BaseViewDefinition, context: FormContext, parentEnabled: Observable<boolean>) {
     const processor = this.registry.getViewProcessor(view);
     if (processor) {
-      processor.process(view, formGroup, context, parentEnabled);
+      processor.process(view, context, parentEnabled);
     } else {
       console.warn(`No view processor found for type: ${view.$type}`);
     }
   }
 
-  processField(
-    field: FieldDefinition,
-    formGroup: FormGroup,
-    context: FormContext,
-    parentEnabled: Observable<boolean>,
-  ) {
+  processField(field: FieldDefinition, context: FormContext, parentEnabled: Observable<boolean>) {
     const processor = this.registry.getFieldProcessor(field);
     if (processor) {
-      processor.process(field, formGroup, context, parentEnabled);
+      processor.process(field, context, parentEnabled);
     } else {
       console.warn(`No field processor found for type: ${field.type}`);
     }
@@ -39,7 +28,7 @@ export class FormProcessorService {
     field.fieldMetadatas?.forEach((m) => {
       const metadataProcessor = this.registry.getMetadataProcessor(m);
       if (metadataProcessor) {
-        metadataProcessor.process(m, field, formGroup, context, parentEnabled);
+        metadataProcessor.process(m, field, context, parentEnabled);
       }
     });
   }
