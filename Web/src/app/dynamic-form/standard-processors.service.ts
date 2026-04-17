@@ -168,15 +168,6 @@ export class StandardProcessorsService {
         );
       },
     });
-
-    this.registry.registerMetadataProcessor(MetadataType.RecalculateEvent, {
-      process: (metadata, field, group, context) => {
-        const control = context.getOrAddControl(field.property, group);
-        context.untilDestroyed(control.valueChanges).subscribe(() => {
-          this.recalculateService.runRecalculate(group, metadata.value);
-        });
-      },
-    });
   }
 
   private applyPoc<T>(
