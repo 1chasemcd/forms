@@ -1,14 +1,12 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BaseViewDefinition, SubPropertyGridViewDefinition } from '../api/api.g';
-import { FormProcessorService } from './form-processor-service';
+import { BaseViewDefinition } from '../api/api.g';
+import { FormProcessorService } from '../form-processor/form-processor-service';
 import { FormContext } from './form-context';
-import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class FormFactory {
   private processorService = inject(FormProcessorService);
-  private gridRegistry = inject(GridRegistry);
   private destroyRef = inject(DestroyRef);
 
   createFormContext(view: BaseViewDefinition): FormContext {
@@ -16,44 +14,5 @@ export class FormFactory {
     const context = new FormContext(group, this.destroyRef);
     this.processorService.processView(view, context);
     return context;
-  }
-
-  createGridRowContext(gridId: string, parentContext: FormContext): FormContext | null {
-    const entry = this.gridRegistry.get(gridId);
-    if (!entry) return null;
-
-    const group = new FormGroup({});
-    const context = new FormContext(group, this.destroyRef, parentContext);
-
-    if (entry.definition.canEditRow?.$type === 'constant' && !entry.definition.canEditRow.value) {
-      // Parent enablement can be combined with row enablement if we have a way to resolve it
-    }
-
-    this.processorService.processView(entry.definition, context);
-    return context;
-  }
-}
-
-@Injectable({ providedIn: 'root' })
-export class GridRegistry {
-  private grids = new Map<
-    string,
-    { definition: SubPropertyGridViewDefinition; parentEnabled: Observable<boolean> }
-  >();
-
-  register(
-    gridId: string,
-    definition: SubPropertyGridViewDefinition,
-    parentEnabled: Observable<boolean>,
-  ) {
-    this.grids.set(gridId, { definition, parentEnabled });
-  }
-
-  get(gridId: string) {
-    return this.grids.get(gridId);
-  }
-
-  clear() {
-    this.grids.clear();
   }
 }

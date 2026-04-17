@@ -1,18 +1,18 @@
 import { inject, Injectable } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { FormFactory } from './form-factory';
 import { FormContext } from './form-context';
+import { GridRowFactory } from './grid-row-factory';
 
 @Injectable({ providedIn: 'root' })
 export class FormValueService {
-  private formFactory = inject(FormFactory);
+  private gridRowFactory = inject(GridRowFactory);
 
   patchValues(formContext: FormContext, values: Record<string, unknown>) {
     for (const [key, value] of Object.entries(values)) {
       const toSet = formContext.getOrAddControl(key);
       if (toSet instanceof FormArray) {
         if (Array.isArray(value)) {
-          this.patchGridValues(key, toSet, value as Record<string, unknown>[], formContext);
+          this.patchGridValues(key, toSet, value as Record<string, unknown>[]);
         } else toSet.clear();
         continue;
       }
@@ -25,13 +25,12 @@ export class FormValueService {
     gridId: string,
     formArray: FormArray<FormGroup>,
     valuesArray: Record<string, unknown>[],
-    parentContext: FormContext,
   ) {
     formArray.clear();
 
     // TODO make this more efficient
     for (const row of valuesArray) {
-      const rowContext = this.formFactory.createGridRowContext(gridId, parentContext);
+      const rowContext = this.gridRowFactory.createGridRow(gridId);
       if (rowContext === null) continue;
       this.patchValues(rowContext, row);
       formArray.push(rowContext.formGroup);

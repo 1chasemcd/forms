@@ -1,4 +1,4 @@
-import { Component, computed, input, OnInit, signal } from '@angular/core';
+import { Component, computed, Input, input, OnInit, signal } from '@angular/core';
 import { widthToCss } from '../utils/width-utils';
 import { DynamicField } from '../dynamic-field/dynamic-field/dynamic-field';
 import { applyPropertyOrConstant } from '../utils/api-utils';
@@ -20,6 +20,7 @@ export class DynamicView implements OnInit {
   readonly formView = input.required<BaseViewDefinition>();
   readonly formContext = input.required<FormContext>();
   readonly alreadyInUnifiedView = input(false);
+  @Input() test!: number;
   title = signal('');
 
   ngOnInit(): void {

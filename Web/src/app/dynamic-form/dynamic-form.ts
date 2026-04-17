@@ -5,15 +5,16 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { catchError, of, throwError } from 'rxjs';
 import { DynamicView } from '../dynamic-view/dynamic-view';
 import { FormValueService } from './form-value-service';
-import { FormFactory, GridRegistry } from './form-factory';
-import { StandardProcessorsService } from './standard-processors.service';
+import { FormFactory } from './form-factory';
+import { StandardProcessorsService } from '../form-processor/standard-processors.service';
 import { FormContext } from './form-context';
+import { GridRowFactory } from './grid-row-factory';
 
 @Component({
   selector: 'app-dynamic-form',
   imports: [ReactiveFormsModule, DynamicView],
   templateUrl: './dynamic-form.html',
-  providers: [FormDefinitionClient, RepositoryClient, FormFactory, GridRegistry],
+  providers: [FormDefinitionClient, RepositoryClient, FormFactory],
 })
 export class DynamicForm implements OnInit, OnDestroy {
   private readonly formDefinitionClient = inject(FormDefinitionClient);
@@ -21,8 +22,8 @@ export class DynamicForm implements OnInit, OnDestroy {
   private readonly formFactory = inject(FormFactory);
   private readonly formValueService = inject(FormValueService);
   private readonly standardProcessors = inject(StandardProcessorsService);
-  private readonly gridRegistry = inject(GridRegistry);
   private readonly route = inject(ActivatedRoute);
+  private readonly gridRowFactory = inject(GridRowFactory);
 
   formDefinition?: FormDefinition;
   formContext?: FormContext;
@@ -47,7 +48,7 @@ export class DynamicForm implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.gridRegistry.clear();
+    this.gridRowFactory.clear();
   }
 
   private handleFormPathNotFound() {
