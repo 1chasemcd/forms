@@ -6,7 +6,7 @@ import { catchError, of, throwError } from 'rxjs';
 import { DynamicView } from '../dynamic-view/dynamic-view';
 import { FormValueService } from './form-value-service';
 import { FormFactory } from './form-factory';
-import { StandardProcessorsService } from '../form-processor/standard-processors.service';
+import { StandardProcessorsService } from '../form-processor/standard-processors-service';
 import { FormContext } from './form-context';
 import { GridRowFactory } from './grid-row-factory';
 
