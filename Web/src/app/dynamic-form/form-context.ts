@@ -18,12 +18,6 @@ export class FormContext {
     return control;
   }
 
-  merge(source: FormContext) {
-    Object.entries(source.formGroup.controls).forEach(([key, control]) => {
-      this.formGroup.addControl(key, control);
-    });
-  }
-
   untilDestroyed<T>(observable: Observable<T>): Observable<T> {
     return observable.pipe(takeUntilDestroyed(this.destroyRef));
   }
