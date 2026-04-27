@@ -1,12 +1,6 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import {
-  FieldDefinition,
-  FieldType,
-  FormDefinition,
-  MetadataType,
-  RecalculateEvent,
-} from '../../api/api.g';
+import { FieldDefinition, FieldType, MetadataType, RecalculateEvent } from '../../api/api.g';
 import { DynamicInput } from '../../dynamic-field/dynamic-input/dynamic-input';
 import { getMetadata } from '../../utils/api-utils';
 import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
@@ -21,7 +15,6 @@ import { FormContext } from '../../dynamic-form/form-context';
 export class GridCell {
   readonly FieldType = FieldType;
 
-  readonly formDefinition = input.required<FormDefinition>();
   readonly field = input.required<FieldDefinition>();
   readonly rowContext = input.required<FormContext>();
 

@@ -1,6 +1,7 @@
 import { FieldDefinition, MetadataType, PropertyOrConstant } from '../api/api.g';
 import { pascalCaseToWords } from './string-utils';
 import { FormContext } from '../dynamic-form/form-context';
+import { Observable, of, startWith } from 'rxjs';
 
 export function applyPropertyOrConstant<T>(
   poc: PropertyOrConstant | null | undefined,
@@ -13,6 +14,15 @@ export function applyPropertyOrConstant<T>(
     const propertyControl = context.getOrAddControl(poc.value);
     propertyControl?.valueChanges.subscribe(callback);
   }
+}
+
+export function getPocObservable(
+  poc: PropertyOrConstant,
+  context: FormContext,
+): Observable<unknown> {
+  if (poc.$type === 'constant') return of(poc.value);
+  const control = context.getOrAddControl(poc.value);
+  return control.valueChanges.pipe(startWith(control.value));
 }
 
 export function getMetadata<T>(field: FieldDefinition, type: MetadataType) {

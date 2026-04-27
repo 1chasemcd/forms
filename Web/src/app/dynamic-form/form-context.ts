@@ -5,9 +5,8 @@ import { Observable } from 'rxjs';
 
 export class FormContext {
   constructor(
-    public readonly formGroup: FormGroup,
     public readonly destroyRef: DestroyRef,
-    public readonly parentContext: FormContext | null = null,
+    public readonly formGroup: FormGroup = new FormGroup({}),
   ) {}
 
   getOrAddControl(key: string): AbstractControl {
@@ -17,6 +16,12 @@ export class FormContext {
       this.formGroup.addControl(key, control);
     }
     return control;
+  }
+
+  merge(source: FormContext) {
+    Object.entries(source.formGroup.controls).forEach(([key, control]) => {
+      this.formGroup.addControl(key, control);
+    });
   }
 
   untilDestroyed<T>(observable: Observable<T>): Observable<T> {

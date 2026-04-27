@@ -2,8 +2,6 @@ import { inject, Injectable } from '@angular/core';
 import { FormRegistryService } from './form-registry-service';
 import {
   CombinedViewDefinition,
-  FieldDefinition,
-  FieldType,
   FieldViewDefinition,
   MetadataType,
   PropertyOrConstant,
@@ -11,7 +9,7 @@ import {
 } from '../api/api.g';
 import { FormProcessorService } from './form-processor-service';
 import { FormContext } from '../dynamic-form/form-context';
-import { combineLatest, Observable, of, startWith } from 'rxjs';
+import { of, startWith } from 'rxjs';
 import { FormArray, FormGroup, Validators } from '@angular/forms';
 import {
   createMaxLengthValidator,
@@ -19,33 +17,38 @@ import {
   createRangeValidator,
 } from '../utils/validators';
 import { GridRowFactory } from '../dynamic-form/grid-row-factory';
+import { FormFieldEnablementService } from './form-field-enablement-service';
+import { getPocObservable } from '../utils/api-utils';
 
 @Injectable({ providedIn: 'root' })
 export class StandardProcessorsService {
   private registry = inject(FormRegistryService);
   private formProcessorService = inject(FormProcessorService);
   private gridRowFactory = inject(GridRowFactory);
+  private enablementService = inject(FormFieldEnablementService);
 
   register() {
     this.registerViewProcessors();
-    this.registerFieldProcessors();
     this.registerMetadataProcessors();
   }
 
   private registerViewProcessors() {
     this.registry.registerViewProcessor('combinedview', {
       process: (view, context) => {
-        (view as CombinedViewDefinition).views?.forEach((v) =>
-          this.formProcessorService.processView(v, context),
-        );
+        (view as CombinedViewDefinition).views?.forEach((v) => {
+          this.enablementService.enabledForParent(v, view);
+          this.formProcessorService.processView(v, context);
+        });
       },
     });
 
     this.registry.registerViewProcessor('fieldview', {
       process: (view, context) => {
-        (view as FieldViewDefinition).fields?.forEach((f) =>
-          this.formProcessorService.processField(f, context),
-        );
+        (view as FieldViewDefinition).fields?.forEach((f) => {
+          const fieldControl = this.formProcessorService.processField(f, context);
+          this.enablementService.enabledForParent(f, view);
+          if (fieldControl) this.enablementService.enabledForParent(fieldControl, f);
+        });
       },
     });
 
@@ -54,21 +57,12 @@ export class StandardProcessorsService {
         const gridView = view as SubPropertyGridViewDefinition;
         const formArray = new FormArray<FormGroup>([]);
         context.formGroup.addControl(gridView.subPropertyName, formArray);
+        if (gridView.editForm) this.enablementService.enabledFor(gridView, of(false));
+        else if (gridView.canEdit)
+          this.enablementService.enabledFor(gridView, getPocObservable(gridView.canEdit, context));
+
         this.gridRowFactory.register(gridView.subPropertyName, gridView, context);
       },
-    });
-  }
-
-  private registerFieldProcessors() {
-    const standardFieldProcessor = {
-      process: (field: FieldDefinition, context: FormContext) => {
-        if (field.type === FieldType.Button) return;
-        context.getOrAddControl(field.property);
-      },
-    };
-
-    Object.values(FieldType).forEach((type) => {
-      this.registry.registerFieldProcessor(type, standardFieldProcessor);
     });
   }
 
@@ -86,14 +80,8 @@ export class StandardProcessorsService {
 
     this.registry.registerMetadataProcessor(MetadataType.Enabled, {
       process: (metadata, field, context) => {
-        const control = context.getOrAddControl(field.property);
-        const fieldEnabled = this.getPocObservable(metadata.value, context);
-
-        context.untilDestroyed(combineLatest([of(true), fieldEnabled])).subscribe(([p, f]) => {
-          const shouldEnable = p && (f as boolean);
-          if (shouldEnable && control.disabled) control.enable({ emitEvent: false });
-          else if (!shouldEnable && control.enabled) control.disable({ emitEvent: false });
-        });
+        const fieldEnabled = getPocObservable(metadata.value, context);
+        this.enablementService.enabledFor(field, fieldEnabled);
       },
     });
 
@@ -159,12 +147,6 @@ export class StandardProcessorsService {
         .untilDestroyed(control.valueChanges.pipe(startWith(control.value)))
         .subscribe(callback);
     }
-  }
-
-  private getPocObservable(poc: PropertyOrConstant, context: FormContext): Observable<unknown> {
-    if (poc.$type === 'constant') return of(poc.value);
-    const control = context.getOrAddControl(poc.value);
-    return control.valueChanges.pipe(startWith(control.value));
   }
 
   private validatorCache = new WeakMap<object, Record<string, unknown>>();

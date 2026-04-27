@@ -1,25 +1,14 @@
 import { Injectable } from '@angular/core';
-import {
-  BaseViewDefinition,
-  FieldDefinition,
-  FieldType,
-  MetadataDefinition,
-  MetadataType,
-} from '../api/api.g';
-import { FieldProcessor, MetadataProcessor, ViewProcessor } from './form-processor-interfaces';
+import { BaseViewDefinition, MetadataDefinition, MetadataType } from '../api/api.g';
+import { MetadataProcessor, ViewProcessor } from './form-processor-interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class FormRegistryService {
   private viewProcessors = new Map<string, ViewProcessor>();
-  private fieldProcessors = new Map<string, FieldProcessor>();
   private metadataProcessors = new Map<MetadataType, MetadataProcessor>();
 
   registerViewProcessor(type: string, processor: ViewProcessor) {
     this.viewProcessors.set(type.toLowerCase(), processor);
-  }
-
-  registerFieldProcessor(type: FieldType, processor: FieldProcessor) {
-    this.fieldProcessors.set(type, processor);
   }
 
   registerMetadataProcessor(type: MetadataType, processor: MetadataProcessor) {
@@ -28,10 +17,6 @@ export class FormRegistryService {
 
   getViewProcessor(view: BaseViewDefinition): ViewProcessor | undefined {
     return this.viewProcessors.get(view.$type);
-  }
-
-  getFieldProcessor(field: FieldDefinition): FieldProcessor | undefined {
-    return this.fieldProcessors.get(field.type);
   }
 
   getMetadataProcessor(metadata: MetadataDefinition): MetadataProcessor | undefined {

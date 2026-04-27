@@ -2,13 +2,7 @@ import { Component, computed, inject, input, OnInit, signal } from '@angular/cor
 import { widthToCss } from '../../utils/width-utils';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { applyPropertyOrConstant, getLabel, getMetadata } from '../../utils/api-utils';
-import {
-  FieldDefinition,
-  FieldType,
-  FormDefinition,
-  MetadataType,
-  RecalculateEvent,
-} from '../../api/api.g';
+import { FieldDefinition, FieldType, MetadataType, RecalculateEvent } from '../../api/api.g';
 import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
 import { Button } from '../button/button';
 import { Checkbox } from '../checkbox/checkbox';
@@ -35,7 +29,6 @@ import { FormContext } from '../../dynamic-form/form-context';
 export class DynamicField implements OnInit {
   readonly FieldType = FieldType;
 
-  readonly formDefinition = input.required<FormDefinition>();
   readonly field = input.required<FieldDefinition>();
   readonly formContext = input.required<FormContext>();
 

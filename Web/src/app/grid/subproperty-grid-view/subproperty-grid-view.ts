@@ -5,7 +5,6 @@ import { applyPropertyOrConstant, getLabel, getMetadata } from '../../utils/api-
 import { GridCell } from '../grid-cell/grid-cell';
 import {
   FieldDefinition,
-  FormDefinition,
   GridSelectionType,
   MetadataType,
   SubPropertyGridViewDefinition,
@@ -22,7 +21,6 @@ import { FormContext } from '../../dynamic-form/form-context';
   },
 })
 export class SubpropertyGridViewComponent implements OnInit {
-  readonly formDefinition = input.required<FormDefinition>();
   readonly GridSelectionType = GridSelectionType;
   readonly gridView = input.required<SubPropertyGridViewDefinition>();
   readonly formContext = input.required<FormContext>();
@@ -47,9 +45,7 @@ export class SubpropertyGridViewComponent implements OnInit {
 
     this.formArray().valueChanges.subscribe(() =>
       this.rowContexts.set(
-        this.formArray().controls.map(
-          (c) => new FormContext(c, this.destroyRef, this.formContext()),
-        ),
+        this.formArray().controls.map((c) => new FormContext(this.destroyRef, c)),
       ),
     );
   }

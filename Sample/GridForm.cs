@@ -39,13 +39,14 @@ public class GridForm : FormBuilder<GridFormModel>
             {t => t.IncludeInCostSplitting, x => x.Width = 3},
             t => t.Description,
             t => t.Notes,
+            t => t.Editable
         }.EnableSelection(t => t.Selected);
 
         grid.Title = "Transactions";
         grid.CanAdd = new PropertyOrConstantBuilder<GridFormModel, bool>(x => x.AllowAdd);
         grid.CanEdit = new PropertyOrConstantBuilder<GridFormModel, bool>(x => x.AllowEdit);
         grid.CanDelete = new PropertyOrConstantBuilder<GridFormModel, bool>(x => x.AllowDelete);
-        grid.CanEditRow = new PropertyOrConstantBuilder<Transaction, bool>(t => t.Archived);
+        grid.CanEditRow = new PropertyOrConstantBuilder<Transaction, bool>(t => t.Editable);
         return grid;
     }
 
@@ -127,7 +128,7 @@ public class GridFormModel
             Time = new TimeOnly(9, 45),
             Amount = 96.24m,
             Description = "City market",
-            Archived = true
+            Editable = true
         }
     ];
 
@@ -162,7 +163,7 @@ public class Transaction
     public TimeOnly Time { get; set; }
     public string Description { get; set; } = string.Empty;
     public TextArea Notes { get; set; } = string.Empty;
-    public bool Archived { get; set; }
+    public bool Editable { get; set; }
 }
 
 public class BasicUserModel

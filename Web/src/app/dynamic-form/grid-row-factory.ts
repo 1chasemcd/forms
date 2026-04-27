@@ -1,12 +1,15 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { SubPropertyGridViewDefinition } from '../api/api.g';
 import { FormProcessorService } from '../form-processor/form-processor-service';
-import { FormGroup } from '@angular/forms';
 import { FormContext } from './form-context';
+import { FormFieldEnablementService } from '../form-processor/form-field-enablement-service';
+import { getPocObservable } from '../utils/api-utils';
 
 @Injectable({ providedIn: 'root' })
 export class GridRowFactory {
   private processorService = inject(FormProcessorService);
+  private enablementService = inject(FormFieldEnablementService);
+
   private destroyRef = inject(DestroyRef);
 
   private definitions = new Map<
@@ -17,21 +20,18 @@ export class GridRowFactory {
   createGridRow(id: string): FormContext | null {
     const entry = this.definitions.get(id);
     if (!entry) return null;
-    // const gridView = entry.definition;
+    const gridView = entry.definition;
 
-    const group = new FormGroup({});
-    const context = new FormContext(group, this.destroyRef, entry.parentContext);
-    entry.definition.fields.forEach((f) => this.processorService.processField(f, context));
+    const context = new FormContext(this.destroyRef);
+    this.enablementService.enabledForParent(context, gridView);
 
-    // let gridEnabled = of(true);
-    // if (gridView.canEdit?.$type === 'constant' && !gridView.canEdit.value) gridEnabled = of(false);
-    // else if (gridView.canEdit?.$type === 'property') {
-    //   const control = context.getOrAddControl(gridView.canEdit.value);
-    //   gridEnabled = combineLatest([
-    //     of(true),
-    //     control.valueChanges.pipe(startWith(control.value)),
-    //   ]).pipe(map(([p, c]) => p && c));
-    // }
+    if (!gridView.editForm && gridView.canEditRow)
+      this.enablementService.enabledFor(context, getPocObservable(gridView.canEditRow, context));
+
+    gridView.fields.forEach((f) => {
+      const fieldControl = this.processorService.processField(f, context);
+      if (fieldControl) this.enablementService.enabledForParent(fieldControl, context);
+    });
 
     return context;
   }

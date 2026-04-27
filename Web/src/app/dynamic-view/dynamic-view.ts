@@ -1,9 +1,9 @@
-import { Component, computed, Input, input, OnInit, signal } from '@angular/core';
+import { Component, computed, input, OnInit, signal } from '@angular/core';
 import { widthToCss } from '../utils/width-utils';
 import { DynamicField } from '../dynamic-field/dynamic-field/dynamic-field';
 import { applyPropertyOrConstant } from '../utils/api-utils';
 import { SubpropertyGridViewComponent } from '../grid/subproperty-grid-view/subproperty-grid-view';
-import { BaseViewDefinition, FormDefinition } from '../api/api.g';
+import { BaseViewDefinition } from '../api/api.g';
 import { NgClass } from '@angular/common';
 import { FormContext } from '../dynamic-form/form-context';
 
@@ -16,11 +16,9 @@ import { FormContext } from '../dynamic-form/form-context';
   templateUrl: './dynamic-view.html',
 })
 export class DynamicView implements OnInit {
-  readonly formDefinition = input.required<FormDefinition>();
   readonly formView = input.required<BaseViewDefinition>();
   readonly formContext = input.required<FormContext>();
   readonly alreadyInUnifiedView = input(false);
-  @Input() test!: number;
   title = signal('');
 
   ngOnInit(): void {

@@ -1,5 +1,4 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { BaseViewDefinition } from '../api/api.g';
 import { FormProcessorService } from '../form-processor/form-processor-service';
 import { FormContext } from './form-context';
@@ -10,8 +9,7 @@ export class FormFactory {
   private destroyRef = inject(DestroyRef);
 
   createFormContext(view: BaseViewDefinition): FormContext {
-    const group = new FormGroup({});
-    const context = new FormContext(group, this.destroyRef);
+    const context = new FormContext(this.destroyRef);
     this.processorService.processView(view, context);
     return context;
   }
