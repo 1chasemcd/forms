@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class FormFieldEnablementService {
@@ -17,6 +17,11 @@ export class FormFieldEnablementService {
       if (value) control.enable({ emitEvent: false });
       else control.disable({ emitEvent: false });
     });
+  }
+
+  enablementOf(obj: object): Observable<boolean> {
+    const id = this.addToMaps(obj);
+    return this.enablementSubjects.get(id) ?? of(false);
   }
 
   private addToMaps(obj: object): string {

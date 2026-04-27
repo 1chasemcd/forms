@@ -80,8 +80,9 @@ export class StandardProcessorsService {
 
     this.registry.registerMetadataProcessor(MetadataType.Enabled, {
       process: (metadata, field, context) => {
+        const control = context.getOrAddControl(field.property);
         const fieldEnabled = getPocObservable(metadata.value, context);
-        this.enablementService.enabledFor(field, fieldEnabled);
+        this.enablementService.enabledFor(control, fieldEnabled);
       },
     });
 
