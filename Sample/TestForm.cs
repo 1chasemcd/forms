@@ -1,13 +1,13 @@
 using FormsApi.Builder;
+using FormsApi.Builder.Metadata;
 using FormsApi.Builder.View;
-using FormsApi.Common.Types;
 using FormsApi.Repository.Handler;
 
 namespace Sample;
 
-public class TestForm : FormBuilder<TestModel>
+public class TestForm : Form<TestModel>
 {
-    protected override ViewBuilder<TestModel> View => new CombinedViewBuilder<TestModel>()
+    protected override BaseView<TestModel> View => new CombinedView<TestModel>()
     {
         TopLeftView(),
         TopRightView(),
@@ -15,86 +15,112 @@ public class TestForm : FormBuilder<TestModel>
         GridView()
     };
 
-    private static ViewBuilder<TestModel> TopLeftView()
+    private static FieldView<TestModel> TopLeftView()
     {
-        return new FieldViewBuilder<TestModel>("Top left view", width: 4)
+        return new FieldView<TestModel>("Top left view")
         {
-            { m => m.TextField, p =>
+            Width = 4,
+            Fields = new FieldList<TestModel>
             {
-                p.Width = 6;
-                p.Label = Property(m => m.SetTheLabelOnAnotherField);
-            } },
-            { m => m.DateField, p => p.Width = 6 },
-            { m => m.ResetForm, p => p.AddRecalc<TestService>(s => s.ResetForm) },
-            { m => m.SetNumericValue, p => p.AddRecalc<TestService>(s => s.SetNumericValue) },
+                { m => m.TextField, 6 },
+                { m => m.DateField, 6 },
+                { m => m.ResetForm },
+                { m => m.SetNumericValue }
+            }
         };
     }
 
-    private static ViewBuilder<TestModel> TopRightView()
+    private static FieldView<TestModel> TopRightView()
     {
-        var view = new FieldViewBuilder<TestModel>(title: "Additional Fields", width: 8)
+        return new FieldView<TestModel>(title: "Additional Fields")
         {
-            {m => m.CurrencyField, p => p.Required = true },
+            m => m.CurrencyField ,
             m => m.TextFieldWithInitialValue
-        };
-
-        view.Enabled = false;
-
-        return view;
+        }.WithWidth(8).Disabled();
     }
 
-    private static CombinedViewBuilder<TestModel> NestedCombinedView()
+    private static CombinedView<TestModel> NestedCombinedView()
     {
-        return new CombinedViewBuilder<TestModel>(unify: true)
+        return new CombinedView<TestModel>()
         {
-        BottomView(),
-        BottomViewRight()
-        };
+            BottomView(),
+            BottomViewRight()
+        }.Unified();
     }
 
-    private static ViewBuilder<TestModel> BottomView()
+    private static FieldView<TestModel> BottomView()
     {
-        return new FieldViewBuilder<TestModel>(width: 8)
+        return new FieldView<TestModel>()
         {
-            {m => m.NumericField, p =>
-                {
-                    p.Width = 6;
-                    p.AddRecalc<TestService>(s => s.Reserialize);
-                }
-            },
-            { m => m.ResultNumberPlus1, p => p.Width = 6},
-            { m => m.SetTheLabelOnAnotherField, p => p.Enabled = Property(m => m.CheckBox) },
+            { m => m.NumericField, 6 },
+            { m => m.ResultNumberPlus1, 6 },
+            m => m.SetTheLabelOnAnotherField,
             m => m.TextAreaInput,
             m => m.TimeInput
-        };
+        }.WithWidth(8);
     }
 
-    private static ViewBuilder<TestModel> BottomViewRight()
+    private static FieldView<TestModel> BottomViewRight()
     {
-        return new FieldViewBuilder<TestModel>("Inner View", width: 4)
+        return new FieldView<TestModel>("Inner View")
         {
             m => m.CheckBox,
             m => m.StaticTextAtTheBottom,
             m => m.AdditionalMessage,
-        };
+        }.WithWidth(4);
     }
 
-    private static SubPropertyGridViewBuilder<TestModel, Movie> GridView()
+    private static SubPropertyGridView<TestModel, Movie> GridView()
     {
-        var view = new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies, r => r.Name)
+        var view = new SubPropertyGridView<TestModel, Movie>(m => m.Movies, r => r.Name)
         {
-            { m => m.Name, p =>
-            {
-                p.Width = 6;
-                p.Enabled = false;
-            } },
-            { m => m.ReleaseDate, p => p.Enabled = false },
-            { m => m.DirectorName, p => p.Enabled = false },
+            { m => m.Name, 6},
+            { m => m.ReleaseDate },
+            { m => m.DirectorName },
             m => m.MyPersonalRating
         };
 
         view.Title = "A Grid View";
         return view;
+    }
+}
+
+public class TestModelMetadata : Metadata<TestModel>
+{
+    public TestModelMetadata()
+    {
+        LabelValue(m => m.StaticTextAtTheBottom);
+        LabelValue(m => m.AdditionalMessage);
+
+        Currency(m => m.CurrencyField);
+
+        Numeric(m => m.NumericField)
+            .WithMaxValue(100)
+            .WithMinValue(50);
+
+
+        Text(m => m.TextField)
+            .WithMaxLength(10)
+            .EnabledWhen(m => m.CheckBox);
+
+        TextArea(m => m.TextAreaInput)
+            .WithMaxLength(200);
+
+        Button(m => m.ResetForm)
+            .OnChange(Recalculate<TestService>(s => s.ResetForm));
+
+        Button(m => m.SetNumericValue)
+            .OnChange(Recalculate<TestService>(s => s.SetNumericValue));
+    }
+}
+
+public class MovieMetadata : Metadata<Movie>
+{
+    public MovieMetadata()
+    {
+        Numeric(m => m.MyPersonalRating)
+            .WithMinValue(0)
+            .WithMaxValue(5);
     }
 }
 
@@ -124,19 +150,19 @@ public class TestModel
         });
     }
     public bool CheckBox { get; set; }
-    public LabelValue StaticTextAtTheBottom => "A static message to display at the bottom";
-    public Currency CurrencyField { get; set; } = 0;
+    public string StaticTextAtTheBottom => "A static message to display at the bottom";
+    public decimal CurrencyField { get; set; } = 0;
     public DateOnly? DateField { get; set; } = new DateOnly(2016, 01, 05);
     public decimal NumericField { get; set; }
     public decimal ResultNumberPlus1 => NumericField + 1;
     public string TextField { get; set; } = string.Empty;
     public string TextFieldWithInitialValue { get; set; } = "Test Value";
-    public LabelValue AdditionalMessage => "Another static message";
+    public string AdditionalMessage => "Another static message";
     public string SetTheLabelOnAnotherField { get; set; } = "Text Field";
-    public TextArea TextAreaInput { get; set; } = "value in a text area\nnew line";
+    public string TextAreaInput { get; set; } = "value in a text area\nnew line";
     public TimeOnly TimeInput { get; set; } = new TimeOnly(2, 15);
-    public Button ResetForm { get; set; }
-    public Button SetNumericValue { get; set; }
+    public bool ResetForm { get; set; }
+    public bool SetNumericValue { get; set; }
 
     public IList<Movie> Movies { get; set; } = [];
 }

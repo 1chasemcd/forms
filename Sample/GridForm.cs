@@ -1,111 +1,118 @@
 using FormsApi.Builder;
+using FormsApi.Builder.Metadata;
 using FormsApi.Builder.View;
-using FormsApi.Common.Types;
 using FormsApi.Definition.Primitives;
 using FormsApi.Repository.Handler;
 
 namespace Sample;
 
-public class GridForm : FormBuilder<GridFormModel>
+public class GridForm : Form<GridFormModel>
 {
-    protected override ViewBuilder<GridFormModel> View => new CombinedViewBuilder<GridFormModel>
+    protected override BaseView<GridFormModel> View => new CombinedView<GridFormModel>()
     {
-        new CombinedViewBuilder<GridFormModel>(unify: true)
+        new CombinedView<GridFormModel>()
         {
             GridSettings(),
             TransactionGrid(),
-        },
+        }.Unified(),
         TransactionGrid2(),
         UserGrid(),
     };
 
-    private FieldViewBuilder<GridFormModel> GridSettings()
+    private FieldView<GridFormModel> GridSettings()
     {
-        return new FieldViewBuilder<GridFormModel>()
+        return new FieldView<GridFormModel>()
         {
-            {x => x.AllowAdd, x => x.Width = 3},
-            {x => x.AllowEdit, x => x.Width = 3},
-            {x => x.AllowDelete, x => x.Width = 3}
+            {x => x.AllowAdd, 3},
+            {x => x.AllowEdit, 3},
+            {x => x.AllowDelete, 3}
         };
     }
 
-    private SubPropertyGridViewBuilder<GridFormModel, Transaction> TransactionGrid()
+    private SubPropertyGridView<GridFormModel, Transaction> TransactionGrid()
     {
-        var grid = new SubPropertyGridViewBuilder<GridFormModel, Transaction>(x => x.Transactions, t => t.Id)
+        return new SubPropertyGridView<GridFormModel, Transaction>(x => x.Transactions, t => t.Id)
         {
-            {t => t.Date, x => x.Width = 3},
-            {t => t.Time, x => x.Width = 3},
-            {t => t.Amount, x => x.Width = 3 },
-            {t => t.IncludeInCostSplitting, x => x.Width = 3},
+            {t => t.Date, 3},
+            {t => t.Time, 3},
+            {t => t.Amount, 3 },
+            {t => t.IncludeInCostSplitting, 3},
             t => t.Description,
             t => t.Notes,
             t => t.Editable
-        }.EnableSelection(t => t.Selected);
-
-        grid.Title = "Transactions";
-        grid.CanAdd = new PropertyOrConstantBuilder<GridFormModel, bool>(x => x.AllowAdd);
-        grid.CanEdit = new PropertyOrConstantBuilder<GridFormModel, bool>(x => x.AllowEdit);
-        grid.CanDelete = new PropertyOrConstantBuilder<GridFormModel, bool>(x => x.AllowDelete);
-        grid.CanEditRow = new PropertyOrConstantBuilder<Transaction, bool>(t => t.Editable);
-        return grid;
+        }
+        .EnableSelection(t => t.Selected)
+        .WithTitle("Transactions")
+        .CanAddWhen(m => m.AllowAdd)
+        .CanEditWhen(m => m.AllowEdit)
+        .CanEditRowWhen(m => m.Editable)
+        .CanDeleteWhen(m => m.AllowDelete);
     }
 
-    private SubPropertyGridViewBuilder<GridFormModel, Transaction> TransactionGrid2()
+    private SubPropertyGridView<GridFormModel, Transaction> TransactionGrid2()
     {
-        var grid = new SubPropertyGridViewBuilder<GridFormModel, Transaction>(x => x.Transactions2, t => t.Id)
+        return new SubPropertyGridView<GridFormModel, Transaction>(x => x.Transactions2, t => t.Id)
         {
             t => t.Date,
             t => t.Time,
             t => t.Amount,
             t => t.Description,
-        }.EnableSelection(t => t.Selected, GridSelectionType.Single);
-
-        grid.CanEdit = true;
-        grid.EditForm = new TransactionEditForm();
-
-        return grid;
+        }
+        .EnableSelection(t => t.Selected, GridSelectionType.Single)
+        .EnableEdit().WithEditForm(new TransactionEditForm());
     }
 
-    private SubPropertyGridViewBuilder<GridFormModel, BasicUserModel> UserGrid()
+    private SubPropertyGridView<GridFormModel, BasicUserModel> UserGrid()
     {
-        var grid = new SubPropertyGridViewBuilder<GridFormModel, BasicUserModel>(x => x.Users, t => t.Id)
+        return new SubPropertyGridView<GridFormModel, BasicUserModel>(x => x.Users, t => t.Id)
         {
-            {u => u.Id, x => x.Width = 1},
+            {u => u.Id, 1},
             u => u.UserName
-        };
-
-        grid.Title = "Users";
-        grid.EditForm = new UserEditForm();
-        grid.CanEdit = true;
-        grid.CanAdd = true;
-
-        return grid;
+        }
+        .WithTitle("Users").EnableAdd().EnableEdit();
+        // .WithEditForm(new UserEditForm());
     }
 }
 
-public class TransactionEditForm : FormBuilder<Transaction>
+public class TransactionEditForm : Form<Transaction>
 {
-    protected override ViewBuilder<Transaction> View => new FieldViewBuilder<Transaction>
+    protected override BaseView<Transaction> View => new FieldView<Transaction>
     {
-        {t => t.Date, x => x.Width = 6},
-        {t => t.Time, x => x.Width = 6},
+        {t => t.Date, 6},
+        {t => t.Time, 6},
         t => t.Description,
-        {t => t.Amount, x => x.Width = 6},
-        {t => t.IncludeInCostSplitting, x => x.Width = 6},
+        {t => t.Amount, 6},
+        {t => t.IncludeInCostSplitting, 6},
         t => t.Notes
     };
 }
 
-public class UserEditForm : FormBuilder<User>
+public class UserEditForm : Form<User>
 {
-    protected override ViewBuilder<User> View => new FieldViewBuilder<User>
+    protected override BaseView<User> View => new FieldView<User>
     {
-        {u => u.Id, x => x.Enabled = false },
+        u => u.Id ,
         u => u.UserName,
         u => u.Email,
         u => u.PhoneNumber,
         u => u.IsAdmin
     };
+}
+
+public class TransactionMetadata : Metadata<Transaction>
+{
+    public TransactionMetadata()
+    {
+        Currency(m => m.Amount);
+    }
+}
+
+public class UserMetadata : Metadata<User>
+{
+    public UserMetadata()
+    {
+        Numeric(m => m.Id).Disabled();
+    }
 }
 
 public class GridFormModel
@@ -158,11 +165,11 @@ public class Transaction
     public int Id { get; set; }
     public bool Selected { get; set; }
     public bool IncludeInCostSplitting { get; set; }
-    public Currency Amount { get; set; }
+    public decimal Amount { get; set; }
     public DateOnly Date { get; set; }
     public TimeOnly Time { get; set; }
     public string Description { get; set; } = string.Empty;
-    public TextArea Notes { get; set; } = string.Empty;
+    public string Notes { get; set; } = string.Empty;
     public bool Editable { get; set; }
 }
 

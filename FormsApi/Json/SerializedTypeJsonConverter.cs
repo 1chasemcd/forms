@@ -4,14 +4,14 @@ using FormsApi.Definition.Primitives;
 
 namespace FormsApi.Json;
 
-internal sealed class SerializedTypeJsonConverter : JsonConverter<SerializedType>
+internal sealed class SerializedTypeJsonConverter : JsonConverter<TypeDto>
 {
-    public override SerializedType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override TypeDto Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        _ = SerializedType.TryParse(reader.GetString(), out SerializedType result);
+        _ = TypeDto.TryParse(reader.GetString(), out TypeDto result);
         return result;
     }
-    public override void Write(Utf8JsonWriter writer, SerializedType value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, TypeDto value, JsonSerializerOptions options)
     {
         writer.WriteStringValue(value.ToString());
     }

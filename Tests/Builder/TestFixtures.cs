@@ -1,13 +1,10 @@
 using FormsApi.Builder;
-using FormsApi.Builder.Field;
-using FormsApi.Builder.View;
 using FormsApi.Common.Types;
-using FormsApi.Definition.Primitives;
 using FormsApi.Recalculate;
 
 namespace Tests.Builder;
 
-public class TestFormBuilder : FormBuilder<TestModel>
+public class TestFormBuilder : Form<TestModel>
 {
     protected override ViewBuilder<TestModel> View => new CombinedViewBuilder<TestModel>("Title", 100)
     {

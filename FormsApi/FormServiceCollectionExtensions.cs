@@ -1,7 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using FormsApi.Builder.Validation;
-using FormsApi.Common.Registry;
+using FormsApi.Definition.Service;
 using FormsApi.Repository.Handler;
 using FormsApi.Repository.Service;
 using FormsApi.Setup;
@@ -29,11 +28,11 @@ public static class FormServiceCollectionExtensions
     public static IServiceCollection AddForms(this IServiceCollection services, Action<IFormSetupOptions>? setupAction)
     {
         services.TryAddSingleton<FormRegistry>();
+        services.TryAddSingleton<MetadataBuilderService>();
+        services.TryAddSingleton<MetadataProcessors>();
         services.TryAddSingleton<IRepositoryServiceFactory, RepositoryServiceFactory>();
         services.TryAddSingleton<IRepositoryResolver, RepositoryResolver>();
         services.TryAddSingleton(typeof(DefaultRepositoryCreateHandler<>));
-        services.TryAddSingleton<FormSetupService>();
-        services.TryAddSingleton<IFormValidationService, FormValidationService>();
 
         if (setupAction != null)
         {

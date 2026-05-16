@@ -1,9 +1,8 @@
-using System;
 using FormsApi.Repository.Handler;
 
 namespace FormsApi.Repository.Service;
 
-public class RepositoryCreateService<T>(IRepositoryCreateHandler<T> repository) : IRepositoryCallable
+public sealed class RepositoryCreateService<T>(IRepositoryCreateHandler<T> repository) : IRepositoryCallable
 {
 
     public async Task<object?> Invoke()

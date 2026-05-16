@@ -11,7 +11,7 @@ public sealed class RecalculateEventController(IServiceProvider serviceProvider)
 {
     [HttpPost("{serviceType}/{method}")]
     public ActionResult<RecalculateEventResult> PerformAction(
-        [FromRoute] SerializedType serviceType,
+        [FromRoute] TypeDto serviceType,
         [FromRoute] string method,
         [FromBody] JsonElement body)
     {

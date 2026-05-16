@@ -1,13 +1,12 @@
 using FormsApi.Definition;
-using FormsApi.Definition.Field;
-using FormsApi.Definition.Primitives;
+using FormsApi.Definition.Input;
 using FormsApi.Definition.View;
 
 namespace Tests.Builder.FormBuilder;
 
 public class DataViewTests
 {
-    private readonly FormDefinition _form = new TestFormBuilder().Build();
+    private readonly FormDto _form = new TestFormBuilder().Build();
 
     [TestCase(nameof(TestModel.BoolProperty), 0)]
     [TestCase(nameof(TestModel.CurrencyProperty), 1)]
@@ -19,12 +18,12 @@ public class DataViewTests
     [TestCase(nameof(TestModel.TimeProperty), 7)]
     public void DataView_MaintainsCorrectFieldOrder(string propertyName, int expectedIndex)
     {
-        var fields = ((CombinedViewDefinition)_form.View).Views
-                    .Select(x => x as FieldViewDefinition).Where(x => x != null).ToList()[0]!.Fields.ToList();
+        var fields = ((CombinedViewDto)_form.View).Views
+                    .Select(x => x as FieldViewDto).Where(x => x != null).ToList()[0]!.Fields.ToList();
 
         Assert.That(fields, Is.Not.Null);
         Assert.That(fields, Has.ItemAt(expectedIndex)
-            .With.Property(nameof(FieldDefinition.Property)).EqualTo(propertyName));
+            .With.Property(nameof(FieldDto.Property)).EqualTo(propertyName));
     }
 
     [TestCase(nameof(TestModel.BoolProperty), FieldType.CheckBox)]
@@ -39,10 +38,10 @@ public class DataViewTests
     [TestCase(nameof(TestModel.StaticText), FieldType.LabelValue)]
     public void DataView_MapsInputFieldTypesCorrectly(string inputName, FieldType expectedInputType)
     {
-        List<FieldDefinition> fields = ((CombinedViewDefinition)_form.View).Views
-            .Select(x => x as FieldViewDefinition).Where(x => x != null).ToList()[0]?.Fields.ToList()!;
+        List<FieldDto> fields = ((CombinedViewDto)_form.View).Views
+            .Select(x => x as FieldViewDto).Where(x => x != null).ToList()[0]?.Fields.ToList()!;
 
-        Assert.That(fields, Has.One.With.Property(nameof(FieldDefinition.Type)).EqualTo(expectedInputType)
-            .And.With.Property(nameof(FieldDefinition.Property)).EqualTo(inputName));
+        Assert.That(fields, Has.One.With.Property(nameof(FieldDto.Type)).EqualTo(expectedInputType)
+            .And.With.Property(nameof(FieldDto.Property)).EqualTo(inputName));
     }
 }

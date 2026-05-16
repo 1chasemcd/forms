@@ -11,7 +11,7 @@ namespace FormsApi.Repository;
 public sealed class RepositoryController(IRepositoryServiceFactory factory) : ControllerBase
 {
     [HttpPost("getall/{type}")]
-    public async Task<IActionResult> GetAllAsync([FromRoute] SerializedType type)
+    public async Task<IActionResult> GetAllAsync([FromRoute] TypeDto type)
     {
         IRepositoryCallable service = factory.BuildQueryService(type);
 
@@ -21,7 +21,7 @@ public sealed class RepositoryController(IRepositoryServiceFactory factory) : Co
     }
     [HttpPost("get/{type}/{id}")]
     public async Task<IActionResult> GetAsync(
-    [FromRoute] SerializedType type, [FromRoute] string id)
+    [FromRoute] TypeDto type, [FromRoute] string id)
     {
         IRepositoryCallable service = factory.BuildQueryService(type, id);
 
@@ -31,7 +31,7 @@ public sealed class RepositoryController(IRepositoryServiceFactory factory) : Co
     }
 
     [HttpPost("getnew/{type}")]
-    public async Task<IActionResult> CreateAsync([FromRoute] SerializedType type)
+    public async Task<IActionResult> CreateAsync([FromRoute] TypeDto type)
     {
         IRepositoryCallable service = factory.BuildCreateService(type);
         if (await service.Invoke() is not { } result)
@@ -40,7 +40,7 @@ public sealed class RepositoryController(IRepositoryServiceFactory factory) : Co
     }
 
     [HttpPost("save/{type}")]
-    public async Task<IActionResult> SaveAsync([FromRoute] SerializedType type, [FromBody] JsonElement body)
+    public async Task<IActionResult> SaveAsync([FromRoute] TypeDto type, [FromBody] JsonElement body)
     {
         if (body.Deserialize(type.GetRuntimeType()) is not { } obj)
             return Problem();
@@ -51,7 +51,7 @@ public sealed class RepositoryController(IRepositoryServiceFactory factory) : Co
 
     [HttpPost("delete/{type}")]
     public async Task<IActionResult> DeleteAsync(
-        [FromRoute] SerializedType type,
+        [FromRoute] TypeDto type,
         [FromBody] JsonElement body)
     {
         if (body.Deserialize(type.GetRuntimeType()) is not { } obj)

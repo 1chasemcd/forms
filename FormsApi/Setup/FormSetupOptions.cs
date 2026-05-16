@@ -1,5 +1,4 @@
 using FormsApi.Builder;
-using FormsApi.Definition;
 using FormsApi.Repository.Handler;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,25 +6,25 @@ namespace FormsApi.Setup;
 
 public interface IFormSetupOptions
 {
-    public IFormSetupOptions AddForm<TBuilder>(string path)
-        where TBuilder : IBuildable<FormDefinition>;
+    public IFormSetupOptions AddForm<TForm>(string path)
+        where TForm : Form;
     IFormSetupOptions AddRepository<TRepository>(ServiceLifetime lifetime = ServiceLifetime.Singleton);
 }
 internal sealed class FormSetupOptions(IServiceCollection services) : IFormSetupOptions
 {
     private readonly ICollection<KeyValuePair<string, Type>> _builders = [];
-    public IFormSetupOptions AddForm<TBuilder>(string path)
-        where TBuilder : IBuildable<FormDefinition>
+    public IFormSetupOptions AddForm<TForm>(string path)
+        where TForm : Form
     {
-        _builders.Add(new(path, typeof(TBuilder)));
+        _builders.Add(new(path, typeof(TForm)));
         return this;
     }
 
-    internal IEnumerable<KeyValuePair<string, IBuildable<FormDefinition>>> GetFormBuilders()
+    internal IEnumerable<KeyValuePair<string, Form>> GetForms()
     {
         foreach (KeyValuePair<string, Type> registration in _builders)
         {
-            IBuildable<FormDefinition>? builder = Activator.CreateInstance(registration.Value) as IBuildable<FormDefinition>;
+            Form? builder = Activator.CreateInstance(registration.Value) as Form;
             if (builder is not null)
                 yield return new(registration.Key, builder);
             else

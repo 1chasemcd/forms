@@ -28,7 +28,7 @@ public class RepositoryTypeSchemaProcessor : ISchemaProcessor
 {
     public void Process(SchemaProcessorContext context)
     {
-        if (context.ContextualType == typeof(SerializedType))
+        if (context.ContextualType == typeof(TypeDto))
         {
             context.Schema.Type = JsonObjectType.String;
             context.Schema.Properties.Clear();
@@ -42,7 +42,7 @@ public class IncludeTypesDocumentProcessor : IDocumentProcessor
     public void Process(DocumentProcessorContext context)
     {
         JsonSchema schema = context.SchemaGenerator.Generate(
-            typeof(RecalculateEvent),
+            typeof(RecalculateEventDto),
             context.SchemaResolver
         );
 

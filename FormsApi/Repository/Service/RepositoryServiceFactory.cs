@@ -1,4 +1,3 @@
-using System.Text.Json;
 using FormsApi.Definition.Primitives;
 using FormsApi.Repository.Handler;
 
@@ -6,27 +5,27 @@ namespace FormsApi.Repository.Service;
 
 public interface IRepositoryServiceFactory
 {
-    IRepositoryCallable BuildCreateService(SerializedType type);
-    IRepositoryCallable BuildDeleteService(SerializedType type, object model);
-    IRepositoryCallable BuildQueryService(SerializedType type);
-    IRepositoryCallable BuildQueryService(SerializedType type, string id);
-    IRepositoryCallable BuildSaveService(SerializedType type, object model);
+    IRepositoryCallable BuildCreateService(TypeDto type);
+    IRepositoryCallable BuildDeleteService(TypeDto type, object model);
+    IRepositoryCallable BuildQueryService(TypeDto type);
+    IRepositoryCallable BuildQueryService(TypeDto type, string id);
+    IRepositoryCallable BuildSaveService(TypeDto type, object model);
 }
 
 internal sealed class RepositoryServiceFactory(IRepositoryResolver resolver) : IRepositoryServiceFactory
 {
-    public IRepositoryCallable BuildCreateService(SerializedType type) =>
+    public IRepositoryCallable BuildCreateService(TypeDto type) =>
         Build(typeof(RepositoryCreateService<>), typeof(IRepositoryCreateHandler<>), type);
-    public IRepositoryCallable BuildDeleteService(SerializedType type, object model) =>
+    public IRepositoryCallable BuildDeleteService(TypeDto type, object model) =>
         Build(typeof(RepositoryDeleteService<>), typeof(IRepositoryDeleteHandler<>), type, model);
-    public IRepositoryCallable BuildQueryService(SerializedType type) =>
+    public IRepositoryCallable BuildQueryService(TypeDto type) =>
         Build(typeof(RepositoryQueryService<>), typeof(IRepositoryQueryHandler<>), type, [null]);
-    public IRepositoryCallable BuildQueryService(SerializedType type, string id) =>
+    public IRepositoryCallable BuildQueryService(TypeDto type, string id) =>
         Build(typeof(RepositoryQueryService<>), typeof(IRepositoryQueryHandler<>), type, id ?? string.Empty);
-    public IRepositoryCallable BuildSaveService(SerializedType type, object model) =>
+    public IRepositoryCallable BuildSaveService(TypeDto type, object model) =>
         Build(typeof(RepositorySaveService<>), typeof(IRepositorySaveHandler<>), type, model);
 
-    private IRepositoryCallable Build(Type serviceType, Type handlerType, SerializedType modelType, params object?[] additionalArgs)
+    private IRepositoryCallable Build(Type serviceType, Type handlerType, TypeDto modelType, params object?[] additionalArgs)
     {
         object repository = resolver.Resolve(handlerType, modelType.GetRuntimeType());
         Type repositoryType = GetHandlerTypeArgument(handlerType, repository);

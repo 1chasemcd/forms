@@ -1,6 +1,5 @@
-using FormsApi.Builder.Validation;
 using FormsApi.Definition;
-using FormsApi.Definition.Field;
+using FormsApi.Definition.Input;
 using FormsApi.Definition.View;
 
 namespace Tests.Builder.FormBuilder;
@@ -19,29 +18,29 @@ public class FormValidationServiceTests
         Assert.That(exception.Message, Does.Not.Contain("Property2"));
     }
 
-    private readonly FormDefinition _form = new()
+    private readonly FormDto _form = new()
     {
         ModelType = new(typeof(FormValidationServiceTests)),
-        View = new CombinedViewDefinition
+        View = new CombinedViewDto
         {
-            Views = new BaseViewDefinition[]
+            Views = new BaseViewDto[]
             {
-                new FieldViewDefinition
+                new FieldViewDto
                 {
-                    Fields = new FieldDefinition[]
+                    Fields = new FieldDto[]
                     {
                         new() { Property = "Property1" },
                         new() { Property = "Property2" },
                         new() { Property = "Property3" }
                     }
                 },
-                new CombinedViewDefinition
+                new CombinedViewDto
                 {
-                    Views = new BaseViewDefinition[]
+                    Views = new BaseViewDto[]
                     {
-                        new FieldViewDefinition
+                        new FieldViewDto
                         {
-                            Fields = new FieldDefinition[]
+                            Fields = new FieldDto[]
                             {
                                 new() { Property = "Property1" },
                                 new() { Property = "Property3" }

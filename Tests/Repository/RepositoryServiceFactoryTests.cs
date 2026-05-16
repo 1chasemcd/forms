@@ -1,6 +1,4 @@
-using System.Text.Json;
 using FormsApi.Definition.Primitives;
-using FormsApi.Repository;
 using FormsApi.Repository.Handler;
 using FormsApi.Repository.Service;
 using Moq;
@@ -41,7 +39,7 @@ public class RepositoryServiceFactoryTests
     [Test]
     public void BuildCreateService_ReturnsCreateService()
     {
-        var type = new SerializedType(typeof(TestModel));
+        var type = new TypeDto(typeof(TestModel));
         IRepositoryCallable service = _factory.BuildCreateService(type);
         Assert.That(service, Is.InstanceOf<RepositoryCreateService<TestModel>>());
 
@@ -52,7 +50,7 @@ public class RepositoryServiceFactoryTests
     [Test]
     public void BuildQueryService_ReturnsQueryService_GetAllMethod()
     {
-        var type = new SerializedType(typeof(TestModel));
+        var type = new TypeDto(typeof(TestModel));
         IRepositoryCallable service = _factory.BuildQueryService(type);
         Assert.That(service, Is.InstanceOf<RepositoryQueryService<TestModel>>());
 
@@ -63,7 +61,7 @@ public class RepositoryServiceFactoryTests
     [Test]
     public void BuildQueryService_ReturnsQueryService_GetMethod()
     {
-        var type = new SerializedType(typeof(TestModel));
+        var type = new TypeDto(typeof(TestModel));
         IRepositoryCallable service = _factory.BuildQueryService(type, "1");
         Assert.That(service, Is.InstanceOf<RepositoryQueryService<TestModel>>());
 
@@ -74,7 +72,7 @@ public class RepositoryServiceFactoryTests
     [Test]
     public void BuildDeleteService_ReturnsDeleteService()
     {
-        var type = new SerializedType(typeof(TestModel));
+        var type = new TypeDto(typeof(TestModel));
         TestModel model = new();
         IRepositoryCallable service = _factory.BuildDeleteService(type, model);
         Assert.That(service, Is.InstanceOf<RepositoryDeleteService<TestModel>>());
@@ -86,7 +84,7 @@ public class RepositoryServiceFactoryTests
     [Test]
     public void BuildSaveService_ReturnsSaveService()
     {
-        var type = new SerializedType(typeof(TestModel));
+        var type = new TypeDto(typeof(TestModel));
         TestModel model = new();
         IRepositoryCallable service = _factory.BuildSaveService(type, model);
         Assert.That(service, Is.InstanceOf<RepositorySaveService<TestModel>>());

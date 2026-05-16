@@ -9,17 +9,17 @@ public class RepositoryTypeTests
     public void TestSerialization()
     {
 
-        SerializedType type = new(typeof(RepositoryTypeTests));
+        TypeDto type = new(typeof(RepositoryTypeTests));
 
         string serialized = JsonSerializer.Serialize(type);
-        SerializedType? result = JsonSerializer.Deserialize<SerializedType>(serialized);
+        TypeDto? result = JsonSerializer.Deserialize<TypeDto>(serialized);
         Assert.That(result, Is.EqualTo(type));
     }
 
     [Test]
     public void TestConversion()
     {
-        SerializedType type = new(typeof(RepositoryTypeTests));
+        TypeDto type = new(typeof(RepositoryTypeTests));
         Assert.That(typeof(RepositoryTypeTests), Is.EqualTo(type.GetRuntimeType()));
     }
 }

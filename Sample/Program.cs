@@ -17,7 +17,7 @@ public static class Program
 
         builder.Services.AddOpenApiDocument(config =>
         {
-            config.SchemaSettings.TypeMappers.Add(new PrimitiveTypeMapper(typeof(SerializedType), schema =>
+            config.SchemaSettings.TypeMappers.Add(new PrimitiveTypeMapper(typeof(TypeDto), schema =>
             {
                 schema.Type = JsonObjectType.String;
                 schema.Description = "Base64-encoded assembly-qualified type name";

@@ -8,9 +8,9 @@ public class FormTests
     [Test]
     public void Build_SetsCorrectRepositoryType()
     {
-        FormDefinition form = new TestFormBuilder().Build();
+        FormDto form = new TestFormBuilder().Build();
 
-        SerializedType? expectedType = new(typeof(TestModel));
+        TypeDto? expectedType = new(typeof(TestModel));
 
         Assert.That(form.ModelType, Is.EqualTo(expectedType));
     }
