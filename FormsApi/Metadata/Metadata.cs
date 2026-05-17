@@ -9,8 +9,7 @@ namespace FormsApi.Metadata;
 
 public abstract class Metadata<TModel>
 {
-    private readonly Dictionary<string, IMetadataBuilder<TModel>> _metadataBuilders = [];
-    internal ReadOnlyDictionary<string, IMetadataBuilder<TModel>> MetadataBuilders => _metadataBuilders.AsReadOnly();
+    internal Dictionary<string, IMetadataBuilder<TModel>> MetadataBuilders { get; } = [];
     protected ButtonInputMetadataBuilder<TModel> Button(Expression<Func<TModel, object?>> selector) =>
         Add<ButtonInputMetadataBuilder<TModel>, object>(selector);
 
@@ -42,14 +41,14 @@ public abstract class Metadata<TModel>
     private TMetadata Add<TMetadata, TProperty>(Expression<Func<TModel, TProperty?>> selector) where TMetadata : IMetadataBuilder<TModel>, new()
     {
         string propertyName = new ModelMember<TModel, TProperty>(selector).Build();
-        if (_metadataBuilders.TryGetValue(propertyName, out IMetadataBuilder<TModel>? builder))
+        if (MetadataBuilders.TryGetValue(propertyName, out IMetadataBuilder<TModel>? builder))
         {
             if (builder is TMetadata tBuilder) return tBuilder;
             else throw new InvalidOperationException($"Property {propertyName} was already assigned a different input type");
         }
 
         builder = new TMetadata();
-        _metadataBuilders.Add(propertyName, builder);
+        MetadataBuilders.Add(propertyName, builder);
         return (TMetadata)builder;
     }
 

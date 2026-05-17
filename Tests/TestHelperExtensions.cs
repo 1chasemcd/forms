@@ -8,7 +8,7 @@ public static class TestHelperExensions
     public static object? InnerValue(this IPropertyOrConstant? poc)
     {
         if (poc is null) return null;
-        var build = poc.Build();
+        PropertyOrConstantDto build = poc.Build();
         return build is PropertyDto p ? p.Value : ((ConstantDto)build).Value;
     }
 
