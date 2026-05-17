@@ -70,9 +70,13 @@ Common/
  PropertyOrConstantTests.cs
  RecalculateEventTests.cs
 Forms/
+ CombinedViewTests.cs
+ FieldViewTests.cs
  FormControllerTests.cs
  FormRegistryTests.cs
  FormTests.cs
+ FormViewTests.cs
+ SubPropertyGridViewTests.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  Tests.AssemblyInfo.cs
@@ -81,6 +85,7 @@ Repository/
  RepositoryResolverTests.cs
  RepositoryServiceFactoryTests.cs
  RepositoryTypeTests.cs
+TestHelperExtensions.cs
 
 [metadataReferences]
 ../FormsApi/obj/Debug/net10.0/ref/FormsApi.dll

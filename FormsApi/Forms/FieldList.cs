@@ -5,7 +5,7 @@ using FormsApi.Contract;
 
 namespace FormsApi.Forms;
 
-public sealed class FieldList<TModel> : IEnumerable
+public sealed class FieldList<TModel> : IEnumerable<FormControlLayoutDto>
 {
     internal IList<FormControlLayoutDto> Fields { get; } = [];
 
@@ -19,5 +19,6 @@ public sealed class FieldList<TModel> : IEnumerable
         });
     }
 
-    public IEnumerator GetEnumerator() => Fields.GetEnumerator();
+    IEnumerator<FormControlLayoutDto> IEnumerable<FormControlLayoutDto>.GetEnumerator() => Fields.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => Fields.GetEnumerator();
 }

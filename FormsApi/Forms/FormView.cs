@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq.Expressions;
 using FormsApi.Common;
 using FormsApi.Contract.View;
@@ -34,7 +35,8 @@ public abstract class FormView<TModel, TThis> : IFormView<TModel>
     }
 
     protected abstract BaseViewDto BuildImpl();
-    private TThis This => this as TThis ?? throw new Exception();
+    private TThis This => this as TThis ?? throw new UnreachableException(
+        $"{GetType().Name} must inherit FormView<TModel, TThis> correctly.");
     public TThis WithTitle(string title)
     {
         Title = title;

@@ -34,5 +34,5 @@ public sealed class FieldView<TModel> : FormView<TModel, FieldView<TModel>>, IEn
         Fields.Add(selector, width);
     }
 
-    public IEnumerator GetEnumerator() => Fields.GetEnumerator();
+    public IEnumerator GetEnumerator() => (Fields as IEnumerable).GetEnumerator();
 }

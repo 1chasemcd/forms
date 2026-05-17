@@ -20,7 +20,7 @@ public sealed class SubPropertyGridView<TModel, TSub>(
     public Form<TSub>? EditForm { get; set; }
     private ModelMember<TSub, bool>? _selectionProperty;
     private GridSelectionType _selectionType;
-    public IEnumerator GetEnumerator() => Fields.GetEnumerator();
+    public IEnumerator GetEnumerator() => (Fields as IEnumerable).GetEnumerator();
     protected override BaseViewDto BuildImpl()
     {
         return new SubPropertyGridViewDto()
