@@ -10,10 +10,10 @@ public static class FormApplicationBuilderExtensions
 {
     public static void UseForms(this IApplicationBuilder app)
     {
-        MetadataBuilderService metadataBuilderService = app.ApplicationServices.GetRequiredService<MetadataBuilderService>();
+        IMetadataBuilderService metadataBuilderService = app.ApplicationServices.GetRequiredService<IMetadataBuilderService>();
         metadataBuilderService.BuildMetadataDictionary();
 
-        FormRegistry registry = app.ApplicationServices.GetRequiredService<FormRegistry>();
+        IFormRegistry registry = app.ApplicationServices.GetRequiredService<IFormRegistry>();
         IEnumerable<FormSetupOptions> setups = app.ApplicationServices.GetServices<FormSetupOptions>();
         foreach (KeyValuePair<string, Form> formSetup in setups.SelectMany(s => s.GetForms()))
         {

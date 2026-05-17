@@ -27,8 +27,8 @@ public static class FormServiceCollectionExtensions
 
     public static IServiceCollection AddForms(this IServiceCollection services, Action<IFormSetupOptions>? setupAction)
     {
-        services.TryAddSingleton<FormRegistry>();
-        services.TryAddSingleton<MetadataBuilderService>();
+        services.TryAddSingleton<IFormRegistry, FormRegistry>();
+        services.TryAddSingleton<IMetadataBuilderService, MetadataBuilderService>();
         services.TryAddSingleton<MetadataProcessors>();
         services.TryAddSingleton<IRepositoryServiceFactory, RepositoryServiceFactory>();
         services.TryAddSingleton<IRepositoryResolver, RepositoryResolver>();

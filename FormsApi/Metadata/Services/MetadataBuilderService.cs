@@ -7,7 +7,13 @@ using FormsApi.Metadata.Builders;
 
 namespace FormsApi.Metadata.Services;
 
-public sealed class MetadataBuilderService(MetadataProcessors metadataProcessors)
+public interface IMetadataBuilderService
+{
+    void BuildMetadataDictionary();
+    List<ModelMetadataDto> BuildMetadata(Type baseType);
+}
+
+internal sealed class MetadataBuilderService(MetadataProcessors metadataProcessors) : IMetadataBuilderService
 {
     private Dictionary<Type, Type> _metadataDefinitions = [];
     public void BuildMetadataDictionary()
@@ -19,7 +25,7 @@ public sealed class MetadataBuilderService(MetadataProcessors metadataProcessors
         _metadataDefinitions = metadatas.ToDictionary(x => ModelOfMetadata(x)!);
     }
 
-    static Type? ModelOfMetadata(Type type)
+    private static Type? ModelOfMetadata(Type type)
     {
         while (type != null && type != typeof(object))
         {
@@ -122,7 +128,7 @@ public sealed class MetadataBuilderService(MetadataProcessors metadataProcessors
             return type.GetElementType();
         }
 
-        var enumerableInterface = type
+        Type? enumerableInterface = type
             .GetInterfaces()
             .FirstOrDefault(i =>
                 i.IsGenericType &&

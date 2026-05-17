@@ -9,7 +9,7 @@ namespace FormsApi.Forms.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public sealed class FormController(FormRegistry registry, MetadataBuilderService metadataService) : ControllerBase
+public sealed class FormController(IFormRegistry registry, IMetadataBuilderService metadataService) : ControllerBase
 {
     [HttpGet("{path}")]
     public ActionResult<FormDto> GetForm([FromRoute] string path)

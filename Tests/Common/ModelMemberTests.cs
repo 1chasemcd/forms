@@ -39,7 +39,7 @@ public class ModelMemberTests
     public void Build_WhenExpressionIsNestedProperty_ThrowsInvalidOperationException()
     {
         var sut = new ModelMember<TestModel, string>(x => x.Nested!.Value);
-        var ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
+        InvalidOperationException? ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
         Assert.That(
             ex!.Message,
             Does.Contain("must access a direct property"));
@@ -49,7 +49,7 @@ public class ModelMemberTests
     public void Build_WhenExpressionIsMethodCall_ThrowsInvalidOperationException()
     {
         var sut = new ModelMember<TestModel, string>(x => x.GetValue());
-        var ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
+        InvalidOperationException? ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
         Assert.That(
             ex!.Message,
             Does.Contain("must be a property access"));
@@ -59,7 +59,7 @@ public class ModelMemberTests
     public void Build_WhenExpressionIsNotPropertyAccess_ThrowsInvalidOperationException()
     {
         var sut = new ModelMember<TestModel, string>(x => "constant");
-        var ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
+        InvalidOperationException? ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
         Assert.That(
             ex!.Message,
             Does.Contain("must be a property access"));

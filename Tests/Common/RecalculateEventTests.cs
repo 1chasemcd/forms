@@ -1,6 +1,7 @@
 using System;
 using System.Linq.Expressions;
 using FormsApi.Common;
+using FormsApi.Contract;
 using FormsApi.Recalculate;
 using NUnit.Framework;
 
@@ -20,7 +21,7 @@ public class RecalculateEventTests
     {
         var sut = new RecalculateEvent<TestModel, TestService>(x => x.ValidMethod);
 
-        var result = sut.Build();
+        RecalculateEventDto result = sut.Build();
 
         Assert.That(result.Service, Is.Not.Null);
         Assert.That(result.Service.GetRuntimeType(), Is.EqualTo(typeof(TestService)));
@@ -35,7 +36,7 @@ public class RecalculateEventTests
 
         var sut = new RecalculateEvent<TestModel, TestService>(expression);
 
-        var ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
+        InvalidOperationException? ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
 
         Assert.That(
             ex!.Message,

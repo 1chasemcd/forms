@@ -69,6 +69,9 @@ Common/
  ModelMemberTests.cs
  PropertyOrConstantTests.cs
  RecalculateEventTests.cs
+Forms/
+ FormControllerTests.cs
+ FormRegistryTests.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  Tests.AssemblyInfo.cs

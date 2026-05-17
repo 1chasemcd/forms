@@ -2,17 +2,23 @@ using FormsApi.Contract.View;
 
 namespace FormsApi.Forms.Services;
 
-public sealed class FormRegistry()
+public interface IFormRegistry
+{
+    public void AddForm(string path, Form form);
+    Tuple<Type, BaseViewDto>? TryGet(string path);
+}
+
+internal sealed class FormRegistry() : IFormRegistry
 {
     private readonly Dictionary<string, Form> _registry = [];
 
-    internal void AddForm(string path, Form form)
+    public void AddForm(string path, Form form)
     {
         if (!_registry.TryAdd(path, form))
             throw new InvalidOperationException($"Already had a registration for path '{path}'");
     }
 
-    internal Tuple<Type, BaseViewDto>? TryGet(string path)
+    public Tuple<Type, BaseViewDto>? TryGet(string path)
     {
         _registry.TryGetValue(path, out Form? form);
         if (form is null) return null;

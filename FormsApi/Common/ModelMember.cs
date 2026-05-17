@@ -8,7 +8,7 @@ public sealed class ModelMember<TModel, TMember>(Expression<Func<TModel, TMember
     public string Build()
     {
 
-        var memberExpr = selector.Body switch
+        MemberExpression? memberExpr = selector.Body switch
         {
             MemberExpression m => m,
             UnaryExpression { Operand: MemberExpression m } => m,

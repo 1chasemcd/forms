@@ -6,7 +6,7 @@ using FormsApi.Metadata.Interfaces;
 
 namespace FormsApi.Metadata.Services;
 
-public sealed class MetadataProcessors
+internal sealed class MetadataProcessors
 {
     public IEnumerable<Func<IMetadataBuilder<T>, IInputMetadataDto?>> GetProcessors<T>()
     {
