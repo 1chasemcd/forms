@@ -4,7 +4,7 @@ namespace Sample.Home;
 
 public class HomeForm : Form<TestModel>
 {
-    protected override BaseView<TestModel> View => new CombinedView<TestModel>()
+    protected override IFormView<TestModel> View => new CombinedView<TestModel>()
     {
         TopLeftView(),
         TopRightView(),

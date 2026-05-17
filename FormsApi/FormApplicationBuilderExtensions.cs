@@ -15,7 +15,7 @@ public static class FormApplicationBuilderExtensions
 
         IFormRegistry registry = app.ApplicationServices.GetRequiredService<IFormRegistry>();
         IEnumerable<FormSetupOptions> setups = app.ApplicationServices.GetServices<FormSetupOptions>();
-        foreach (KeyValuePair<string, Form> formSetup in setups.SelectMany(s => s.GetForms()))
+        foreach (KeyValuePair<string, IForm> formSetup in setups.SelectMany(s => s.GetForms()))
         {
             registry.AddForm(formSetup.Key, formSetup.Value);
         }

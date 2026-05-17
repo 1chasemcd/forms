@@ -7,24 +7,24 @@ namespace FormsApi;
 public interface IFormSetupOptions
 {
     public IFormSetupOptions AddForm<TForm>(string path)
-        where TForm : Form;
+        where TForm : IForm;
     IFormSetupOptions AddRepository<TRepository>(ServiceLifetime lifetime = ServiceLifetime.Singleton);
 }
 internal sealed class FormSetupOptions(IServiceCollection services) : IFormSetupOptions
 {
     private readonly ICollection<KeyValuePair<string, Type>> _builders = [];
     public IFormSetupOptions AddForm<TForm>(string path)
-        where TForm : Form
+        where TForm : IForm
     {
         _builders.Add(new(path, typeof(TForm)));
         return this;
     }
 
-    internal IEnumerable<KeyValuePair<string, Form>> GetForms()
+    internal IEnumerable<KeyValuePair<string, IForm>> GetForms()
     {
         foreach (KeyValuePair<string, Type> registration in _builders)
         {
-            Form? builder = Activator.CreateInstance(registration.Value) as Form;
+            IForm? builder = Activator.CreateInstance(registration.Value) as IForm;
             if (builder is not null)
                 yield return new(registration.Key, builder);
             else

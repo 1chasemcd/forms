@@ -5,7 +5,7 @@ using FormsApi.Contract.View;
 
 namespace FormsApi.Forms;
 
-public sealed class FieldView<TModel> : BaseView<TModel, FieldView<TModel>>, IEnumerable
+public sealed class FieldView<TModel> : FormView<TModel, FieldView<TModel>>, IEnumerable
 {
     public FieldList<TModel> Fields { get; set; } = [];
 

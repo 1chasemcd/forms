@@ -5,9 +5,9 @@ using FormsApi.Contract.View;
 
 namespace FormsApi.Forms;
 
-public sealed class CombinedView<TModel> : BaseView<TModel, CombinedView<TModel>>, IEnumerable
+public sealed class CombinedView<TModel> : FormView<TModel, CombinedView<TModel>>, IEnumerable
 {
-    public IList<BaseView<TModel>> Views { get; set; } = [];
+    public IList<IFormView<TModel>> Views { get; set; } = [];
     public bool IsUnified { get; set; }
     public CombinedView(PropertyOrConstant<TModel, string?>? title = null)
     {
@@ -29,7 +29,7 @@ public sealed class CombinedView<TModel> : BaseView<TModel, CombinedView<TModel>
 
         return view;
     }
-    public void Add(BaseView<TModel> view)
+    public void Add(IFormView<TModel> view)
     {
         Views.Add(view);
     }

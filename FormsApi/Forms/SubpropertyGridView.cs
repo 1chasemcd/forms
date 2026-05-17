@@ -7,7 +7,7 @@ namespace FormsApi.Forms;
 
 public sealed class SubPropertyGridView<TModel, TSub>(
     Expression<Func<TModel, IEnumerable<TSub>?>> subProperty, Expression<Func<TSub, object?>> idProperty)
-    : BaseView<TModel, SubPropertyGridView<TModel, TSub>>, IEnumerable
+    : FormView<TModel, SubPropertyGridView<TModel, TSub>>, IEnumerable
 {
     public FieldList<TSub> Fields { get; set; } = [];
     public ModelMember<TModel, IEnumerable<TSub>?> SubProperty { get; } = new(subProperty);

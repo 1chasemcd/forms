@@ -5,13 +5,23 @@ using FormsApi.Contract.View;
 namespace FormsApi.Forms;
 
 
-public abstract class BaseView<TModel>
+public interface IFormView<TModel>
+{
+    PropertyOrConstant<TModel, string?>? Title { get; set; }
+    int? Width { get; set; }
+    PropertyOrConstant<TModel, bool>? Enabled { get; set; }
+    PropertyOrConstant<TModel, bool>? Visible { get; set; }
+    BaseViewDto Build();
+}
+
+public abstract class FormView<TModel, TThis> : IFormView<TModel>
+    where TThis : class, IFormView<TModel>
 {
     public PropertyOrConstant<TModel, string?>? Title { get; set; }
     public int? Width { get; set; }
     public PropertyOrConstant<TModel, bool>? Enabled { get; set; }
     public PropertyOrConstant<TModel, bool>? Visible { get; set; }
-    internal BaseViewDto Build()
+    public BaseViewDto Build()
     {
         BaseViewDto baseView = BuildImpl();
         return baseView with
@@ -24,45 +34,41 @@ public abstract class BaseView<TModel>
     }
 
     protected abstract BaseViewDto BuildImpl();
-}
-public abstract class BaseView<TModel, TThis> : BaseView<TModel>
-    where TThis : BaseView<TModel>
-{
     private TThis This => this as TThis ?? throw new Exception();
     public TThis WithTitle(string title)
     {
-        base.Title = title;
+        Title = title;
         return This;
     }
     public TThis WithTitle(Expression<Func<TModel, string?>> title)
     {
-        base.Title = title;
+        Title = title;
         return This;
     }
     public TThis WithWidth(int width)
     {
-        base.Width = width;
+        Width = width;
         return This;
     }
     public TThis Disabled()
     {
-        base.Enabled = false;
+        Enabled = false;
         return This;
     }
     public TThis EnabledWhen(Expression<Func<TModel, bool>> enabled)
     {
-        base.Enabled = enabled;
+        Enabled = enabled;
         return This;
     }
 
     public TThis Hidden()
     {
-        base.Visible = false;
+        Visible = false;
         return This;
     }
     public TThis VisibleWhen(Expression<Func<TModel, bool>> visible)
     {
-        base.Visible = visible;
+        Visible = visible;
         return This;
     }
 }

@@ -2,15 +2,15 @@ using FormsApi.Contract.View;
 
 namespace FormsApi.Forms;
 
-public abstract class Form
+public interface IForm
 {
-    internal abstract BaseViewDto GetView();
-    internal abstract Type GetModelType();
+    BaseViewDto GetView();
+    Type GetModelType();
 
 }
-public abstract class Form<TModel> : Form
+public abstract class Form<TModel> : IForm
 {
-    internal override BaseViewDto GetView() => View.Build();
-    internal override Type GetModelType() => typeof(TModel);
-    protected abstract BaseView<TModel> View { get; }
+    public BaseViewDto GetView() => View.Build();
+    public Type GetModelType() => typeof(TModel);
+    protected abstract IFormView<TModel> View { get; }
 }

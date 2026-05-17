@@ -7,7 +7,7 @@ namespace Sample.Grid;
 
 public class GridForm : Form<GridFormModel>
 {
-    protected override BaseView<GridFormModel> View => new CombinedView<GridFormModel>()
+    protected override IFormView<GridFormModel> View => new CombinedView<GridFormModel>()
 {
     new CombinedView<GridFormModel>()
     {
@@ -75,7 +75,7 @@ public class GridForm : Form<GridFormModel>
 
 public class TransactionEditForm : Form<Transaction>
 {
-    protected override BaseView<Transaction> View => new FieldView<Transaction>
+    protected override IFormView<Transaction> View => new FieldView<Transaction>
     {
         {t => t.Date, 6},
         {t => t.Time, 6},
@@ -88,7 +88,7 @@ public class TransactionEditForm : Form<Transaction>
 
 public class UserEditForm : Form<User>
 {
-    protected override BaseView<User> View => new FieldView<User>
+    protected override IFormView<User> View => new FieldView<User>
     {
         u => u.Id ,
         u => u.UserName,
