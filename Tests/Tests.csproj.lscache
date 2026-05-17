@@ -65,6 +65,10 @@ Builder/FormBuilder/
  SubPropertyGridTests.cs
  ViewTests.cs
 Builder/TestFixtures.cs
+Common/
+ ModelMemberTests.cs
+ PropertyOrConstantTests.cs
+ RecalculateEventTests.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  Tests.AssemblyInfo.cs

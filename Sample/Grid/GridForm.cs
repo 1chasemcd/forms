@@ -13,7 +13,7 @@ public class GridForm : Form<GridFormModel>
     {
         GridSettings(),
         TransactionGrid(),
-    }.Unified(),
+    }.Unify(),
     TransactionGrid2(),
     UserGrid(),
 };

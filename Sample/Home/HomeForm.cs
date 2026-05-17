@@ -42,7 +42,7 @@ public class HomeForm : Form<TestModel>
         {
             BottomView(),
             BottomViewRight()
-        }.Unified();
+        }.Unify();
     }
 
     private static FieldView<TestModel> BottomView()

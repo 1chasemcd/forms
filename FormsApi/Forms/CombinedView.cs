@@ -8,7 +8,7 @@ namespace FormsApi.Forms;
 public sealed class CombinedView<TModel> : BaseView<TModel, CombinedView<TModel>>, IEnumerable
 {
     public IList<BaseView<TModel>> Views { get; set; } = [];
-    public bool Unify { get; set; }
+    public bool IsUnified { get; set; }
     public CombinedView(PropertyOrConstant<TModel, string?>? title = null)
     {
         Title = title;
@@ -24,7 +24,7 @@ public sealed class CombinedView<TModel> : BaseView<TModel, CombinedView<TModel>
         var view = new CombinedViewDto
         {
             Views = Views.Select(x => x.Build()),
-            Unify = Unify || Title != null
+            Unify = IsUnified || Title != null
         };
 
         return view;
@@ -34,9 +34,9 @@ public sealed class CombinedView<TModel> : BaseView<TModel, CombinedView<TModel>
         Views.Add(view);
     }
     IEnumerator IEnumerable.GetEnumerator() => Views.GetEnumerator();
-    public CombinedView<TModel> Unified()
+    public CombinedView<TModel> Unify()
     {
-        Unify = true;
+        IsUnified = true;
         return this;
     }
 }

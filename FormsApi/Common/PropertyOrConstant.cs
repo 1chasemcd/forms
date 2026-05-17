@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq.Expressions;
 using FormsApi.Contract;
 
@@ -10,31 +11,33 @@ public interface IPropertyOrConstant
 
 public sealed class PropertyOrConstant<TModel, TMember> : IPropertyOrConstant
 {
-    public PropertyOrConstant(TMember? value)
+    public PropertyOrConstant(TMember value)
     {
-        Value = value;
+        ArgumentNullException.ThrowIfNull(value);
+        _value = value;
     }
 
     public PropertyOrConstant(Expression<Func<TModel, TMember?>> selector)
     {
-        Selector = selector;
+        ArgumentNullException.ThrowIfNull(selector);
+        _selector = selector;
     }
 
     public PropertyOrConstantDto Build()
     {
-        if (Selector is not null)
+        if (_selector is not null)
             return new PropertyDto(
-                new ModelMember<TModel, TMember>(Selector).Build()
+                new ModelMember<TModel, TMember>(_selector).Build()
             );
-        else if (Value is not null)
-            return new ConstantDto(Value);
+        else if (_value is not null)
+            return new ConstantDto(_value);
 
-        throw new Exception("PropertyOrConstant has no value");
+        throw new UnreachableException("PropertyOrConstant has no value");
 
     }
 
-    public Expression<Func<TModel, TMember?>>? Selector { private get; set; }
-    private TMember? Value { get; set; }
+    private Expression<Func<TModel, TMember?>>? _selector;
+    private TMember? _value;
 
     public static implicit operator PropertyOrConstant<TModel, TMember>(TMember value) => new(value);
     public static implicit operator PropertyOrConstant<TModel, TMember>(Expression<Func<TModel, TMember?>> value) => new(value);
