@@ -23,7 +23,7 @@ public sealed class SubPropertyGridView<TModel, TSub>(
     public IEnumerator GetEnumerator() => Fields.GetEnumerator();
     protected override BaseViewDto BuildImpl()
     {
-        return new SubPropertyGridViewDefinition()
+        return new SubPropertyGridViewDto()
         {
             IdProperty = IdProperty.Build(),
             Fields = Fields.Fields,

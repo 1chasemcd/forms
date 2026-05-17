@@ -6,7 +6,7 @@ namespace FormsApi.Contract.ModelMetadata;
     TypeDiscriminatorPropertyName = "$type",
     UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor
 )]
-[JsonDerivedType(typeof(EnumerableMetadataDto), nameof(EnumerableMetadataDto))]
-[JsonDerivedType(typeof(SubPropertyMetadataDto), nameof(SubPropertyMetadataDto))]
-[JsonDerivedType(typeof(PrimitiveMetadataDto), nameof(PrimitiveMetadataDto))]
+[JsonDerivedType(typeof(EnumerableMetadataDto), "enumerable")]
+[JsonDerivedType(typeof(SubPropertyMetadataDto), "subproperty")]
+[JsonDerivedType(typeof(PrimitiveMetadataDto), "primitive")]
 public interface IPropertyMetadataDto;

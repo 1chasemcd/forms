@@ -6,9 +6,9 @@ namespace FormsApi.Contract.View;
     TypeDiscriminatorPropertyName = "$type",
     UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor
 )]
-[JsonDerivedType(typeof(FieldViewDto), nameof(FieldViewDto))]
-[JsonDerivedType(typeof(CombinedViewDto), nameof(CombinedViewDto))]
-[JsonDerivedType(typeof(SubPropertyGridViewDefinition), nameof(SubPropertyGridViewDefinition))]
+[JsonDerivedType(typeof(FieldViewDto), "fieldView")]
+[JsonDerivedType(typeof(CombinedViewDto), "combinedView")]
+[JsonDerivedType(typeof(SubPropertyGridViewDto), "subPropertyGridView")]
 public abstract record class BaseViewDto
 {
     public PropertyOrConstantDto? Title { get; init; }
