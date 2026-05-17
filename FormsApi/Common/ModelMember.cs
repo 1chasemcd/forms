@@ -25,8 +25,4 @@ public sealed class ModelMember<TModel, TMember>(Expression<Func<TModel, TMember
 
         return prop.Name;
     }
-
-    public static implicit operator ModelMember<TModel, TMember>(Expression<Func<TModel, TMember?>> selector1) => new(selector1);
-
-
 }

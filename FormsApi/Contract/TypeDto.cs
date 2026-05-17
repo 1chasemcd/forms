@@ -43,5 +43,5 @@ public sealed record class TypeDto(Type type)
         }
     }
 
-    public static implicit operator TypeDto(Type type) => new TypeDto(type);
+    public static implicit operator TypeDto(Type type) => new(type);
 }

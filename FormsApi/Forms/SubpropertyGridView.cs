@@ -10,8 +10,8 @@ public sealed class SubPropertyGridView<TModel, TSub>(
     : BaseView<TModel, SubPropertyGridView<TModel, TSub>>, IEnumerable
 {
     public FieldList<TSub> Fields { get; set; } = [];
-    public ModelMember<TModel, IEnumerable<TSub>?> SubProperty { get; } = subProperty;
-    public ModelMember<TSub, object?> IdProperty { get; } = idProperty;
+    public ModelMember<TModel, IEnumerable<TSub>?> SubProperty { get; } = new(subProperty);
+    public ModelMember<TSub, object?> IdProperty { get; } = new(idProperty);
     public PropertyOrConstant<TModel, bool>? CanAdd { get; set; }
     public PropertyOrConstant<TModel, bool>? CanEdit { get; set; }
     public PropertyOrConstant<TSub, bool>? CanEditRow { get; set; }
@@ -99,7 +99,7 @@ public sealed class SubPropertyGridView<TModel, TSub>(
 
     public SubPropertyGridView<TModel, TSub> EnableSelection(Expression<Func<TSub, bool>> selectionProperty, GridSelectionType selectionType = GridSelectionType.Multiple)
     {
-        _selectionProperty = selectionProperty;
+        _selectionProperty = new(selectionProperty);
         _selectionType = selectionType;
         return this;
     }
