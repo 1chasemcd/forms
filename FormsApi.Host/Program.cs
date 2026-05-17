@@ -1,4 +1,4 @@
-using FormsApi.Definition.Primitives;
+using FormsApi.Contract;
 using NJsonSchema;
 using NJsonSchema.Generation;
 using NSwag.Generation.Processors;

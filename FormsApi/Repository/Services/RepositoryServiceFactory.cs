@@ -1,0 +1,52 @@
+using FormsApi.Contract;
+using FormsApi.Repository.Handlers;
+
+namespace FormsApi.Repository.Services;
+
+public interface IRepositoryServiceFactory
+{
+    IRepositoryCallable BuildCreateService(TypeDto type);
+    IRepositoryCallable BuildDeleteService(TypeDto type, object model);
+    IRepositoryCallable BuildQueryService(TypeDto type);
+    IRepositoryCallable BuildQueryService(TypeDto type, string id);
+    IRepositoryCallable BuildSaveService(TypeDto type, object model);
+}
+
+internal sealed class RepositoryServiceFactory(IRepositoryResolver resolver) : IRepositoryServiceFactory
+{
+    public IRepositoryCallable BuildCreateService(TypeDto type) =>
+        Build(typeof(RepositoryCreateService<>), typeof(IRepositoryCreateHandler<>), type);
+    public IRepositoryCallable BuildDeleteService(TypeDto type, object model) =>
+        Build(typeof(RepositoryDeleteService<>), typeof(IRepositoryDeleteHandler<>), type, model);
+    public IRepositoryCallable BuildQueryService(TypeDto type) =>
+        Build(typeof(RepositoryQueryService<>), typeof(IRepositoryQueryHandler<>), type, [null]);
+    public IRepositoryCallable BuildQueryService(TypeDto type, string id) =>
+        Build(typeof(RepositoryQueryService<>), typeof(IRepositoryQueryHandler<>), type, id ?? string.Empty);
+    public IRepositoryCallable BuildSaveService(TypeDto type, object model) =>
+        Build(typeof(RepositorySaveService<>), typeof(IRepositorySaveHandler<>), type, model);
+
+    private IRepositoryCallable Build(Type serviceType, Type handlerType, TypeDto modelType, params object?[] additionalArgs)
+    {
+        object repository = resolver.Resolve(handlerType, modelType.GetRuntimeType());
+        Type repositoryType = GetHandlerTypeArgument(handlerType, repository);
+        Type closedGeneric = serviceType.MakeGenericType(repositoryType);
+        object?[] args = [.. additionalArgs.AsEnumerable().Prepend(repository)];
+        object? service = Activator.CreateInstance(closedGeneric, args);
+        return service as IRepositoryCallable ?? throw new InvalidOperationException("Could not construct service");
+    }
+
+    private static Type GetHandlerTypeArgument(Type interfaceType, object handler)
+    {
+        Type type = handler.GetType();
+
+        Type? repoInterface = type
+            .GetInterfaces()
+            .SingleOrDefault(i =>
+                i.IsGenericType &&
+                i.GetGenericTypeDefinition() == interfaceType)
+                ?? throw new InvalidOperationException(
+                    $"Object of type {handler.GetType().Name} does not implement IRepository<T>");
+
+        return repoInterface.GetGenericArguments()[0];
+    }
+}

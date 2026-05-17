@@ -1,5 +1,5 @@
 using System.Text.Json;
-using FormsApi.Definition.Primitives;
+using FormsApi.Contract;
 
 namespace Tests.Repository;
 

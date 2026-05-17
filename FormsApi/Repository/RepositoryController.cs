@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Text.Json;
-using FormsApi.Definition.Primitives;
-using FormsApi.Repository.Service;
+using FormsApi.Contract;
+using FormsApi.Repository.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FormsApi.Repository;

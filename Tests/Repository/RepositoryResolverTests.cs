@@ -1,5 +1,5 @@
-using FormsApi.Repository.Handler;
-using FormsApi.Repository.Service;
+using FormsApi.Repository.Handlers;
+using FormsApi.Repository.Services;
 using Moq;
 
 namespace Tests.Repository;

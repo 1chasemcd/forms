@@ -1,7 +1,9 @@
 using FormsApi;
-using FormsApi.Definition.Primitives;
+using FormsApi.Contract;
 using NJsonSchema;
 using NJsonSchema.Generation.TypeMappers;
+using Sample.Grid;
+using Sample.Home;
 
 namespace Sample;
 
@@ -26,14 +28,14 @@ public static class Program
 
 
         builder.Services.AddForms(formsSetup => formsSetup
-            .AddForm<TestForm>("home")
+            .AddForm<HomeForm>("home")
             .AddForm<GridForm>("grid")
             .AddForm<UserEditForm>("user")
-            .AddRepository<ModelRepository>()
+            .AddRepository<HomeService>()
             .AddRepository<UserRepository>()
         );
 
-        builder.Services.AddSingleton<TestService>();
+        builder.Services.AddSingleton<HomeService>();
 
         WebApplication app = builder.Build();
 

@@ -1,7 +1,5 @@
-using FormsApi.Definition;
-using FormsApi.Definition.Input;
-using FormsApi.Definition.Primitives;
-using FormsApi.Definition.View;
+using FormsApi.Contract;
+using FormsApi.Contract.View;
 
 namespace Tests.Builder.FormBuilder;
 
@@ -12,7 +10,7 @@ public class FieldMetadataTests
     [Test]
     public void FieldMetadatas_AreAppliedCorrectly()
     {
-        List<FieldDto> fields = ((CombinedViewDto)_form.View).Views
+        List<FormControlLayoutDto> fields = ((CombinedViewDto)_form.View).Views
             .Select(x => x as FieldViewDto).Last(x => x != null)?.Fields.ToList()!;
 
         using (Assert.EnterMultipleScope())
@@ -27,9 +25,9 @@ public class FieldMetadataTests
         }
     }
 
-    private static void AssertMetadataHasValue(List<FieldDto> fields, string inputName, MetadataType metadataType, object value)
+    private static void AssertMetadataHasValue(List<FormControlLayoutDto> fields, string inputName, MetadataType metadataType, object value)
     {
-        FieldDto? field = fields.SingleOrDefault(x => x.Property == inputName);
+        FormControlLayoutDto? field = fields.SingleOrDefault(x => x.Property == inputName);
         MetadataDefinition? metadata = field?.FieldMetadatas?.SingleOrDefault(x => x.Type == metadataType);
         using (Assert.EnterMultipleScope())
         {

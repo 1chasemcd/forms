@@ -1,6 +1,5 @@
-using FormsApi.Definition;
-using FormsApi.Definition.Input;
-using FormsApi.Definition.View;
+using FormsApi.Contract;
+using FormsApi.Contract.View;
 
 namespace Tests.Builder.FormBuilder;
 
@@ -23,6 +22,6 @@ public class SubPropertyGridTests
     {
         Assert.That(GridView.Fields, Is.Not.Null);
         Assert.That(GridView.Fields.ToList(), Has.ItemAt(expectedIndex)
-            .With.Property(nameof(FieldDto.Property)).EqualTo(propertyName));
+            .With.Property(nameof(FormControlLayoutDto.Property)).EqualTo(propertyName));
     }
 }

@@ -1,9 +1,9 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using FormsApi.Definition.Service;
-using FormsApi.Repository.Handler;
-using FormsApi.Repository.Service;
-using FormsApi.Setup;
+using FormsApi.Forms.Services;
+using FormsApi.Metadata.Services;
+using FormsApi.Repository.Handlers;
+using FormsApi.Repository.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 

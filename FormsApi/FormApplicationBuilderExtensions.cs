@@ -1,6 +1,6 @@
-using FormsApi.Builder;
-using FormsApi.Definition.Service;
-using FormsApi.Setup;
+using FormsApi.Forms;
+using FormsApi.Forms.Services;
+using FormsApi.Metadata.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 

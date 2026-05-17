@@ -1,8 +1,6 @@
-using FormsApi.Builder;
-using FormsApi.Common.Types;
-using FormsApi.Definition;
-using FormsApi.Definition.Primitives;
-using FormsApi.Definition.View;
+using FormsApi.Contract;
+using FormsApi.Contract.View;
+using FormsApi.Forms;
 using FormsApi.Recalculate;
 
 namespace Tests.Builder.FormBuilder;

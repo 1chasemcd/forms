@@ -1,6 +1,5 @@
-using FormsApi.Definition;
-using FormsApi.Definition.Input;
-using FormsApi.Definition.View;
+using FormsApi.Contract;
+using FormsApi.Contract.View;
 
 namespace Tests.Builder.FormBuilder;
 
@@ -27,7 +26,7 @@ public class FormValidationServiceTests
             {
                 new FieldViewDto
                 {
-                    Fields = new FieldDto[]
+                    Fields = new FormControlLayoutDto[]
                     {
                         new() { Property = "Property1" },
                         new() { Property = "Property2" },
@@ -40,7 +39,7 @@ public class FormValidationServiceTests
                     {
                         new FieldViewDto
                         {
-                            Fields = new FieldDto[]
+                            Fields = new FormControlLayoutDto[]
                             {
                                 new() { Property = "Property1" },
                                 new() { Property = "Property3" }
