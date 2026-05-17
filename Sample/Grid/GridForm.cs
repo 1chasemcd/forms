@@ -31,15 +31,15 @@ public class GridForm : Form<GridFormModel>
     private SubPropertyGridView<GridFormModel, Transaction> TransactionGrid()
     {
         return new SubPropertyGridView<GridFormModel, Transaction>(x => x.Transactions, t => t.Id)
-    {
-        {t => t.Date, 3},
-        {t => t.Time, 3},
-        {t => t.Amount, 3 },
-        {t => t.IncludeInCostSplitting, 3},
-        t => t.Description,
-        t => t.Notes,
-        t => t.Editable
-    }
+        {
+            {t => t.Date, 3},
+            {t => t.Time, 3},
+            {t => t.Amount, 3 },
+            {t => t.IncludeInCostSplitting, 3},
+            t => t.Description,
+            t => t.Notes,
+            t => t.Editable
+        }
         .EnableSelection(t => t.Selected)
         .WithTitle("Transactions")
         .CanAddWhen(m => m.AllowAdd)
@@ -51,12 +51,12 @@ public class GridForm : Form<GridFormModel>
     private SubPropertyGridView<GridFormModel, Transaction> TransactionGrid2()
     {
         return new SubPropertyGridView<GridFormModel, Transaction>(x => x.Transactions2, t => t.Id)
-    {
-        t => t.Date,
-        t => t.Time,
-        t => t.Amount,
-        t => t.Description,
-    }
+        {
+            t => t.Date,
+            t => t.Time,
+            t => t.Amount,
+            t => t.Description,
+        }
         .EnableSelection(t => t.Selected, GridSelectionType.Single)
         .EnableEdit().WithEditForm(new TransactionEditForm());
     }
@@ -64,10 +64,10 @@ public class GridForm : Form<GridFormModel>
     private SubPropertyGridView<GridFormModel, BasicUserModel> UserGrid()
     {
         return new SubPropertyGridView<GridFormModel, BasicUserModel>(x => x.Users, t => t.Id)
-    {
-        {u => u.Id, 1},
-        u => u.UserName
-    }
+        {
+            {u => u.Id, 1},
+            u => u.UserName
+        }
         .WithTitle("Users").EnableAdd().EnableEdit();
         // .WithEditForm(new UserEditForm());
     }
@@ -76,26 +76,26 @@ public class GridForm : Form<GridFormModel>
 public class TransactionEditForm : Form<Transaction>
 {
     protected override BaseView<Transaction> View => new FieldView<Transaction>
-{
-    {t => t.Date, 6},
-    {t => t.Time, 6},
-    t => t.Description,
-    {t => t.Amount, 6},
-    {t => t.IncludeInCostSplitting, 6},
-    t => t.Notes
-};
+    {
+        {t => t.Date, 6},
+        {t => t.Time, 6},
+        t => t.Description,
+        {t => t.Amount, 6},
+        {t => t.IncludeInCostSplitting, 6},
+        t => t.Notes
+    };
 }
 
 public class UserEditForm : Form<User>
 {
     protected override BaseView<User> View => new FieldView<User>
-{
-    u => u.Id ,
-    u => u.UserName,
-    u => u.Email,
-    u => u.PhoneNumber,
-    u => u.IsAdmin
-};
+    {
+        u => u.Id ,
+        u => u.UserName,
+        u => u.Email,
+        u => u.PhoneNumber,
+        u => u.IsAdmin
+    };
 }
 
 public class TransactionMetadata : Metadata<Transaction>
