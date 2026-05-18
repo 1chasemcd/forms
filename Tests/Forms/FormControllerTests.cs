@@ -74,8 +74,12 @@ public class FormControllerTests
 
         var dto = (FormDto)okResult.Value!;
 
-        Assert.That(dto.ModelType.GetRuntimeType(), Is.EqualTo(typeof(TestModel)));
-        Assert.That(dto.View, Is.EqualTo(view));
-        Assert.That(dto.ModelMetadatas, Is.EqualTo(metadata));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(dto.ModelType.GetRuntimeType(), Is.EqualTo(typeof(TestModel)));
+            Assert.That(dto.View, Is.EqualTo(view));
+            Assert.That(dto.ModelMetadatas, Is.EqualTo(metadata));
+        }
+
     }
 }

@@ -58,7 +58,11 @@ public class FormRegistryTests
         Tuple<Type, BaseViewDto>? result = registry.TryGet("test");
 
         Assert.That(result, Is.Not.Null);
-        Assert.That(result!.Item1, Is.EqualTo(typeof(TestModel)));
-        Assert.That(result.Item2, Is.EqualTo(view));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result!.Item1, Is.EqualTo(typeof(TestModel)));
+            Assert.That(result.Item2, Is.EqualTo(view));
+        }
+
     }
 }

@@ -1,8 +1,8 @@
+using FormsApi.Contract;
 using FormsApi.Contract.ControlMetadata;
 using FormsApi.Contract.ModelMetadata;
 using FormsApi.Metadata;
 using FormsApi.Metadata.Services;
-using FormsApi.Contract;
 
 namespace Tests.Metadata;
 
@@ -65,8 +65,12 @@ public class MetadataBuilderServiceTests
         _service.BuildMetadataDictionary();
         List<ModelMetadataDto> result = _service.BuildMetadata(typeof(TestModel));
 
-        Assert.That(result.Any(m => m.Type.GetRuntimeType() == typeof(TestModel)), Is.True);
-        Assert.That(result.Any(m => m.Type.GetRuntimeType() == typeof(SubModel)), Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.Any(m => m.Type.GetRuntimeType() == typeof(TestModel)), Is.True);
+            Assert.That(result.Any(m => m.Type.GetRuntimeType() == typeof(SubModel)), Is.True);
+        }
+
     }
 
     [Test]
@@ -89,7 +93,11 @@ public class MetadataBuilderServiceTests
         ModelMetadataDto modelMetadata = result.First(m => m.Type.GetRuntimeType() == typeof(TestModel));
         IPropertyMetadataDto childrenProperty = modelMetadata.PropertyMetadatas[nameof(TestModel.Children)];
 
-        Assert.That(childrenProperty, Is.InstanceOf<EnumerableMetadataDto>());
-        Assert.That(((EnumerableMetadataDto)childrenProperty).Type.GetRuntimeType(), Is.EqualTo(typeof(SubModel)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(childrenProperty, Is.InstanceOf<EnumerableMetadataDto>());
+            Assert.That(((EnumerableMetadataDto)childrenProperty).Type.GetRuntimeType(), Is.EqualTo(typeof(SubModel)));
+        }
+
     }
 }

@@ -23,7 +23,7 @@ public class SubPropertyGridViewTests
         public bool GridRowBoolProperty3 { get; set; }
     }
 
-    private SubPropertyGridView<TestModel, TestGridRowModel> BasicGrid => new SubPropertyGridView<TestModel, TestGridRowModel>(x => x.Rows, x => x.Id);
+    private static SubPropertyGridView<TestModel, TestGridRowModel> BasicGrid => new(x => x.Rows, x => x.Id);
 
     [Test]
     public void WithFields_SetsFields()

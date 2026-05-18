@@ -23,7 +23,7 @@ public class MetadataProcessorsTests
     {
         public string? Name { get; set; }
         public int Age { get; set; }
-        public PostRecalculateEvent DoThing(TestModel model) => null!;
+        public PostRecalculateEvent DoThing(TestModel _) => null!;
     }
 
     private T AssertProcessorApplied<T>(IMetadataBuilder<TestModel> subject)

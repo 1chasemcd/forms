@@ -7,8 +7,8 @@ namespace Tests.Repository;
 
 public class RepositoryServiceFactoryTests
 {
-    private RepositoryServiceFactory _factory;
-    private Mock<IRepositoryCreateHandler<TestModel>> _repoMock;
+    private RepositoryServiceFactory _factory = null!;
+    private Mock<IRepositoryCreateHandler<TestModel>> _repoMock = null!;
 
     [OneTimeSetUp]
     public void SetUp()

@@ -9,7 +9,8 @@ public class HomeService(ILogger<HomeService> logger) : IRepositoryCreateHandler
     public async Task<TestModel> CreateAsync() => new();
     public async Task SaveAsync(TestModel toSave)
     {
-        logger.LogInformation("Saving model with {count} movies.", toSave.Movies.Count);
+        if (logger.IsEnabled(LogLevel.Information))
+            logger.LogInformation("Saving model with {count} movies.", toSave.Movies.Count);
     }
 
     public PostRecalculateEvent? SetNumericValue(TestModel model)
@@ -43,8 +44,5 @@ public class HomeService(ILogger<HomeService> logger) : IRepositoryCreateHandler
         }
     }
 
-    public PostRecalculateEvent? Reserialize(TestModel model)
-    {
-        return null;
-    }
+    public PostRecalculateEvent? Reserialize(TestModel _) => null;
 }

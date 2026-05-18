@@ -57,7 +57,7 @@ internal sealed class MetadataProcessors
             : null;
     }
 
-    private IInputMetadataDto? ProcessMaxValue<T>(IMetadataBuilder<T> propertyMetadata)
+    private static MaxValueMetadataDto? ProcessMaxValue<T>(IMetadataBuilder<T> propertyMetadata)
     {
         Type? rangeInterface = propertyMetadata.GetType().GetInterfaces()
             .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IValueRangable<,>));
@@ -68,7 +68,7 @@ internal sealed class MetadataProcessors
         return null;
     }
 
-    private IInputMetadataDto? ProcessMinValue<T>(IMetadataBuilder<T> propertyMetadata)
+    private static MinValueMetadataDto? ProcessMinValue<T>(IMetadataBuilder<T> propertyMetadata)
     {
         Type? rangeInterface = propertyMetadata.GetType().GetInterfaces()
             .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IValueRangable<,>));

@@ -36,8 +36,8 @@ public sealed class PropertyOrConstant<TModel, TMember> : IPropertyOrConstant
 
     }
 
-    private Expression<Func<TModel, TMember?>>? _selector;
-    private TMember? _value;
+    private readonly Expression<Func<TModel, TMember?>>? _selector;
+    private readonly TMember? _value;
 
     public static implicit operator PropertyOrConstant<TModel, TMember>(TMember value) => new(value);
     public static implicit operator PropertyOrConstant<TModel, TMember>(Expression<Func<TModel, TMember?>> value) => new(value);

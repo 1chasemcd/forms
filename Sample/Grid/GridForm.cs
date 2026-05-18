@@ -189,7 +189,7 @@ public class User
 
 public class UserRepository : IRepositoryQueryHandler<User>
 {
-    internal static IList<User> users = [
+    internal static IList<User> s_users = [
         new User() {
         Id = 12,
         UserName = "Heinz Doofenshmirtz",
@@ -207,12 +207,12 @@ public class UserRepository : IRepositoryQueryHandler<User>
     },
 ];
 
-    public async Task<IEnumerable<User>> GetAllAsync() => users;
+    public async Task<IEnumerable<User>> GetAllAsync() => s_users;
     public async Task<User?> GetAsync(string id)
     {
         if (!int.TryParse(id, out int result))
             return null;
-        return users.SingleOrDefault(x => x.Id == result);
+        return s_users.SingleOrDefault(x => x.Id == result);
     }
 
 }

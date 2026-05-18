@@ -1,4 +1,3 @@
-using FormsApi.Contract;
 using FormsApi.Contract.View;
 using FormsApi.Forms;
 
@@ -38,10 +37,14 @@ public class FormViewTests
             Visible = true
         };
         BaseViewDto result = view.Build();
-        Assert.That(result.Title.InnerValue(), Is.EqualTo("Test"));
-        Assert.That(result.Width, Is.EqualTo(6));
-        Assert.That(result.Enabled.InnerValue(), Is.False);
-        Assert.That(result.Visible.InnerValue(), Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.Title.InnerValue(), Is.EqualTo("Test"));
+            Assert.That(result.Width, Is.EqualTo(6));
+            Assert.That(result.Enabled.InnerValue(), Is.False);
+            Assert.That(result.Visible.InnerValue(), Is.True);
+        }
+
     }
 
     [Test]

@@ -11,7 +11,7 @@ public class RecalculateEventTests
     private sealed class TestModel;
     private sealed class TestService
     {
-        public PostRecalculateEvent? ValidMethod(TestModel model) => new();
+        public PostRecalculateEvent? ValidMethod(TestModel _) => null!;
     }
 
     [Test]
@@ -22,8 +22,12 @@ public class RecalculateEventTests
         RecalculateEventDto result = sut.Build();
 
         Assert.That(result.Service, Is.Not.Null);
-        Assert.That(result.Service.GetRuntimeType(), Is.EqualTo(typeof(TestService)));
-        Assert.That(result.Method, Is.EqualTo(nameof(TestService.ValidMethod)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.Service.GetRuntimeType(), Is.EqualTo(typeof(TestService)));
+            Assert.That(result.Method, Is.EqualTo(nameof(TestService.ValidMethod)));
+        }
+
     }
 
     [Test]

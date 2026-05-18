@@ -61,7 +61,7 @@ internal sealed class FormSetupOptions(IServiceCollection services) : IFormSetup
         return this;
     }
 
-    private static void CheckAlreadyRegistered(IServiceCollection services, Type repoInterface)
+    private void CheckAlreadyRegistered(IServiceCollection services, Type repoInterface)
     {
         ServiceDescriptor? existing = services.FirstOrDefault(s => s.ServiceType == repoInterface);
 
