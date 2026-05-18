@@ -155,7 +155,7 @@ public class GridFormModel
     }
     ];
 
-    public IList<BasicUserModel> Users { get; set; } = [.. UserRepository.users.Select(x => new BasicUserModel() { Id = x.Id, UserName = x.UserName })];
+    public IList<BasicUserModel> Users { get; set; } = [.. UserRepository.s_users.Select(x => new BasicUserModel() { Id = x.Id, UserName = x.UserName })];
 
 }
 
