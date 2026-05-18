@@ -52,7 +52,7 @@ public abstract class Metadata<TModel>
     }
 
 
-    protected FormServiceMethod<TModel, TService> Recalculate<TService>(
+    protected FormServiceMethod<TModel, TService> InvokeServiceMethod<TService>(
         Expression<Func<TService, Func<TModel, FormServicePostAction?>>> selector)
     {
         return new FormServiceMethod<TModel, TService>(selector);

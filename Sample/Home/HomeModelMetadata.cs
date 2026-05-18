@@ -24,10 +24,10 @@ public class TestModelMetadata : Metadata<TestModel>
             .WithMaxLength(200);
 
         Button(m => m.ResetForm)
-            .OnChange(Recalculate<HomeService>(s => s.ResetForm));
+            .OnChange(InvokeServiceMethod<HomeService>(s => s.ResetForm));
 
         Button(m => m.SetNumericValue)
-            .OnChange(Recalculate<HomeService>(s => s.SetNumericValue));
+            .OnChange(InvokeServiceMethod<HomeService>(s => s.SetNumericValue));
     }
 }
 
