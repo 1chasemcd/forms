@@ -1,9 +1,5 @@
-using System.Linq.Expressions;
 using FormsApi.Common;
-using FormsApi.Contract.ControlMetadata;
 using FormsApi.Metadata;
-using FormsApi.Metadata.Builders;
-using FormsApi.Metadata.Interfaces;
 using Moq;
 
 namespace Tests.Metadata;
@@ -11,19 +7,31 @@ namespace Tests.Metadata;
 [TestFixture]
 public class MetadataExtensionsTests
 {
+    public sealed class TestModel
+    {
+        public string? Name { get; set; }
+        public bool IsEnabled { get; set; }
+        public bool IsRequired { get; set; }
+        public bool IsVisible { get; set; }
+        public int MaxLength { get; set; }
+        public int Precision { get; set; }
+        public int Scale { get; set; }
+        public int MinValue { get; set; }
+        public int MaxValue { get; set; }
+    }
 
-    private TestMetadataBuilder _builder = null!;
+    private MockMetadataBuilder<TestModel> _builder = null!;
 
     [SetUp]
     public void SetUp()
     {
-        _builder = new TestMetadataBuilder();
+        _builder = new MockMetadataBuilder<TestModel>();
     }
 
     [Test]
     public void Disabled_SetsEnabledToFalse()
     {
-        TestMetadataBuilder result = _builder.Disabled();
+        MockMetadataBuilder<TestModel> result = _builder.Disabled();
 
         Assert.Multiple(() =>
         {
@@ -35,7 +43,7 @@ public class MetadataExtensionsTests
     [Test]
     public void EnabledWhen_SetsEnabledExpression()
     {
-        TestMetadataBuilder result = _builder.EnabledWhen(x => x.IsEnabled);
+        MockMetadataBuilder<TestModel> result = _builder.EnabledWhen(x => x.IsEnabled);
 
         Assert.Multiple(() =>
         {
@@ -47,7 +55,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithLabel_String_SetsLabel()
     {
-        TestMetadataBuilder result = _builder.WithLabel("Test Label");
+        MockMetadataBuilder<TestModel> result = _builder.WithLabel("Test Label");
 
         Assert.Multiple(() =>
         {
@@ -59,7 +67,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithLabel_Expression_SetsLabelExpression()
     {
-        TestMetadataBuilder result = _builder.WithLabel(x => x.Name);
+        MockMetadataBuilder<TestModel> result = _builder.WithLabel(x => x.Name);
 
         Assert.Multiple(() =>
         {
@@ -71,7 +79,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithMaxLength_Int_SetsMaxLength()
     {
-        TestMetadataBuilder result = _builder.WithMaxLength(50);
+        MockMetadataBuilder<TestModel> result = _builder.WithMaxLength(50);
 
         Assert.Multiple(() =>
         {
@@ -83,7 +91,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithMaxLength_Expression_SetsMaxLengthExpression()
     {
-        TestMetadataBuilder result = _builder.WithMaxLength(x => x.MaxLength);
+        MockMetadataBuilder<TestModel> result = _builder.WithMaxLength(x => x.MaxLength);
 
         Assert.Multiple(() =>
         {
@@ -95,7 +103,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithPrecision_Int_SetsPrecision()
     {
-        TestMetadataBuilder result = _builder.WithPrecision(5);
+        MockMetadataBuilder<TestModel> result = _builder.WithPrecision(5);
 
         Assert.Multiple(() =>
         {
@@ -107,7 +115,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithPrecision_Expression_SetsPrecisionExpression()
     {
-        TestMetadataBuilder result = _builder.WithPrecision(x => x.Precision);
+        MockMetadataBuilder<TestModel> result = _builder.WithPrecision(x => x.Precision);
 
         Assert.Multiple(() =>
         {
@@ -119,7 +127,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithScale_Int_SetsScale()
     {
-        TestMetadataBuilder result = _builder.WithScale(2);
+        MockMetadataBuilder<TestModel> result = _builder.WithScale(2);
 
         Assert.Multiple(() =>
         {
@@ -131,7 +139,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithScale_Expression_SetsScaleExpression()
     {
-        TestMetadataBuilder result = _builder.WithScale(x => x.Scale);
+        MockMetadataBuilder<TestModel> result = _builder.WithScale(x => x.Scale);
 
         Assert.Multiple(() =>
         {
@@ -145,7 +153,7 @@ public class MetadataExtensionsTests
     {
         Mock<IRecalculateEvent<TestModel>> recalc = new();
 
-        TestMetadataBuilder result = _builder.OnChange(recalc.Object);
+        MockMetadataBuilder<TestModel> result = _builder.OnChange(recalc.Object);
 
         Assert.Multiple(() =>
         {
@@ -157,7 +165,7 @@ public class MetadataExtensionsTests
     [Test]
     public void Required_SetsRequiredToTrue()
     {
-        TestMetadataBuilder result = _builder.Required();
+        MockMetadataBuilder<TestModel> result = _builder.Required();
 
         Assert.Multiple(() =>
         {
@@ -169,7 +177,7 @@ public class MetadataExtensionsTests
     [Test]
     public void RequiredWhen_SetsRequiredExpression()
     {
-        TestMetadataBuilder result = _builder.RequiredWhen(x => x.IsRequired);
+        MockMetadataBuilder<TestModel> result = _builder.RequiredWhen(x => x.IsRequired);
 
         Assert.Multiple(() =>
         {
@@ -181,7 +189,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithMinValue_Value_SetsMinValue()
     {
-        TestMetadataBuilder result = _builder.WithMinValue(10);
+        MockMetadataBuilder<TestModel> result = _builder.WithMinValue(10);
 
         Assert.Multiple(() =>
         {
@@ -193,7 +201,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithMinValue_Expression_SetsMinValueExpression()
     {
-        TestMetadataBuilder result = _builder.WithMinValue(x => x.MinValue);
+        MockMetadataBuilder<TestModel> result = _builder.WithMinValue(x => x.MinValue);
 
         Assert.Multiple(() =>
         {
@@ -205,7 +213,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithMaxValue_Value_SetsMaxValue()
     {
-        TestMetadataBuilder result = _builder.WithMaxValue(100);
+        MockMetadataBuilder<TestModel> result = _builder.WithMaxValue(100);
 
         Assert.Multiple(() =>
         {
@@ -217,7 +225,7 @@ public class MetadataExtensionsTests
     [Test]
     public void WithMaxValue_Expression_SetsMaxValueExpression()
     {
-        TestMetadataBuilder result = _builder.WithMaxValue(x => x.MaxValue);
+        MockMetadataBuilder<TestModel> result = _builder.WithMaxValue(x => x.MaxValue);
 
         Assert.Multiple(() =>
         {
@@ -229,7 +237,7 @@ public class MetadataExtensionsTests
     [Test]
     public void Hidden_SetsVisibleToFalse()
     {
-        TestMetadataBuilder result = _builder.Hidden();
+        MockMetadataBuilder<TestModel> result = _builder.Hidden();
 
         Assert.Multiple(() =>
         {
@@ -241,48 +249,12 @@ public class MetadataExtensionsTests
     [Test]
     public void VisibleWhen_SetsVisibleExpression()
     {
-        TestMetadataBuilder result = _builder.VisibleWhen(x => x.IsVisible);
+        MockMetadataBuilder<TestModel> result = _builder.VisibleWhen(x => x.IsVisible);
 
         Assert.Multiple(() =>
         {
             Assert.That(result, Is.SameAs(_builder));
             Assert.That(_builder.Visible.InnerValue(), Is.EqualTo(nameof(TestModel.IsVisible)));
         });
-    }
-
-    public sealed class TestModel
-    {
-        public string? Name { get; set; }
-        public bool IsEnabled { get; set; }
-        public bool IsRequired { get; set; }
-        public bool IsVisible { get; set; }
-        public int MaxLength { get; set; }
-        public int Precision { get; set; }
-        public int Scale { get; set; }
-        public int MinValue { get; set; }
-        public int MaxValue { get; set; }
-    }
-    private sealed class TestMetadataBuilder :
-        IMetadataBuilder<TestModel>,
-        IEnablable<TestMetadataBuilder, TestModel>,
-        ILabelable<TestMetadataBuilder, TestModel>,
-        IMaxLengthable<TestMetadataBuilder, TestModel>,
-        IPrecisionAndScalable<TestMetadataBuilder, TestModel>,
-        IRecalculatable<TestMetadataBuilder, TestModel>,
-        IRequirable<TestMetadataBuilder, TestModel>,
-        IValueRangable<TestMetadataBuilder, TestModel, int>,
-        IVisible<TestMetadataBuilder, TestModel>
-    {
-        public PropertyOrConstant<TestModel, bool>? Enabled { get; set; }
-        public PropertyOrConstant<TestModel, string?>? Label { get; set; }
-        public PropertyOrConstant<TestModel, int>? MaxLength { get; set; }
-        public IRecalculateEvent<TestModel>? RecalculateEvent { get; set; }
-        public PropertyOrConstant<TestModel, bool>? Required { get; set; }
-        public PropertyOrConstant<TestModel, int>? MinValue { get; set; }
-        public PropertyOrConstant<TestModel, int>? MaxValue { get; set; }
-        public PropertyOrConstant<TestModel, bool>? Visible { get; set; }
-        public PropertyOrConstant<TestModel, int>? Precision { get; set; }
-        public PropertyOrConstant<TestModel, int>? Scale { get; set; }
-        public InputType GetInputType() => throw new NotImplementedException();
     }
 }

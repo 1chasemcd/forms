@@ -60,7 +60,7 @@ internal sealed class MetadataProcessors
     private IInputMetadataDto? ProcessMaxValue<T>(IMetadataBuilder<T> propertyMetadata)
     {
         Type? rangeInterface = propertyMetadata.GetType().GetInterfaces()
-            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IValueRangable<,,>));
+            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IValueRangable<,>));
 
         PropertyInfo? maxValueProperty = rangeInterface?.GetProperty(nameof(IValueRangable<,>.MaxValue));
         if (maxValueProperty?.GetValue(propertyMetadata) is IPropertyOrConstant maxValue)
@@ -71,11 +71,11 @@ internal sealed class MetadataProcessors
     private IInputMetadataDto? ProcessMinValue<T>(IMetadataBuilder<T> propertyMetadata)
     {
         Type? rangeInterface = propertyMetadata.GetType().GetInterfaces()
-            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IValueRangable<,,>));
+            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IValueRangable<,>));
 
-        PropertyInfo? maxValueProperty = rangeInterface?.GetProperty(nameof(IValueRangable<,>.MinValue));
-        if (maxValueProperty?.GetValue(propertyMetadata) is IPropertyOrConstant minValue)
-            return new MaxValueMetadataDto() { Value = minValue.Build() };
+        PropertyInfo? minValueProperty = rangeInterface?.GetProperty(nameof(IValueRangable<,>.MinValue));
+        if (minValueProperty?.GetValue(propertyMetadata) is IPropertyOrConstant minValue)
+            return new MinValueMetadataDto() { Value = minValue.Build() };
         return null;
     }
 }
