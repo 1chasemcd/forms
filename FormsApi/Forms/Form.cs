@@ -12,5 +12,5 @@ public abstract class Form<TModel> : IForm
 {
     public BaseViewDto GetView() => View.Build();
     public Type GetModelType() => typeof(TModel);
-    protected abstract IFormView<TModel> View { get; }
+    protected abstract IView<TModel> View { get; }
 }

@@ -39,7 +39,7 @@ public class CombinedViewTests
     [Test]
     public void WithViews_SetsViews()
     {
-        IFormView<TestModel> internalView = new Mock<IFormView<TestModel>>().Object;
+        IView<TestModel> internalView = new Mock<IView<TestModel>>().Object;
         var view = new CombinedView<TestModel>()
         {
             internalView
@@ -60,7 +60,7 @@ public class CombinedViewTests
     [Test]
     public void Build_SetsViewsOnDto()
     {
-        var internalView = new Mock<IFormView<TestModel>>();
+        var internalView = new Mock<IView<TestModel>>();
         BaseViewDto viewDto = new Mock<BaseViewDto>().Object;
         internalView.Setup(x => x.Build()).Returns(viewDto);
         var view = new CombinedView<TestModel>()

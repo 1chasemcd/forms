@@ -11,7 +11,7 @@ public class FormViewTests
         public string? StringProperty { get; set; }
         public bool BoolProperty { get; set; }
     }
-    private sealed class TestFormView() : FormView<TestModel, TestFormView>
+    private sealed class TestFormView() : View<TestModel, TestFormView>
     {
         protected override BaseViewDto BuildImpl() => new MockViewDto();
     }

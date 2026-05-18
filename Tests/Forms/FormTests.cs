@@ -9,16 +9,16 @@ public class FormTests
 {
     public sealed class TestModel;
 
-    private sealed class TestForm(IFormView<TestModel> view) : Form<TestModel>
+    private sealed class TestForm(IView<TestModel> view) : Form<TestModel>
     {
-        private IFormView<TestModel> ViewInstance { get; } = view;
-        protected override IFormView<TestModel> View => ViewInstance;
+        private IView<TestModel> ViewInstance { get; } = view;
+        protected override IView<TestModel> View => ViewInstance;
     }
 
     [Test]
     public void GetModelType_ReturnsGenericModelType()
     {
-        var view = new Mock<IFormView<TestModel>>();
+        var view = new Mock<IView<TestModel>>();
 
         var sut = new TestForm(view.Object);
 
@@ -32,7 +32,7 @@ public class FormTests
     {
         BaseViewDto expectedView = new Mock<BaseViewDto>().Object;
 
-        var view = new Mock<IFormView<TestModel>>();
+        var view = new Mock<IView<TestModel>>();
 
         view.Setup(x => x.Build())
             .Returns(expectedView);
@@ -49,7 +49,7 @@ public class FormTests
     {
         BaseViewDto expectedView = new Mock<BaseViewDto>().Object;
 
-        var view = new Mock<IFormView<TestModel>>();
+        var view = new Mock<IView<TestModel>>();
 
         view.Setup(x => x.Build())
             .Returns(expectedView);

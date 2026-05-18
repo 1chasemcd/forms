@@ -3,14 +3,14 @@ using System.Text.Json;
 using FormsApi.Contract;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FormsApi.Recalculate;
+namespace FormsApi.FormService;
 
 [Route("api/[controller]")]
 [ApiController]
-public sealed class RecalculateEventController(IServiceProvider serviceProvider) : ControllerBase
+public sealed class FormServiceController(IServiceProvider serviceProvider) : ControllerBase
 {
     [HttpPost("{serviceType}/{method}")]
-    public ActionResult<RecalculateEventResult> PerformAction(
+    public ActionResult<FormServiceResponse> PerformAction(
         [FromRoute] TypeDto serviceType,
         [FromRoute] string method,
         [FromBody] JsonElement body)
@@ -21,8 +21,8 @@ public sealed class RecalculateEventController(IServiceProvider serviceProvider)
             .GetMethods()
             .Where(m =>
                 m.Name.Equals(method, StringComparison.OrdinalIgnoreCase) &&
-                (m.ReturnType == typeof(PostRecalculateEvent) ||
-                Nullable.GetUnderlyingType(m.ReturnType) == typeof(PostRecalculateEvent)))
+                (m.ReturnType == typeof(FormServicePostAction) ||
+                Nullable.GetUnderlyingType(m.ReturnType) == typeof(FormServicePostAction)))
             .ToList();
 
 
@@ -43,10 +43,10 @@ public sealed class RecalculateEventController(IServiceProvider serviceProvider)
 
         object? result = methodToUse.Invoke(serviceInstance, args);
         object? model = args.Length > 0 ? args[0] : null;
-        return Ok(new RecalculateEventResult
+        return Ok(new FormServiceResponse
         {
             Model = JsonSerializer.SerializeToElement(model),
-            PostEvent = result as PostRecalculateEvent
+            PostAction = result as FormServicePostAction
         });
     }
 }

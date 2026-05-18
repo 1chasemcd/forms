@@ -1,9 +1,9 @@
 using FormsApi.Common;
 using FormsApi.Contract;
 using FormsApi.Contract.ControlMetadata;
+using FormsApi.FormService;
 using FormsApi.Metadata.Builders;
 using FormsApi.Metadata.Services;
-using FormsApi.Recalculate;
 using Moq;
 
 namespace Tests.Metadata;
@@ -23,13 +23,13 @@ public class MetadataProcessorsTests
     {
         public string? Name { get; set; }
         public int Age { get; set; }
-        public PostRecalculateEvent DoThing(TestModel _) => null!;
+        public FormServicePostAction DoThing(TestModel _) => null!;
     }
 
     private T AssertProcessorApplied<T>(IMetadataBuilder<TestModel> subject)
-        where T : IInputMetadataDto
+        where T : IControlMetadataDto
     {
-        IEnumerable<Func<IMetadataBuilder<TestModel>, IInputMetadataDto?>> processors =
+        IEnumerable<Func<IMetadataBuilder<TestModel>, IControlMetadataDto?>> processors =
             _processors.GetProcessors<TestModel>();
 
         var all = processors.Select(p => p.Invoke(subject)).Where(x => x is not null && x is T).Cast<T>().ToList();
@@ -41,10 +41,10 @@ public class MetadataProcessorsTests
     public void InputTypeProcessor_ReturnsCorrectDto()
     {
         var builderMock = new Mock<IMetadataBuilder<TestModel>>();
-        builderMock.Setup(x => x.GetInputType()).Returns(InputType.Text);
+        builderMock.Setup(x => x.GetControlType()).Returns(ControlType.Text);
 
-        InputTypeMetadataDto result = AssertProcessorApplied<InputTypeMetadataDto>(builderMock.Object);
-        Assert.That(result.Value, Is.EqualTo(InputType.Text));
+        ControlTypeMetadataDto result = AssertProcessorApplied<ControlTypeMetadataDto>(builderMock.Object);
+        Assert.That(result.Value, Is.EqualTo(ControlType.Text));
     }
 
     [Test]
@@ -112,14 +112,14 @@ public class MetadataProcessorsTests
     {
         var builder = new MockMetadataBuilder<TestModel>
         {
-            RecalculateEvent = new RecalculateEvent<TestModel, TestModel>(x => x.DoThing)
+            FormServiceMethod = new FormServiceMethod<TestModel, TestModel>(x => x.DoThing)
         };
 
-        RecalculateEventMetadataDto result = AssertProcessorApplied<RecalculateEventMetadataDto>(builder);
+        FormServiceMethodMetadataDto result = AssertProcessorApplied<FormServiceMethodMetadataDto>(builder);
         Assert.That(result.Value,
-            Has.Property(nameof(RecalculateEventDto.Service))
+            Has.Property(nameof(FormServiceMethodDto.Service))
             .EqualTo(new TypeDto(typeof(TestModel)))
-            .And.Property(nameof(RecalculateEventDto.Method))
+            .And.Property(nameof(FormServiceMethodDto.Method))
             .EqualTo(nameof(TestModel.DoThing)));
     }
 

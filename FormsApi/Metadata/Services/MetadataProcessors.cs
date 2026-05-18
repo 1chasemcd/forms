@@ -8,10 +8,10 @@ namespace FormsApi.Metadata.Services;
 
 internal sealed class MetadataProcessors
 {
-    public IEnumerable<Func<IMetadataBuilder<T>, IInputMetadataDto?>> GetProcessors<T>()
+    public IEnumerable<Func<IMetadataBuilder<T>, IControlMetadataDto?>> GetProcessors<T>()
     {
         yield return propertyMetadata =>
-            new InputTypeMetadataDto() { Value = propertyMetadata.GetInputType() };
+            new ControlTypeMetadataDto() { Value = propertyMetadata.GetControlType() };
 
         yield return propertyMetadata =>
             propertyMetadata is IEnablable<T> x && x.Enabled is not null
@@ -39,8 +39,8 @@ internal sealed class MetadataProcessors
             : null;
 
         yield return propertyMetadata =>
-            propertyMetadata is IRecalculatable<T> x && x.RecalculateEvent is not null
-            ? new RecalculateEventMetadataDto() { Value = x.RecalculateEvent.Build() }
+            propertyMetadata is IFormServiceCaller<T> x && x.FormServiceMethod is not null
+            ? new FormServiceMethodMetadataDto() { Value = x.FormServiceMethod.Build() }
             : null;
 
         yield return propertyMetadata =>

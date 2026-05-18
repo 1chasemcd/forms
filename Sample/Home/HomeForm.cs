@@ -4,7 +4,7 @@ namespace Sample.Home;
 
 public class HomeForm : Form<TestModel>
 {
-    protected override IFormView<TestModel> View => new CombinedView<TestModel>()
+    protected override IView<TestModel> View => new CombinedView<TestModel>()
     {
         TopLeftView(),
         TopRightView(),
@@ -12,12 +12,12 @@ public class HomeForm : Form<TestModel>
         GridView()
     };
 
-    private static FieldView<TestModel> TopLeftView()
+    private static ControlView<TestModel> TopLeftView()
     {
-        return new FieldView<TestModel>("Top left view")
+        return new ControlView<TestModel>("Top left view")
         {
             Width = 4,
-            Fields = new FieldList<TestModel>
+            Fields = new ControlList<TestModel>
             {
                 { m => m.TextField, 6 },
                 { m => m.DateField, 6 },
@@ -27,9 +27,9 @@ public class HomeForm : Form<TestModel>
         };
     }
 
-    private static FieldView<TestModel> TopRightView()
+    private static ControlView<TestModel> TopRightView()
     {
-        return new FieldView<TestModel>(title: "Additional Fields")
+        return new ControlView<TestModel>(title: "Additional Fields")
         {
             m => m.CurrencyField,
             m => m.TextFieldWithInitialValue
@@ -45,9 +45,9 @@ public class HomeForm : Form<TestModel>
         }.Unify();
     }
 
-    private static FieldView<TestModel> BottomView()
+    private static ControlView<TestModel> BottomView()
     {
-        return new FieldView<TestModel>()
+        return new ControlView<TestModel>()
         {
             { m => m.NumericField, 6 },
             { m => m.ResultNumberPlus1, 6 },
@@ -57,9 +57,9 @@ public class HomeForm : Form<TestModel>
         }.WithWidth(8);
     }
 
-    private static FieldView<TestModel> BottomViewRight()
+    private static ControlView<TestModel> BottomViewRight()
     {
-        return new FieldView<TestModel>("Inner View")
+        return new ControlView<TestModel>("Inner View")
         {
             m => m.CheckBox,
             m => m.StaticTextAtTheBottom,

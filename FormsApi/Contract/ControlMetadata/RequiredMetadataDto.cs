@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FormsApi.Contract.ControlMetadata;
 
-public sealed class RequiredMetadataDto : IInputMetadataDto
+public sealed class RequiredMetadataDto : IControlMetadataDto
 {
     [Required]
     public required PropertyOrConstantDto Value { get; init; }

@@ -34,7 +34,7 @@ public class SubPropertyGridViewTests
         };
 
         Assert.That(view.Fields.Single(),
-            Has.Property(nameof(FormControlLayoutDto.Property))
+            Has.Property(nameof(FormControlLayoutDto.PropertyName))
             .EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1))
             .And.Property(nameof(FormControlLayoutDto.Width))
             .EqualTo(6));
@@ -59,7 +59,7 @@ public class SubPropertyGridViewTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(built.Fields.Single(),
-                    Has.Property(nameof(FormControlLayoutDto.Property))
+                    Has.Property(nameof(FormControlLayoutDto.PropertyName))
                     .EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1)));
             Assert.That(built.CanAdd.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty1)));
             Assert.That(built.CanEdit.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty2)));

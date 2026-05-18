@@ -11,5 +11,5 @@ public class LabelValueMetadataBuilder<TModel> :
 {
     public PropertyOrConstant<TModel, string?>? Label { get; set; }
     public PropertyOrConstant<TModel, bool>? Visible { get; set; }
-    public InputType GetInputType() => InputType.LabelValue;
+    public ControlType GetControlType() => ControlType.LabelValue;
 }

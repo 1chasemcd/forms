@@ -4,21 +4,21 @@ using FormsApi.Metadata.Interfaces;
 
 namespace FormsApi.Metadata.Builders;
 
-public class DateInputMetadataBuilder<TModel> :
+public class DateMetadataBuilder<TModel> :
     IMetadataBuilder<TModel>,
-    IEnablable<DateInputMetadataBuilder<TModel>, TModel>,
-    ILabelable<DateInputMetadataBuilder<TModel>, TModel>,
-    IRecalculatable<DateInputMetadataBuilder<TModel>, TModel>,
-    IRequirable<DateInputMetadataBuilder<TModel>, TModel>,
-    IValueRangable<DateInputMetadataBuilder<TModel>, TModel, DateOnly>,
-    IVisible<DateInputMetadataBuilder<TModel>, TModel>
+    IEnablable<DateMetadataBuilder<TModel>, TModel>,
+    ILabelable<DateMetadataBuilder<TModel>, TModel>,
+    IRecalculatable<DateMetadataBuilder<TModel>, TModel>,
+    IRequirable<DateMetadataBuilder<TModel>, TModel>,
+    IValueRangable<DateMetadataBuilder<TModel>, TModel, DateOnly>,
+    IVisible<DateMetadataBuilder<TModel>, TModel>
 {
     public PropertyOrConstant<TModel, bool>? Enabled { get; set; }
     public PropertyOrConstant<TModel, string?>? Label { get; set; }
-    public IRecalculateEvent<TModel>? RecalculateEvent { get; set; }
+    public IFormServiceMethod<TModel>? FormServiceMethod { get; set; }
     public PropertyOrConstant<TModel, bool>? Required { get; set; }
     public PropertyOrConstant<TModel, DateOnly>? MinValue { get; set; }
     public PropertyOrConstant<TModel, DateOnly>? MaxValue { get; set; }
     public PropertyOrConstant<TModel, bool>? Visible { get; set; }
-    public InputType GetInputType() => InputType.Date;
+    public ControlType GetControlType() => ControlType.Date;
 }

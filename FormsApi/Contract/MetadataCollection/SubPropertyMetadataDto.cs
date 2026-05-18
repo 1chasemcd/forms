@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FormsApi.Contract.ModelMetadata;
+namespace FormsApi.Contract.MetadataCollection;
 
 public sealed class SubPropertyMetadataDto(TypeDto type) : IPropertyMetadataDto
 {

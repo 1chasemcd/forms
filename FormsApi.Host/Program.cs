@@ -42,10 +42,10 @@ public class IncludeTypesDocumentProcessor : IDocumentProcessor
     public void Process(DocumentProcessorContext context)
     {
         JsonSchema schema = context.SchemaGenerator.Generate(
-            typeof(RecalculateEventDto),
+            typeof(FormServiceMethodDto),
             context.SchemaResolver
         );
 
-        context.Document.Components.Schemas["RecalculateEvent"] = schema;
+        context.Document.Components.Schemas["FormServiceMethodDto"] = schema;
     }
 }

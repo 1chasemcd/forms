@@ -5,16 +5,16 @@ using FormsApi.Contract.View;
 
 namespace FormsApi.Forms;
 
-public sealed class FieldView<TModel> : FormView<TModel, FieldView<TModel>>, IEnumerable
+public sealed class ControlView<TModel> : View<TModel, ControlView<TModel>>, IEnumerable
 {
-    public FieldList<TModel> Fields { get; set; } = [];
+    public ControlList<TModel> Fields { get; set; } = [];
 
-    public FieldView(PropertyOrConstant<TModel, string?>? title = null)
+    public ControlView(PropertyOrConstant<TModel, string?>? title = null)
     {
         Title = title;
     }
 
-    public FieldView(Expression<Func<TModel, string?>> title)
+    public ControlView(Expression<Func<TModel, string?>> title)
     {
         Title = title;
     }
@@ -23,7 +23,7 @@ public sealed class FieldView<TModel> : FormView<TModel, FieldView<TModel>>, IEn
     {
         var view = new FieldViewDto
         {
-            Fields = Fields.Fields
+            Fields = Fields.Controls
         };
 
         return view;

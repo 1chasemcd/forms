@@ -1,5 +1,5 @@
 using FormsApi.Contract;
-using FormsApi.Contract.ModelMetadata;
+using FormsApi.Contract.MetadataCollection;
 using FormsApi.Contract.View;
 using FormsApi.Forms.Controllers;
 using FormsApi.Forms.Services;
@@ -43,7 +43,7 @@ public class FormControllerTests
 
         BaseViewDto view = new Mock<BaseViewDto>().Object;
 
-        var metadata = new List<ModelMetadataDto>
+        var metadata = new List<ModelMetadataCollectionDto>
         {
             new()
             {

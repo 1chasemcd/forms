@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FormsApi.Contract.ModelMetadata;
+namespace FormsApi.Contract.MetadataCollection;
 
-public sealed class ModelMetadataDto
+public sealed class ModelMetadataCollectionDto
 {
     [Required]
     public required TypeDto Type { get; init; }

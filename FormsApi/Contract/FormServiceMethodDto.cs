@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FormsApi.Contract;
 
-public sealed class RecalculateEventDto
+public sealed class FormServiceMethodDto
 {
     [Required]
     public required TypeDto Service { get; init; }

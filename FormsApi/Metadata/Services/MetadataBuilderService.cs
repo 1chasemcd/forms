@@ -2,7 +2,7 @@ using System.Numerics;
 using System.Reflection;
 using FormsApi.Contract;
 using FormsApi.Contract.ControlMetadata;
-using FormsApi.Contract.ModelMetadata;
+using FormsApi.Contract.MetadataCollection;
 using FormsApi.Metadata.Builders;
 
 namespace FormsApi.Metadata.Services;
@@ -10,7 +10,7 @@ namespace FormsApi.Metadata.Services;
 public interface IMetadataBuilderService
 {
     void BuildMetadataDictionary();
-    List<ModelMetadataDto> BuildMetadata(Type baseType);
+    List<ModelMetadataCollectionDto> BuildMetadata(Type baseType);
 }
 
 internal sealed class MetadataBuilderService(MetadataProcessors metadataProcessors) : IMetadataBuilderService
@@ -38,20 +38,20 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
         return null;
     }
 
-    public List<ModelMetadataDto> BuildMetadata(Type baseType)
+    public List<ModelMetadataCollectionDto> BuildMetadata(Type baseType)
     {
         ArgumentNullException.ThrowIfNull(baseType);
         MethodInfo method = typeof(MetadataBuilderService)
             .GetMethod(nameof(BuildMetadataImpl), BindingFlags.Instance | BindingFlags.NonPublic)!
             .MakeGenericMethod(baseType)!;
-        return (List<ModelMetadataDto>)method.Invoke(this, null)!;
+        return (List<ModelMetadataCollectionDto>)method.Invoke(this, null)!;
     }
 
-    private List<ModelMetadataDto> BuildMetadataImpl<T>()
+    private List<ModelMetadataCollectionDto> BuildMetadataImpl<T>()
     {
-        List<ModelMetadataDto> result = [];
+        List<ModelMetadataCollectionDto> result = [];
 
-        var modelMetadata = new ModelMetadataDto()
+        var modelMetadata = new ModelMetadataCollectionDto()
         {
             Type = new TypeDto(typeof(T)),
             PropertyMetadatas = []
@@ -67,7 +67,7 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
             }
             else if (GetElementType(prop.PropertyType) is { } elementType)
             {
-                propertyMetadata = new EnumerableMetadataDto(elementType);
+                propertyMetadata = new EnumerablePropertyMetadataDto(elementType);
                 result.AddRange(BuildMetadata(elementType));
             }
             else
@@ -81,7 +81,7 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
         return result;
     }
 
-    private PrimitiveMetadataDto BuildPrimitiveMetadata<T>(PropertyInfo prop)
+    private PrimitivePropertyMetadataDto BuildPrimitiveMetadata<T>(PropertyInfo prop)
     {
         Metadata<T>? metadataDefinition = null;
         if (_metadataDefinitions.TryGetValue(typeof(T), out Type? defType))
@@ -89,36 +89,36 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
         IMetadataBuilder<T>? propertyMetadata = null;
         metadataDefinition?.MetadataBuilders.TryGetValue(prop.Name, out propertyMetadata);
         if (propertyMetadata is null)
-            return new PrimitiveMetadataDto()
+            return new PrimitivePropertyMetadataDto()
             {
                 Metadatas = new[]
                 {
-                new InputTypeMetadataDto() { Value = GetDefaultInputType(prop.PropertyType) }
-            }
+                    new ControlTypeMetadataDto() { Value = GetDefaultInputType(prop.PropertyType) }
+                }
             };
 
-        List<IInputMetadataDto> metadatas = [];
+        List<IControlMetadataDto> metadatas = [];
 
-        foreach (Func<IMetadataBuilder<T>, IInputMetadataDto?> processor in metadataProcessors.GetProcessors<T>())
+        foreach (Func<IMetadataBuilder<T>, IControlMetadataDto?> processor in metadataProcessors.GetProcessors<T>())
         {
-            IInputMetadataDto? processed = processor.Invoke(propertyMetadata);
+            IControlMetadataDto? processed = processor.Invoke(propertyMetadata);
             if (processed is not null) metadatas.Add(processed);
         }
 
-        return new PrimitiveMetadataDto() { Metadatas = metadatas };
+        return new PrimitivePropertyMetadataDto() { Metadatas = metadatas };
     }
 
-    private static InputType GetDefaultInputType(Type type)
+    private static ControlType GetDefaultInputType(Type type)
     {
         type = Nullable.GetUnderlyingType(type) ?? type;
 
-        if (type == typeof(bool)) return InputType.CheckBox;
-        if (type == typeof(DateOnly)) return InputType.Date;
-        if (type == typeof(TimeOnly)) return InputType.Time;
-        if (type == typeof(string)) return InputType.Text;
-        if (type.IsAssignableFrom(typeof(INumber<>))) return InputType.Numeric;
+        if (type == typeof(bool)) return ControlType.CheckBox;
+        if (type == typeof(DateOnly)) return ControlType.Date;
+        if (type == typeof(TimeOnly)) return ControlType.Time;
+        if (type == typeof(string)) return ControlType.Text;
+        if (type.IsAssignableFrom(typeof(INumber<>))) return ControlType.Numeric;
 
-        return InputType.Text;
+        return ControlType.Text;
     }
 
     private static Type? GetElementType(Type type)

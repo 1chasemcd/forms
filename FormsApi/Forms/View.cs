@@ -6,7 +6,7 @@ using FormsApi.Contract.View;
 namespace FormsApi.Forms;
 
 
-public interface IFormView<TModel>
+public interface IView<TModel>
 {
     PropertyOrConstant<TModel, string?>? Title { get; set; }
     int? Width { get; set; }
@@ -15,8 +15,8 @@ public interface IFormView<TModel>
     BaseViewDto Build();
 }
 
-public abstract class FormView<TModel, TThis> : IFormView<TModel>
-    where TThis : class, IFormView<TModel>
+public abstract class View<TModel, TThis> : IView<TModel>
+    where TThis : class, IView<TModel>
 {
     public PropertyOrConstant<TModel, string?>? Title { get; set; }
     public int? Width { get; set; }

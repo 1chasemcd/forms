@@ -1,20 +1,20 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using FormsApi.Contract;
-using FormsApi.Recalculate;
+using FormsApi.FormService;
 
 namespace FormsApi.Common;
 
-public interface IRecalculateEvent<TModel>
+public interface IFormServiceMethod<TModel>
 {
-    RecalculateEventDto Build();
+    FormServiceMethodDto Build();
 }
-public sealed class RecalculateEvent<TModel, TService>(Expression<Func<TService, Func<TModel, PostRecalculateEvent?>>> method) : IRecalculateEvent<TModel>
+public sealed class FormServiceMethod<TModel, TService>(Expression<Func<TService, Func<TModel, FormServicePostAction?>>> method) : IFormServiceMethod<TModel>
 {
 
-    public RecalculateEventDto Build()
+    public FormServiceMethodDto Build()
     {
-        return new RecalculateEventDto
+        return new FormServiceMethodDto
         {
             Service = new TypeDto(typeof(TService)),
             Method = GetMethodName(),

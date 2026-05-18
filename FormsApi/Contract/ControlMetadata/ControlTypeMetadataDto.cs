@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FormsApi.Contract.ControlMetadata;
 
-public enum InputType
+public enum ControlType
 {
     Button,
     CheckBox,
@@ -16,8 +16,8 @@ public enum InputType
 }
 
 
-public sealed class InputTypeMetadataDto : IInputMetadataDto
+public sealed class ControlTypeMetadataDto : IControlMetadataDto
 {
     [Required]
-    public InputType Value { get; init; }
+    public ControlType Value { get; init; }
 }

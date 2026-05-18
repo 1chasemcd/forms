@@ -1,5 +1,5 @@
 using FormsApi.Contract;
-using FormsApi.Contract.ModelMetadata;
+using FormsApi.Contract.MetadataCollection;
 using FormsApi.Contract.View;
 using FormsApi.Forms.Services;
 using FormsApi.Metadata.Services;
@@ -18,7 +18,7 @@ public sealed class FormController(IFormRegistry registry, IMetadataBuilderServi
         if (formInfo is null)
             return NotFound();
 
-        List<ModelMetadataDto> metadatas = metadataService.BuildMetadata(formInfo.Item1);
+        List<ModelMetadataCollectionDto> metadatas = metadataService.BuildMetadata(formInfo.Item1);
 
         return Ok(new FormDto
         {

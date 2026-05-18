@@ -1,41 +1,41 @@
 using System.Linq.Expressions;
 using System.Numerics;
 using FormsApi.Common;
+using FormsApi.FormService;
 using FormsApi.Metadata.Builders;
-using FormsApi.Recalculate;
 
 namespace FormsApi.Metadata;
 
 public abstract class Metadata<TModel>
 {
     internal Dictionary<string, IMetadataBuilder<TModel>> MetadataBuilders { get; } = [];
-    protected ButtonInputMetadataBuilder<TModel> Button(Expression<Func<TModel, object?>> selector) =>
-        Add<ButtonInputMetadataBuilder<TModel>, object>(selector);
+    protected ButtonMetadataBuilder<TModel> Button(Expression<Func<TModel, object?>> selector) =>
+        Add<ButtonMetadataBuilder<TModel>, object>(selector);
 
-    protected CheckBoxInputMetadataBuilder<TModel> CheckBox(Expression<Func<TModel, bool>> selector) =>
-        Add<CheckBoxInputMetadataBuilder<TModel>, bool>(selector);
+    protected CheckBoxMetadataBuilder<TModel> CheckBox(Expression<Func<TModel, bool>> selector) =>
+        Add<CheckBoxMetadataBuilder<TModel>, bool>(selector);
 
-    protected CurrencyInputMetadataBuilder<TModel> Currency(Expression<Func<TModel, decimal>> selector) =>
-        Add<CurrencyInputMetadataBuilder<TModel>, decimal>(selector);
+    protected CurrencyMetadataBuilder<TModel> Currency(Expression<Func<TModel, decimal>> selector) =>
+        Add<CurrencyMetadataBuilder<TModel>, decimal>(selector);
 
-    protected DateInputMetadataBuilder<TModel> Date(Expression<Func<TModel, DateOnly>> selector) =>
-        Add<DateInputMetadataBuilder<TModel>, DateOnly>(selector);
+    protected DateMetadataBuilder<TModel> Date(Expression<Func<TModel, DateOnly>> selector) =>
+        Add<DateMetadataBuilder<TModel>, DateOnly>(selector);
 
     protected LabelValueMetadataBuilder<TModel> LabelValue(Expression<Func<TModel, string?>> selector) =>
         Add<LabelValueMetadataBuilder<TModel>, string>(selector);
 
-    protected NumericInputMetadataBuilder<TModel, TNumber> Numeric<TNumber>(Expression<Func<TModel, TNumber?>> selector)
+    protected NumericMetadataBuilder<TModel, TNumber> Numeric<TNumber>(Expression<Func<TModel, TNumber?>> selector)
         where TNumber : INumber<TNumber> =>
-        Add<NumericInputMetadataBuilder<TModel, TNumber>, TNumber>(selector);
+        Add<NumericMetadataBuilder<TModel, TNumber>, TNumber>(selector);
 
-    protected TextAreaInputMetadataBuilder<TModel> TextArea(Expression<Func<TModel, string?>> selector) =>
-        Add<TextAreaInputMetadataBuilder<TModel>, string>(selector);
+    protected TextAreaMetadataBuilder<TModel> TextArea(Expression<Func<TModel, string?>> selector) =>
+        Add<TextAreaMetadataBuilder<TModel>, string>(selector);
 
-    protected TextInputMetadataBuilder<TModel> Text(Expression<Func<TModel, string?>> selector) =>
-        Add<TextInputMetadataBuilder<TModel>, string>(selector);
+    protected TextMetadataBuilder<TModel> Text(Expression<Func<TModel, string?>> selector) =>
+        Add<TextMetadataBuilder<TModel>, string>(selector);
 
-    protected TimeInputMetadataBuilder<TModel> Time(Expression<Func<TModel, TimeOnly>> selector) =>
-        Add<TimeInputMetadataBuilder<TModel>, TimeOnly>(selector);
+    protected TimeMetadataBuilder<TModel> Time(Expression<Func<TModel, TimeOnly>> selector) =>
+        Add<TimeMetadataBuilder<TModel>, TimeOnly>(selector);
 
     private TMetadata Add<TMetadata, TProperty>(Expression<Func<TModel, TProperty?>> selector) where TMetadata : IMetadataBuilder<TModel>, new()
     {
@@ -52,9 +52,9 @@ public abstract class Metadata<TModel>
     }
 
 
-    protected RecalculateEvent<TModel, TService> Recalculate<TService>(
-        Expression<Func<TService, Func<TModel, PostRecalculateEvent?>>> selector)
+    protected FormServiceMethod<TModel, TService> Recalculate<TService>(
+        Expression<Func<TService, Func<TModel, FormServicePostAction?>>> selector)
     {
-        return new RecalculateEvent<TModel, TService>(selector);
+        return new FormServiceMethod<TModel, TService>(selector);
     }
 }

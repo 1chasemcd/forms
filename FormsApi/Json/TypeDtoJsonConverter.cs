@@ -4,7 +4,7 @@ using FormsApi.Contract;
 
 namespace FormsApi.Json;
 
-internal sealed class SerializedTypeJsonConverter : JsonConverter<TypeDto>
+internal sealed class TypeDtoJsonConverter : JsonConverter<TypeDto>
 {
     public override TypeDto Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

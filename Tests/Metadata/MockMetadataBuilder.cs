@@ -19,12 +19,12 @@ public class MockMetadataBuilder<TModel> :
     public PropertyOrConstant<TModel, bool>? Enabled { get; set; }
     public PropertyOrConstant<TModel, string?>? Label { get; set; }
     public PropertyOrConstant<TModel, int>? MaxLength { get; set; }
-    public IRecalculateEvent<TModel>? RecalculateEvent { get; set; }
+    public IFormServiceMethod<TModel>? FormServiceMethod { get; set; }
     public PropertyOrConstant<TModel, bool>? Required { get; set; }
     public PropertyOrConstant<TModel, int>? MinValue { get; set; }
     public PropertyOrConstant<TModel, int>? MaxValue { get; set; }
     public PropertyOrConstant<TModel, bool>? Visible { get; set; }
     public PropertyOrConstant<TModel, int>? Precision { get; set; }
     public PropertyOrConstant<TModel, int>? Scale { get; set; }
-    public InputType GetInputType() => InputType.Text;
+    public ControlType GetControlType() => ControlType.Text;
 }

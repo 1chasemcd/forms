@@ -60,9 +60,9 @@ public static class MetadataExtensions
         self.Scale = selector;
         return (TThis)self;
     }
-    public static TThis OnChange<TThis, TModel>(this IRecalculatable<TThis, TModel> self, IRecalculateEvent<TModel> recalc)
+    public static TThis OnChange<TThis, TModel>(this IRecalculatable<TThis, TModel> self, IFormServiceMethod<TModel> recalc)
     {
-        self.RecalculateEvent = recalc;
+        self.FormServiceMethod = recalc;
         return (TThis)self;
     }
     public static TThis Required<TThis, TModel>(this IRequirable<TThis, TModel> self)

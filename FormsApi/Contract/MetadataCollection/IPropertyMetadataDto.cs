@@ -1,12 +1,12 @@
 using System.Text.Json.Serialization;
 
-namespace FormsApi.Contract.ModelMetadata;
+namespace FormsApi.Contract.MetadataCollection;
 
 [JsonPolymorphic(
     TypeDiscriminatorPropertyName = "$type",
     UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor
 )]
-[JsonDerivedType(typeof(EnumerableMetadataDto), "enumerable")]
+[JsonDerivedType(typeof(EnumerablePropertyMetadataDto), "enumerable")]
 [JsonDerivedType(typeof(SubPropertyMetadataDto), "subproperty")]
-[JsonDerivedType(typeof(PrimitiveMetadataDto), "primitive")]
+[JsonDerivedType(typeof(PrimitivePropertyMetadataDto), "primitive")]
 public interface IPropertyMetadataDto;

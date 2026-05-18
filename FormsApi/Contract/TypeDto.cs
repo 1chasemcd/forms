@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace FormsApi.Contract;
 
-[JsonConverter(typeof(SerializedTypeJsonConverter))]
+[JsonConverter(typeof(TypeDtoJsonConverter))]
 public sealed record class TypeDto(Type type)
 {
     public override string ToString() => type is null ? string.Empty : Encode(type);
