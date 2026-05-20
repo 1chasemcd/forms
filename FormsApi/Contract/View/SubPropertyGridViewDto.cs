@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FormsApi.Contract.View;
 
-public sealed record class SubPropertyGridViewDto : BaseViewDto
+public sealed record SubPropertyGridViewDto : BaseViewDto
 {
     [Required]
     public required IEnumerable<FormControlLayoutDto> Fields { get; init; }

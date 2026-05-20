@@ -9,7 +9,7 @@ namespace FormsApi.Contract.View;
 [JsonDerivedType(typeof(FieldViewDto), "fieldView")]
 [JsonDerivedType(typeof(CombinedViewDto), "combinedView")]
 [JsonDerivedType(typeof(SubPropertyGridViewDto), "subPropertyGridView")]
-public abstract record class BaseViewDto
+public abstract record BaseViewDto
 {
     public PropertyOrConstantDto? Title { get; init; }
     public int? Width { get; init; }

@@ -96,7 +96,7 @@ public class MetadataBuilderServiceTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(childrenProperty, Is.InstanceOf<EnumerablePropertyMetadataDto>());
-            Assert.That(((EnumerablePropertyMetadataDto)childrenProperty).Type.GetRuntimeType(), Is.EqualTo(typeof(SubModel)));
+            Assert.That(((EnumerablePropertyMetadataDto)childrenProperty).EnumeratedType.GetRuntimeType(), Is.EqualTo(typeof(SubModel)));
         }
 
     }

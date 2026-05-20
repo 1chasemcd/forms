@@ -8,7 +8,7 @@ namespace FormsApi.Metadata.Services;
 
 internal sealed class MetadataProcessors
 {
-    public IEnumerable<Func<IMetadataBuilder<T>, IControlMetadataDto?>> GetProcessors<T>()
+    public IEnumerable<Func<IMetadataBuilder<T>, BaseControlMetadataDto?>> GetProcessors<T>()
     {
         yield return propertyMetadata =>
             new ControlTypeMetadataDto() { Value = propertyMetadata.GetControlType() };

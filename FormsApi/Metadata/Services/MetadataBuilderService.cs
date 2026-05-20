@@ -97,11 +97,11 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
                 }
             };
 
-        List<IControlMetadataDto> metadatas = [];
+        List<BaseControlMetadataDto> metadatas = [];
 
-        foreach (Func<IMetadataBuilder<T>, IControlMetadataDto?> processor in metadataProcessors.GetProcessors<T>())
+        foreach (Func<IMetadataBuilder<T>, BaseControlMetadataDto?> processor in metadataProcessors.GetProcessors<T>())
         {
-            IControlMetadataDto? processed = processor.Invoke(propertyMetadata);
+            BaseControlMetadataDto? processed = processor.Invoke(propertyMetadata);
             if (processed is not null) metadatas.Add(processed);
         }
 

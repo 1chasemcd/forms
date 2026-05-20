@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FormsApi.Contract;
 
-public sealed record class FormControlLayoutDto
+public sealed record FormControlLayoutDto
 {
     [Required]
     public required string PropertyName { get; init; }

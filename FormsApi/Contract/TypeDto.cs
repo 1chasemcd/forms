@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.WebUtilities;
 namespace FormsApi.Contract;
 
 [JsonConverter(typeof(TypeDtoJsonConverter))]
-public sealed record class TypeDto(Type type)
+public sealed record TypeDto(Type type)
 {
     public override string ToString() => type is null ? string.Empty : Encode(type);
     public static bool TryParse(string? value, out TypeDto result)

@@ -2,7 +2,7 @@ using FormsApi.Contract.ControlMetadata;
 
 namespace FormsApi.Contract.MetadataCollection;
 
-public sealed class PrimitivePropertyMetadataDto : IPropertyMetadataDto
+public sealed record PrimitivePropertyMetadataDto : IPropertyMetadataDto
 {
-    public IEnumerable<IControlMetadataDto>? Metadatas { get; init; }
+    public IEnumerable<BaseControlMetadataDto>? Metadatas { get; init; }
 }

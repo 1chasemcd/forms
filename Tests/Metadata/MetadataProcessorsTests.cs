@@ -27,9 +27,9 @@ public class MetadataProcessorsTests
     }
 
     private T AssertProcessorApplied<T>(IMetadataBuilder<TestModel> subject)
-        where T : IControlMetadataDto
+        where T : BaseControlMetadataDto
     {
-        IEnumerable<Func<IMetadataBuilder<TestModel>, IControlMetadataDto?>> processors =
+        IEnumerable<Func<IMetadataBuilder<TestModel>, BaseControlMetadataDto?>> processors =
             _processors.GetProcessors<TestModel>();
 
         var all = processors.Select(p => p.Invoke(subject)).Where(x => x is not null && x is T).Cast<T>().ToList();

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FormsApi.Contract.ControlMetadata;
 
-public sealed class MaxValueMetadataDto : IControlMetadataDto
+public sealed record MaxValueMetadataDto : BaseControlMetadataDto
 {
     [Required]
     public required PropertyOrConstantDto Value { get; init; }

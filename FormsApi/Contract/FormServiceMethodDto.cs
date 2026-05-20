@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FormsApi.Contract;
 
-public sealed class FormServiceMethodDto
+public sealed record FormServiceMethodDto
 {
     [Required]
     public required TypeDto Service { get; init; }

@@ -17,7 +17,6 @@ public static class Program
         builder.Services.AddOpenApiDocument(config =>
         {
             config.SchemaSettings.SchemaProcessors.Add(new RepositoryTypeSchemaProcessor());
-            config.DocumentProcessors.Add(new IncludeTypesDocumentProcessor());
         });
         WebApplication app = builder.Build();
         app.UseOpenApi();
@@ -34,18 +33,5 @@ public class RepositoryTypeSchemaProcessor : ISchemaProcessor
             context.Schema.Properties.Clear();
 
         }
-    }
-}
-
-public class IncludeTypesDocumentProcessor : IDocumentProcessor
-{
-    public void Process(DocumentProcessorContext context)
-    {
-        JsonSchema schema = context.SchemaGenerator.Generate(
-            typeof(FormServiceMethodDto),
-            context.SchemaResolver
-        );
-
-        context.Document.Components.Schemas["FormServiceMethodDto"] = schema;
     }
 }

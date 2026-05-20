@@ -4,7 +4,7 @@ using FormsApi.Contract.View;
 
 namespace FormsApi.Contract;
 
-public sealed class FormDto
+public sealed record FormDto
 {
     [Required]
     public required TypeDto ModelType { get; init; }

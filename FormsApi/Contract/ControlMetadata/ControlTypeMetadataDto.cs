@@ -16,7 +16,7 @@ public enum ControlType
 }
 
 
-public sealed class ControlTypeMetadataDto : IControlMetadataDto
+public sealed record ControlTypeMetadataDto : BaseControlMetadataDto
 {
     [Required]
     public ControlType Value { get; init; }

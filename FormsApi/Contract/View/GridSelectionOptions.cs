@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FormsApi.Contract.View;
 
-public sealed record class GridSelectionOptions
+public sealed record GridSelectionOptions
 {
     [Required]
     public GridSelectionType SelectionType { get; init; }

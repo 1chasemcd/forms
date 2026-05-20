@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FormsApi.Contract.MetadataCollection;
 
-public sealed class ModelMetadataCollectionDto
+public sealed record ModelMetadataCollectionDto
 {
     [Required]
     public required TypeDto Type { get; init; }

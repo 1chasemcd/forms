@@ -9,4 +9,4 @@ namespace FormsApi.Contract.MetadataCollection;
 [JsonDerivedType(typeof(EnumerablePropertyMetadataDto), "enumerable")]
 [JsonDerivedType(typeof(SubPropertyMetadataDto), "subproperty")]
 [JsonDerivedType(typeof(PrimitivePropertyMetadataDto), "primitive")]
-public interface IPropertyMetadataDto;
+public abstract record IPropertyMetadataDto;

@@ -149,7 +149,7 @@ public class MetadataExtensionsTests
     }
 
     [Test]
-    public void OnChange_SetsRecalculateEvent()
+    public void OnChange_SetsFormServiceMethod()
     {
         Mock<IFormServiceMethod<TestModel>> recalc = new();
 

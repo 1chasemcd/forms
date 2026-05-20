@@ -6,15 +6,15 @@ namespace FormsApi.Contract.ControlMetadata;
     TypeDiscriminatorPropertyName = "$type",
     UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor
 )]
+[JsonDerivedType(typeof(ControlTypeMetadataDto), "controlType")]
 [JsonDerivedType(typeof(EnabledMetadataDto), "enabled")]
-[JsonDerivedType(typeof(ControlTypeMetadataDto), "inputType")]
+[JsonDerivedType(typeof(FormServiceMethodMetadataDto), "formServiceMethod")]
 [JsonDerivedType(typeof(LabelMetadataDto), "label")]
 [JsonDerivedType(typeof(MaxLengthMetadataDto), "maxLength")]
 [JsonDerivedType(typeof(MaxValueMetadataDto), "maxValue")]
 [JsonDerivedType(typeof(MinValueMetadataDto), "minValue")]
 [JsonDerivedType(typeof(PrecisionMetadataDto), "precision")]
-[JsonDerivedType(typeof(FormServiceMethodMetadataDto), "recalculateEvent")]
 [JsonDerivedType(typeof(RequiredMetadataDto), "required")]
 [JsonDerivedType(typeof(ScaleMetadataDto), "scale")]
 [JsonDerivedType(typeof(VisibleMetadataDto), "visible")]
-public interface IControlMetadataDto;
+public abstract record BaseControlMetadataDto;
