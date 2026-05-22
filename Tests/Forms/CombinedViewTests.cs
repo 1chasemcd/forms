@@ -47,28 +47,4 @@ public class CombinedViewTests
 
         Assert.That(view.Views.Single(), Is.EqualTo(internalView));
     }
-
-    [Test]
-    public void Build_SetsUnifyOnDto()
-    {
-        var view = new CombinedView<TestModel>();
-        view.Unify();
-        var built = (CombinedViewDto)view.Build();
-        Assert.That(built.Unify, Is.True);
-    }
-
-    [Test]
-    public void Build_SetsViewsOnDto()
-    {
-        var internalView = new Mock<IView<TestModel>>();
-        BaseViewDto viewDto = new Mock<BaseViewDto>().Object;
-        internalView.Setup(x => x.Build()).Returns(viewDto);
-        var view = new CombinedView<TestModel>()
-        {
-            internalView.Object
-        };
-
-        var built = (CombinedViewDto)view.Build();
-        Assert.That(built.Views.Single(), Is.EqualTo(viewDto));
-    }
 }

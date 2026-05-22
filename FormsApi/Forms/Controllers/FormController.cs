@@ -9,22 +9,23 @@ namespace FormsApi.Forms.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public sealed class FormController(IFormRegistry registry, IMetadataBuilderService metadataService) : ControllerBase
+public sealed class FormController(IFormRegistry registry, IFormBuilderService formBuilder, IMetadataBuilderService metadataBuilder) : ControllerBase
 {
     [HttpGet("{path}")]
-    public ActionResult<FormDto> GetForm([FromRoute] string path)
+    public ActionResult<FormResponse> GetForm([FromRoute] string path)
     {
-        Tuple<Type, BaseViewDto>? formInfo = registry.TryGet(path);
-        if (formInfo is null)
+        IForm? form = registry.TryGet(path);
+        if (form is null)
             return NotFound();
 
-        List<ModelMetadataCollectionDto> metadatas = metadataService.BuildMetadata(formInfo.Item1);
+        IReadOnlyList<BaseViewDto> views = form.ProvideBuilder(formBuilder);
+        List<ModelMetadataCollectionDto> metadatas = metadataBuilder.BuildMetadata(form.ModelType);
 
-        return Ok(new FormDto
+        return Ok(new FormResponse
         {
-            ModelType = new TypeDto(formInfo.Item1),
-            View = formInfo.Item2,
-            ModelMetadatas = metadatas
+            ModelType = new TypeDto(form.ModelType),
+            ModelMetadatas = metadatas,
+            Views = views
         });
     }
 }

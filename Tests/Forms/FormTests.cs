@@ -1,5 +1,6 @@
 using FormsApi.Contract.View;
 using FormsApi.Forms;
+using FormsApi.Forms.Services;
 using Moq;
 
 namespace Tests.Forms;
@@ -9,55 +10,34 @@ public class FormTests
 {
     public sealed class TestModel;
 
-    private sealed class TestForm(IView<TestModel> view) : Form<TestModel>
+    private sealed class TestForm : Form<TestModel>
     {
-        private IView<TestModel> ViewInstance { get; } = view;
-        protected override IView<TestModel> View => ViewInstance;
+        protected internal override IView<TestModel> View => null!;
     }
 
     [Test]
-    public void GetModelType_ReturnsGenericModelType()
+    public void ModelType_ReturnsGenericModelType()
     {
-        var view = new Mock<IView<TestModel>>();
+        var sut = new TestForm();
 
-        var sut = new TestForm(view.Object);
-
-        Type result = sut.GetModelType();
+        Type result = sut.ModelType;
 
         Assert.That(result, Is.EqualTo(typeof(TestModel)));
     }
 
     [Test]
-    public void GetView_ReturnsBuiltView()
+    public void ProvideBuilder_CallsBuildOnBuilder()
     {
-        BaseViewDto expectedView = new Mock<BaseViewDto>().Object;
+        var builder = new Mock<IFormBuilderService>();
+        var sut = new TestForm();
+        var expectedResult = new List<BaseViewDto>();
 
-        var view = new Mock<IView<TestModel>>();
+        builder.Setup(x => x.BuildFormIntoViews(sut))
+            .Returns(expectedResult);
 
-        view.Setup(x => x.Build())
-            .Returns(expectedView);
+        IReadOnlyList<BaseViewDto> result = sut.ProvideBuilder(builder.Object);
 
-        var sut = new TestForm(view.Object);
-
-        BaseViewDto result = sut.GetView();
-
-        Assert.That(result, Is.EqualTo(expectedView));
-    }
-
-    [Test]
-    public void GetView_CallsBuildOnView()
-    {
-        BaseViewDto expectedView = new Mock<BaseViewDto>().Object;
-
-        var view = new Mock<IView<TestModel>>();
-
-        view.Setup(x => x.Build())
-            .Returns(expectedView);
-
-        var sut = new TestForm(view.Object);
-
-        sut.GetView();
-
-        view.Verify(x => x.Build(), Times.Once);
+        builder.Verify(x => x.BuildFormIntoViews(sut), Times.Once);
+        Assert.That(result, Is.SameAs(expectedResult));
     }
 }

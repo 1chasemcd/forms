@@ -39,7 +39,7 @@ public abstract class Metadata<TModel>
 
     private TMetadata Add<TMetadata, TProperty>(Expression<Func<TModel, TProperty?>> selector) where TMetadata : IMetadataBuilder<TModel>, new()
     {
-        string propertyName = new ModelMember<TModel, TProperty>(selector).Build();
+        string propertyName = selector.GetPropertyName();
         if (MetadataBuilders.TryGetValue(propertyName, out IMetadataBuilder<TModel>? builder))
         {
             if (builder is TMetadata tBuilder) return tBuilder;

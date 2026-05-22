@@ -8,8 +8,6 @@ namespace Tests.Forms;
 [TestFixture]
 public class FormRegistryTests
 {
-    private sealed class TestModel;
-
     [Test]
     public void AddForm_WhenPathAlreadyExists_ThrowsInvalidOperationException()
     {
@@ -33,7 +31,7 @@ public class FormRegistryTests
     {
         var registry = new FormRegistry();
 
-        Tuple<Type, BaseViewDto>? result = registry.TryGet("missing");
+        IForm? result = registry.TryGet("missing");
 
         Assert.That(result, Is.Null);
     }
@@ -45,24 +43,14 @@ public class FormRegistryTests
 
         BaseViewDto view = new Mock<BaseViewDto>().Object;
 
-        var form = new Mock<IForm>();
+        IForm form = new Mock<IForm>().Object;
 
-        form.Setup(x => x.GetModelType())
-            .Returns(typeof(TestModel));
+        registry.AddForm("test", form);
 
-        form.Setup(x => x.GetView())
-            .Returns(view);
+        IForm? result = registry.TryGet("test");
 
-        registry.AddForm("test", form.Object);
+        Assert.That(result, Is.SameAs(form));
 
-        Tuple<Type, BaseViewDto>? result = registry.TryGet("test");
-
-        Assert.That(result, Is.Not.Null);
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(result!.Item1, Is.EqualTo(typeof(TestModel)));
-            Assert.That(result.Item2, Is.EqualTo(view));
-        }
 
     }
 }

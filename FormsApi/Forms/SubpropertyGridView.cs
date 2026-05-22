@@ -1,106 +1,102 @@
 using System.Collections;
 using System.Linq.Expressions;
-using FormsApi.Common;
+using FormsApi.Contract;
 using FormsApi.Contract.View;
 
 namespace FormsApi.Forms;
 
+public interface ISubPropertyGridView<TModel> : IView<TModel>
+{
+    IReadOnlyList<FormControlLayoutDto> ControlList { get; }
+    string SubProperty { get; }
+    string IdProperty { get; }
+    PropertyOrConstantDto? CanAdd { get; }
+    PropertyOrConstantDto? CanEdit { get; }
+    PropertyOrConstantDto? CanEditRow { get; }
+    PropertyOrConstantDto? CanDelete { get; }
+    PropertyOrConstantDto? CanDeleteRow { get; }
+    IForm? EditForm { get; }
+    string? SelectionProperty { get; }
+    GridSelectionType SelectionType { get; }
+}
+
 public sealed class SubPropertyGridView<TModel, TSub>(
     Expression<Func<TModel, IEnumerable<TSub>?>> subProperty, Expression<Func<TSub, object?>> idProperty)
-    : View<TModel, SubPropertyGridView<TModel, TSub>>, IEnumerable
+    : View<TModel, SubPropertyGridView<TModel, TSub>>, ISubPropertyGridView<TModel>, IEnumerable
 {
-    public ControlList<TSub> Fields { get; set; } = [];
-    public ModelMember<TModel, IEnumerable<TSub>?> SubProperty { get; } = new(subProperty);
-    public ModelMember<TSub, object?> IdProperty { get; } = new(idProperty);
-    public PropertyOrConstant<TModel, bool>? CanAdd { get; set; }
-    public PropertyOrConstant<TModel, bool>? CanEdit { get; set; }
-    public PropertyOrConstant<TSub, bool>? CanEditRow { get; set; }
-    public PropertyOrConstant<TModel, bool>? CanDelete { get; set; }
-    public PropertyOrConstant<TSub, bool>? CanDeleteRow { get; set; }
-    public Form<TSub>? EditForm { get; set; }
-    private ModelMember<TSub, bool>? _selectionProperty;
-    private GridSelectionType _selectionType;
-    public IEnumerator GetEnumerator() => (Fields as IEnumerable).GetEnumerator();
-    protected override BaseViewDto BuildImpl()
-    {
-        return new SubPropertyGridViewDto()
-        {
-            IdProperty = IdProperty.Build(),
-            Fields = Fields.Controls,
-            SubProperty = SubProperty.Build(),
-            CanAdd = CanAdd?.Build(),
-            CanEdit = CanEdit?.Build(),
-            CanEditRow = CanEditRow?.Build(),
-            CanDelete = CanDelete?.Build(),
-            CanDeleteRow = CanDeleteRow?.Build(),
-            // EditForm = EditForm?.Build(),
-            GridSelectionOptions = _selectionProperty != null ? new GridSelectionOptions
-            {
-                SelectionProperty = _selectionProperty.Build(),
-                SelectionType = _selectionType
-            } : null
-        };
-    }
+    public IReadOnlyList<FormControlLayoutDto> ControlList => _controlList;
+    private readonly List<FormControlLayoutDto> _controlList = [];
+    public string SubProperty { get; } = subProperty.GetPropertyName();
+    public string IdProperty { get; } = idProperty.GetPropertyName();
+    public PropertyOrConstantDto? CanAdd { get; private set; }
+    public PropertyOrConstantDto? CanEdit { get; private set; }
+    public PropertyOrConstantDto? CanEditRow { get; private set; }
+    public PropertyOrConstantDto? CanDelete { get; private set; }
+    public PropertyOrConstantDto? CanDeleteRow { get; private set; }
+    public IForm? EditForm { get; private set; }
+    public string? SelectionProperty { get; private set; }
+    public GridSelectionType SelectionType { get; private set; }
+    public IEnumerator GetEnumerator() => (ControlList as IEnumerable).GetEnumerator();
 
     public void Add(Expression<Func<TSub, object?>> selector, int? width = null)
     {
-        Fields.Add(selector, width);
+        _controlList.Add(new(selector.GetPropertyName(), width));
     }
 
     public SubPropertyGridView<TModel, TSub> EnableAdd()
     {
-        CanAdd = true;
+        CanAdd = new ConstantDto(true);
         return this;
     }
 
     public SubPropertyGridView<TModel, TSub> CanAddWhen(Expression<Func<TModel, bool>> selector)
     {
-        CanAdd = selector;
+        CanAdd = new PropertyDto(selector.GetPropertyName());
         return this;
     }
 
     public SubPropertyGridView<TModel, TSub> EnableEdit()
     {
-        CanEdit = true;
+        CanEdit = new ConstantDto(true);
         return this;
     }
 
     public SubPropertyGridView<TModel, TSub> CanEditWhen(Expression<Func<TModel, bool>> selector)
     {
-        CanEdit = selector;
+        CanEdit = new PropertyDto(selector.GetPropertyName());
         return this;
     }
 
     public SubPropertyGridView<TModel, TSub> CanEditRowWhen(Expression<Func<TSub, bool>> selector)
     {
         if (CanEdit is null) EnableEdit();
-        CanEditRow = selector;
+        CanEditRow = new PropertyDto(selector.GetPropertyName());
         return this;
     }
 
     public SubPropertyGridView<TModel, TSub> EnableDelete()
     {
-        CanDelete = true;
+        CanDelete = new ConstantDto(true);
         return this;
     }
 
     public SubPropertyGridView<TModel, TSub> CanDeleteWhen(Expression<Func<TModel, bool>> selector)
     {
-        CanDelete = selector;
+        CanDelete = new PropertyDto(selector.GetPropertyName());
         return this;
     }
 
     public SubPropertyGridView<TModel, TSub> CanDeleteRowWhen(Expression<Func<TSub, bool>> selector)
     {
         if (CanDelete is null) EnableDelete();
-        CanDeleteRow = selector;
+        CanDeleteRow = new PropertyDto(selector.GetPropertyName());
         return this;
     }
 
     public SubPropertyGridView<TModel, TSub> EnableSelection(Expression<Func<TSub, bool>> selectionProperty, GridSelectionType selectionType = GridSelectionType.Multiple)
     {
-        _selectionProperty = new(selectionProperty);
-        _selectionType = selectionType;
+        SelectionProperty = selectionProperty.GetPropertyName();
+        SelectionType = selectionType;
         return this;
     }
 

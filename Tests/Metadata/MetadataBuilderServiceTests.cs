@@ -44,7 +44,7 @@ public class MetadataBuilderServiceTests
     [Test]
     public void BuildMetadataDictionary_FindsMetadataDefinitions()
     {
-        _service.BuildMetadataDictionary();
+        _service.CollectMetadataDictionary();
 
         List<ModelMetadataCollectionDto> result = _service.BuildMetadata(typeof(TestModel));
 
@@ -62,7 +62,7 @@ public class MetadataBuilderServiceTests
     [Test]
     public void BuildMetadata_Recursive_BuildsNestedMetadata()
     {
-        _service.BuildMetadataDictionary();
+        _service.CollectMetadataDictionary();
         List<ModelMetadataCollectionDto> result = _service.BuildMetadata(typeof(TestModel));
 
         using (Assert.EnterMultipleScope())
@@ -76,7 +76,7 @@ public class MetadataBuilderServiceTests
     [Test]
     public void BuildMetadata_PrimitiveType_UsesDefaultInputTypeWhenNoMetadataDefinition()
     {
-        _service.BuildMetadataDictionary();
+        _service.CollectMetadataDictionary();
         List<ModelMetadataCollectionDto> result = _service.BuildMetadata(typeof(SubModel));
 
         var cityProperty = result.First().PropertyMetadatas[nameof(SubModel.City)] as PrimitivePropertyMetadataDto;
@@ -87,7 +87,7 @@ public class MetadataBuilderServiceTests
     [Test]
     public void BuildMetadata_Enumerable_BuildsCorrectMetadata()
     {
-        _service.BuildMetadataDictionary();
+        _service.CollectMetadataDictionary();
         List<ModelMetadataCollectionDto> result = _service.BuildMetadata(typeof(TestModel));
 
         ModelMetadataCollectionDto modelMetadata = result.First(m => m.Type.GetRuntimeType() == typeof(TestModel));

@@ -9,14 +9,14 @@ namespace FormsApi.Metadata.Services;
 
 public interface IMetadataBuilderService
 {
-    void BuildMetadataDictionary();
+    void CollectMetadataDictionary();
     List<ModelMetadataCollectionDto> BuildMetadata(Type baseType);
 }
 
 internal sealed class MetadataBuilderService(MetadataProcessors metadataProcessors) : IMetadataBuilderService
 {
     private Dictionary<Type, Type> _metadataDefinitions = [];
-    public void BuildMetadataDictionary()
+    public void CollectMetadataDictionary()
     {
         IEnumerable<Type> metadatas = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(x => x.GetTypes())
@@ -41,13 +41,21 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
     public List<ModelMetadataCollectionDto> BuildMetadata(Type baseType)
     {
         ArgumentNullException.ThrowIfNull(baseType);
+        ICollection<Type> alreadyBuilt = [];
+        return CallBuildMetadata(baseType, alreadyBuilt);
+    }
+
+    private List<ModelMetadataCollectionDto> CallBuildMetadata(Type baseType, ICollection<Type> alreadyBuilt)
+    {
+        if (alreadyBuilt.Contains(baseType)) return [];
+        alreadyBuilt.Add(baseType);
         MethodInfo method = typeof(MetadataBuilderService)
             .GetMethod(nameof(BuildMetadataImpl), BindingFlags.Instance | BindingFlags.NonPublic)!
             .MakeGenericMethod(baseType)!;
-        return (List<ModelMetadataCollectionDto>)method.Invoke(this, null)!;
+        return (List<ModelMetadataCollectionDto>)method.Invoke(this, new[] { alreadyBuilt })!;
     }
 
-    private List<ModelMetadataCollectionDto> BuildMetadataImpl<T>()
+    private List<ModelMetadataCollectionDto> BuildMetadataImpl<T>(ICollection<Type> alreadyBuilt)
     {
         List<ModelMetadataCollectionDto> result = [];
 
@@ -68,12 +76,12 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
             else if (GetElementType(prop.PropertyType) is { } elementType)
             {
                 propertyMetadata = new EnumerablePropertyMetadataDto(elementType);
-                result.AddRange(BuildMetadata(elementType));
+                result.AddRange(CallBuildMetadata(elementType, alreadyBuilt));
             }
             else
             {
                 propertyMetadata = new SubPropertyMetadataDto(prop.PropertyType);
-                result.AddRange(BuildMetadata(prop.PropertyType));
+                result.AddRange(CallBuildMetadata(prop.PropertyType, alreadyBuilt));
             }
 
             modelMetadata.PropertyMetadatas.Add(prop.Name, propertyMetadata);

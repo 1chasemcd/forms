@@ -1,13 +1,11 @@
 using System.Linq.Expressions;
 using System.Reflection;
+using FormsApi.Contract;
 
-namespace FormsApi.Common;
-
-public sealed class ModelMember<TModel, TMember>(Expression<Func<TModel, TMember?>> selector)
+internal static class ExpressionExtensions
 {
-    public string Build()
+    public static string GetPropertyName<TModel, TProp>(this Expression<Func<TModel, TProp>> selector)
     {
-
         MemberExpression? memberExpr = selector.Body switch
         {
             MemberExpression m => m,
@@ -16,12 +14,12 @@ public sealed class ModelMember<TModel, TMember>(Expression<Func<TModel, TMember
         };
 
         if (memberExpr?.Member is not PropertyInfo prop)
-            throw new InvalidOperationException(
-                $"Expression '{selector}' must be a property access");
+            throw new ArgumentException(
+                $"Expression must be a property access", nameof(selector));
 
         if (memberExpr.Expression is not ParameterExpression)
-            throw new InvalidOperationException(
-                $"Expression '{selector}' must access a direct property (no nesting)");
+            throw new ArgumentException(
+                $"Expression must access a direct property (no nesting)", nameof(selector));
 
         return prop.Name;
     }

@@ -11,41 +11,7 @@ public class FormViewTests
         public string? StringProperty { get; set; }
         public bool BoolProperty { get; set; }
     }
-    private sealed class TestFormView() : View<TestModel, TestFormView>
-    {
-        protected override BaseViewDto BuildImpl() => new MockViewDto();
-    }
-
-    private sealed record MockViewDto : BaseViewDto;
-
-    [Test]
-    public void Build_ReturnsViewFromBuildImpl()
-    {
-        var view = new TestFormView();
-        BaseViewDto result = view.Build();
-        Assert.That(result, Is.InstanceOf<MockViewDto>());
-    }
-
-    [Test]
-    public void Build_SetsAllProperties()
-    {
-        var view = new TestFormView
-        {
-            Title = "Test",
-            Width = 6,
-            Enabled = false,
-            Visible = true
-        };
-        BaseViewDto result = view.Build();
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(result.Title.InnerValue(), Is.EqualTo("Test"));
-            Assert.That(result.Width, Is.EqualTo(6));
-            Assert.That(result.Enabled.InnerValue(), Is.False);
-            Assert.That(result.Visible.InnerValue(), Is.True);
-        }
-
-    }
+    private sealed class TestFormView() : View<TestModel, TestFormView>;
 
     [Test]
     public void WithTitle_AsConstant_SetsTitle()
@@ -66,20 +32,6 @@ public class FormViewTests
     {
         TestFormView view = new TestFormView().WithWidth(6);
         Assert.That(view.Width, Is.EqualTo(6));
-    }
-
-    [Test]
-    public void Disabled_SetsEnabledToFalse()
-    {
-        TestFormView view = new TestFormView().Disabled();
-        Assert.That(view.Enabled.InnerValue(), Is.False);
-    }
-
-    [Test]
-    public void EnabledWhen_SetsEnabled()
-    {
-        TestFormView view = new TestFormView().EnabledWhen(x => x.BoolProperty);
-        Assert.That(view.Enabled.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty)));
     }
 
     [Test]

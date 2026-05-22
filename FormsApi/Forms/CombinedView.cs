@@ -1,39 +1,33 @@
 using System.Collections;
 using System.Linq.Expressions;
 using FormsApi.Common;
+using FormsApi.Contract;
 using FormsApi.Contract.View;
 
 namespace FormsApi.Forms;
 
 public sealed class CombinedView<TModel> : View<TModel, CombinedView<TModel>>, IEnumerable
 {
-    public IList<IView<TModel>> Views { get; set; } = [];
-    public bool IsUnified { get; set; }
-    public CombinedView(PropertyOrConstant<TModel, string?>? title = null)
+    internal IReadOnlyList<IView<TModel>> Views => _views;
+    private readonly List<IView<TModel>> _views = [];
+    internal bool IsUnified { get; private set; }
+    public CombinedView(string? title = null)
     {
-        Title = title;
+        if (title != null)
+            Title = new ConstantDto(title);
     }
 
     public CombinedView(Expression<Func<TModel, string?>> title)
     {
-        Title = title;
-    }
-
-    protected override CombinedViewDto BuildImpl()
-    {
-        var view = new CombinedViewDto
-        {
-            Views = Views.Select(x => x.Build()),
-            Unify = IsUnified || Title != null
-        };
-
-        return view;
-    }
-    public void Add(IView<TModel> view)
-    {
-        Views.Add(view);
+        Title = new PropertyDto(title.GetPropertyName());
     }
     IEnumerator IEnumerable.GetEnumerator() => Views.GetEnumerator();
+
+    public void Add(IView<TModel> view, int? width = null)
+    {
+        view.Width = width;
+        _views.Add(view);
+    }
     public CombinedView<TModel> Unify()
     {
         IsUnified = true;

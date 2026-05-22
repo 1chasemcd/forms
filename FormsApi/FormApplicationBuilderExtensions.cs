@@ -11,7 +11,7 @@ public static class FormApplicationBuilderExtensions
     public static void UseForms(this IApplicationBuilder app)
     {
         IMetadataBuilderService metadataBuilderService = app.ApplicationServices.GetRequiredService<IMetadataBuilderService>();
-        metadataBuilderService.BuildMetadataDictionary();
+        metadataBuilderService.CollectMetadataDictionary();
 
         IFormRegistry registry = app.ApplicationServices.GetRequiredService<IFormRegistry>();
         IEnumerable<FormSetupOptions> setups = app.ApplicationServices.GetServices<FormSetupOptions>();

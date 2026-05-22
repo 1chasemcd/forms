@@ -34,24 +34,7 @@ public class FieldViewTests
             { m => m.TitleProperty, 6 }
         };
 
-        Assert.That(view.Fields.Single(),
-            Has.Property(nameof(FormControlLayoutDto.PropertyName))
-            .EqualTo(nameof(TestModel.TitleProperty))
-            .And.Property(nameof(FormControlLayoutDto.Width))
-            .EqualTo(6));
-    }
-
-    [Test]
-    public void Build_SetsFieldsOnDto()
-    {
-        var view = new ControlView<TestModel>()
-        {
-            { m => m.TitleProperty, 6 }
-        };
-
-        FieldViewDto built = (FieldViewDto)view.Build();
-
-        Assert.That(view.Fields.Single(),
+        Assert.That(view.ControlList.Single(),
             Has.Property(nameof(FormControlLayoutDto.PropertyName))
             .EqualTo(nameof(TestModel.TitleProperty))
             .And.Property(nameof(FormControlLayoutDto.Width))

@@ -1,6 +1,7 @@
 using FormsApi.Contract;
 using FormsApi.Contract.MetadataCollection;
 using FormsApi.Contract.View;
+using FormsApi.Forms;
 using FormsApi.Forms.Controllers;
 using FormsApi.Forms.Services;
 using FormsApi.Metadata.Services;
@@ -17,20 +18,27 @@ public class FormControllerTests
         public string? Name { get; set; }
     }
 
+    private sealed class TestForm : Form<TestModel>
+    {
+        protected internal override IView<TestModel> View => null!;
+    }
+
     [Test]
     public void GetForm_WhenFormDoesNotExist_ReturnsNotFound()
     {
         var registry = new Mock<IFormRegistry>();
+        var formService = new Mock<IFormBuilderService>();
         var metadataService = new Mock<IMetadataBuilderService>();
 
         registry.Setup(x => x.TryGet("missing"))
-            .Returns((Tuple<Type, BaseViewDto>?)null);
+            .Returns((IForm?)null);
 
         var sut = new FormController(
             registry.Object,
+            formService.Object,
             metadataService.Object);
 
-        ActionResult<FormDto> result = sut.GetForm("missing");
+        ActionResult<FormResponse> result = sut.GetForm("missing");
 
         Assert.That(result.Result, Is.TypeOf<NotFoundResult>());
     }
@@ -39,7 +47,10 @@ public class FormControllerTests
     public void GetForm_WhenFormExists_ReturnsFormDto()
     {
         var registry = new Mock<IFormRegistry>();
+        var formService = new Mock<IFormBuilderService>();
         var metadataService = new Mock<IMetadataBuilderService>();
+
+        var testForm = new TestForm();
 
         BaseViewDto view = new Mock<BaseViewDto>().Object;
 
@@ -53,31 +64,34 @@ public class FormControllerTests
         };
 
         registry.Setup(x => x.TryGet("test"))
-            .Returns(new Tuple<Type, BaseViewDto>(
-                typeof(TestModel),
-                view));
+            .Returns(testForm);
 
         metadataService.Setup(x => x.BuildMetadata(typeof(TestModel)))
             .Returns(metadata);
 
+        formService.Setup(x => x.BuildFormIntoViews(It.IsAny<TestForm>()))
+            .Returns(new[] { view });
+
         var sut = new FormController(
             registry.Object,
+            formService.Object,
             metadataService.Object);
 
-        ActionResult<FormDto> result = sut.GetForm("test");
+        ActionResult<FormResponse> result = sut.GetForm("test");
 
         Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
 
         var okResult = (OkObjectResult)result.Result!;
 
-        Assert.That(okResult.Value, Is.TypeOf<FormDto>());
+        Assert.That(okResult.Value, Is.TypeOf<FormResponse>());
 
-        var dto = (FormDto)okResult.Value!;
+        var dto = (FormResponse)okResult.Value!;
 
         using (Assert.EnterMultipleScope())
         {
             Assert.That(dto.ModelType.GetRuntimeType(), Is.EqualTo(typeof(TestModel)));
-            Assert.That(dto.View, Is.EqualTo(view));
+            Assert.That(dto.Views, Has.Count.EqualTo(1));
+            Assert.That(dto.Views[0], Is.EqualTo(view));
             Assert.That(dto.ModelMetadatas, Is.EqualTo(metadata));
         }
 

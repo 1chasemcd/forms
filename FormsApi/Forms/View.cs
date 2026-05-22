@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Reflection.Metadata;
 using FormsApi.Common;
+using FormsApi.Contract;
 using FormsApi.Contract.View;
 
 namespace FormsApi.Forms;
@@ -8,43 +10,27 @@ namespace FormsApi.Forms;
 
 public interface IView<TModel>
 {
-    PropertyOrConstant<TModel, string?>? Title { get; set; }
+    PropertyOrConstantDto? Title { get; }
     int? Width { get; set; }
-    PropertyOrConstant<TModel, bool>? Enabled { get; set; }
-    PropertyOrConstant<TModel, bool>? Visible { get; set; }
-    BaseViewDto Build();
+    PropertyOrConstantDto? Visible { get; }
 }
 
 public abstract class View<TModel, TThis> : IView<TModel>
     where TThis : class, IView<TModel>
 {
-    public PropertyOrConstant<TModel, string?>? Title { get; set; }
+    public PropertyOrConstantDto? Title { get; protected set; }
     public int? Width { get; set; }
-    public PropertyOrConstant<TModel, bool>? Enabled { get; set; }
-    public PropertyOrConstant<TModel, bool>? Visible { get; set; }
-    public BaseViewDto Build()
-    {
-        BaseViewDto baseView = BuildImpl();
-        return baseView with
-        {
-            Title = Title?.Build(),
-            Width = Width,
-            Enabled = Enabled?.Build(),
-            Visible = Visible?.Build()
-        };
-    }
-
-    protected abstract BaseViewDto BuildImpl();
+    public PropertyOrConstantDto? Visible { get; protected set; }
     private TThis This => this as TThis ?? throw new UnreachableException(
         $"{GetType().Name} must inherit FormView<TModel, TThis> correctly.");
     public TThis WithTitle(string title)
     {
-        Title = title;
+        Title = new ConstantDto(title);
         return This;
     }
     public TThis WithTitle(Expression<Func<TModel, string?>> title)
     {
-        Title = title;
+        Title = new PropertyDto(title.GetPropertyName());
         return This;
     }
     public TThis WithWidth(int width)
@@ -52,25 +38,15 @@ public abstract class View<TModel, TThis> : IView<TModel>
         Width = width;
         return This;
     }
-    public TThis Disabled()
-    {
-        Enabled = false;
-        return This;
-    }
-    public TThis EnabledWhen(Expression<Func<TModel, bool>> enabled)
-    {
-        Enabled = enabled;
-        return This;
-    }
 
     public TThis Hidden()
     {
-        Visible = false;
+        Visible = new ConstantDto(false);
         return This;
     }
     public TThis VisibleWhen(Expression<Func<TModel, bool>> visible)
     {
-        Visible = visible;
+        Visible = new PropertyDto(visible.GetPropertyName());
         return This;
     }
 }

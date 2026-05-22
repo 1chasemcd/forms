@@ -1,38 +1,31 @@
 using System.Collections;
 using System.Linq.Expressions;
 using FormsApi.Common;
+using FormsApi.Contract;
 using FormsApi.Contract.View;
 
 namespace FormsApi.Forms;
 
 public sealed class ControlView<TModel> : View<TModel, ControlView<TModel>>, IEnumerable
 {
-    public ControlList<TModel> Fields { get; set; } = [];
+    internal IReadOnlyList<FormControlLayoutDto> ControlList => _controlList;
+    private readonly List<FormControlLayoutDto> _controlList = [];
 
-    public ControlView(PropertyOrConstant<TModel, string?>? title = null)
+    public ControlView(string? title = null)
     {
-        Title = title;
+        if (title != null)
+            Title = new ConstantDto(title);
     }
 
     public ControlView(Expression<Func<TModel, string?>> title)
     {
-        Title = title;
-    }
-
-    protected override FieldViewDto BuildImpl()
-    {
-        var view = new FieldViewDto
-        {
-            Fields = Fields.Controls
-        };
-
-        return view;
+        Title = new PropertyDto(title.GetPropertyName());
     }
 
     public void Add(Expression<Func<TModel, object?>> selector, int? width = null)
     {
-        Fields.Add(selector, width);
+        _controlList.Add(new(selector.GetPropertyName(), width));
     }
 
-    public IEnumerator GetEnumerator() => (Fields as IEnumerable).GetEnumerator();
+    public IEnumerator GetEnumerator() => ControlList.GetEnumerator();
 }

@@ -1,9 +1,10 @@
+using System.Linq.Expressions;
 using FormsApi.Common;
 
 namespace Tests.Common;
 
 [TestFixture]
-public class ModelMemberTests
+public class ExpressionExtensionTests
 {
     private sealed class TestModel
     {
@@ -20,46 +21,46 @@ public class ModelMemberTests
     }
 
     [Test]
-    public void Build_WhenExpressionIsDirectReferenceTypeProperty_ReturnsPropertyName()
+    public void GetPropertyName_WhenExpressionIsDirectReferenceTypeProperty_ReturnsPropertyName()
     {
-        var sut = new ModelMember<TestModel, string>(x => x.Name);
-        string result = sut.Build();
+        Expression<Func<TestModel, string?>> sut = x => x.Name;
+        string result = sut.GetPropertyName();
         Assert.That(result, Is.EqualTo(nameof(TestModel.Name)));
     }
 
     [Test]
-    public void Build_WhenExpressionIsDirectValueTypeProperty_ReturnsPropertyName()
+    public void GetPropertyName_WhenExpressionIsDirectValueTypeProperty_ReturnsPropertyName()
     {
-        var sut = new ModelMember<TestModel, int>(x => x.Age);
-        string result = sut.Build();
+        Expression<Func<TestModel, int?>> sut = x => x.Age;
+        string result = sut.GetPropertyName();
         Assert.That(result, Is.EqualTo(nameof(TestModel.Age)));
     }
 
     [Test]
-    public void Build_WhenExpressionIsNestedProperty_ThrowsInvalidOperationException()
+    public void GetPropertyName_WhenExpressionIsNestedProperty_ThrowsInvalidOperationException()
     {
-        var sut = new ModelMember<TestModel, string>(x => x.Nested!.Value);
-        InvalidOperationException? ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
+        Expression<Func<TestModel, string?>> sut = x => x.Nested!.Value;
+        ArgumentException? ex = Assert.Throws<ArgumentException>(() => sut.GetPropertyName());
         Assert.That(
             ex!.Message,
             Does.Contain("must access a direct property"));
     }
 
     [Test]
-    public void Build_WhenExpressionIsMethodCall_ThrowsInvalidOperationException()
+    public void GetPropertyName_WhenExpressionIsMethodCall_ThrowsInvalidOperationException()
     {
-        var sut = new ModelMember<TestModel, string>(x => x.GetValue());
-        InvalidOperationException? ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
+        Expression<Func<TestModel, string?>> sut = x => x.GetValue();
+        ArgumentException? ex = Assert.Throws<ArgumentException>(() => sut.GetPropertyName());
         Assert.That(
             ex!.Message,
             Does.Contain("must be a property access"));
     }
 
     [Test]
-    public void Build_WhenExpressionIsNotPropertyAccess_ThrowsInvalidOperationException()
+    public void GetPropertyName_WhenExpressionIsNotPropertyAccess_ThrowsInvalidOperationException()
     {
-        var sut = new ModelMember<TestModel, string>(x => "constant");
-        InvalidOperationException? ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
+        Expression<Func<TestModel, string?>> sut = x => "constant";
+        ArgumentException? ex = Assert.Throws<ArgumentException>(() => sut.GetPropertyName());
         Assert.That(
             ex!.Message,
             Does.Contain("must be a property access"));

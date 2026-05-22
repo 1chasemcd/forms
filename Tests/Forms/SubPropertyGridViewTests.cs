@@ -33,45 +33,11 @@ public class SubPropertyGridViewTests
             {m => m.GridRowBoolProperty1, 6}
         };
 
-        Assert.That(view.Fields.Single(),
+        Assert.That(view.ControlList.Single(),
             Has.Property(nameof(FormControlLayoutDto.PropertyName))
             .EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1))
             .And.Property(nameof(FormControlLayoutDto.Width))
             .EqualTo(6));
-    }
-
-    [Test]
-    public void Build_SetsAllProperties()
-    {
-        SubPropertyGridView<TestModel, TestGridRowModel> view = new SubPropertyGridView<TestModel, TestGridRowModel>(x => x.Rows, x => x.Id)
-        {
-            Fields = new() { m => m.GridRowBoolProperty1 },
-            CanAdd = new(m => m.BoolProperty1),
-            CanEdit = new(m => m.BoolProperty2),
-            CanEditRow = new(m => m.GridRowBoolProperty2),
-            CanDelete = new(m => m.BoolProperty3),
-            CanDeleteRow = new(m => m.GridRowBoolProperty3),
-        }
-        .EnableSelection(x => x.GridRowBoolProperty1);
-
-        SubPropertyGridViewDto built = (SubPropertyGridViewDto)view.Build();
-
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(built.Fields.Single(),
-                    Has.Property(nameof(FormControlLayoutDto.PropertyName))
-                    .EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1)));
-            Assert.That(built.CanAdd.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty1)));
-            Assert.That(built.CanEdit.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty2)));
-            Assert.That(built.CanEditRow.InnerValue(), Is.EqualTo(nameof(TestGridRowModel.GridRowBoolProperty2)));
-            Assert.That(built.CanDelete.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty3)));
-            Assert.That(built.CanDeleteRow.InnerValue(), Is.EqualTo(nameof(TestGridRowModel.GridRowBoolProperty3)));
-            Assert.That(built.GridSelectionOptions,
-                Has.Property(nameof(GridSelectionOptions.SelectionProperty))
-                .EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1))
-                .And.Property(nameof(GridSelectionOptions.SelectionType))
-                .EqualTo(GridSelectionType.Multiple));
-        }
     }
 
     [Test]
@@ -135,11 +101,12 @@ public class SubPropertyGridViewTests
     {
         SubPropertyGridView<TestModel, TestGridRowModel> grid = BasicGrid
             .EnableSelection(m => m.GridRowBoolProperty1, GridSelectionType.Single);
-        SubPropertyGridViewDto built = (SubPropertyGridViewDto)grid.Build();
-        Assert.That(built.GridSelectionOptions,
-            Has.Property(nameof(GridSelectionOptions.SelectionProperty))
-            .EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1))
-            .And.Property(nameof(GridSelectionOptions.SelectionType))
-            .EqualTo(GridSelectionType.Single));
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(grid.SelectionProperty, Is.EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1)));
+            Assert.That(grid.SelectionType, Is.EqualTo(GridSelectionType.Single));
+        }
+
     }
 }

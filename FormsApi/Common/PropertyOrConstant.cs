@@ -26,9 +26,7 @@ public sealed class PropertyOrConstant<TModel, TMember> : IPropertyOrConstant
     public PropertyOrConstantDto Build()
     {
         if (_selector is not null)
-            return new PropertyDto(
-                new ModelMember<TModel, TMember>(_selector).Build()
-            );
+            return new PropertyDto(_selector.GetPropertyName());
         else if (_value is not null)
             return new ConstantDto(_value);
 
