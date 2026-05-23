@@ -1,5 +1,4 @@
 using FormsApi.Contract;
-using FormsApi.Contract.View;
 using FormsApi.Forms;
 
 namespace Tests.Forms;
@@ -15,29 +14,29 @@ public class FieldViewTests
     [Test]
     public void WithConstantTitle_SetsTitle()
     {
-        var view = new ControlView<TestModel>("Test");
+        var view = new ControlViewBuilder<TestModel>("Test");
         Assert.That(view.Title.InnerValue(), Is.EqualTo("Test"));
     }
 
     [Test]
     public void WithPropertyTitle_SetsTitle()
     {
-        var view = new ControlView<TestModel>(m => m.TitleProperty);
+        var view = new ControlViewBuilder<TestModel>(m => m.TitleProperty);
         Assert.That(view.Title.InnerValue(), Is.EqualTo(nameof(TestModel.TitleProperty)));
     }
 
     [Test]
     public void WithFields_SetsFields()
     {
-        var view = new ControlView<TestModel>()
+        var view = new ControlViewBuilder<TestModel>()
         {
             { m => m.TitleProperty, 6 }
         };
 
         Assert.That(view.ControlList.Single(),
-            Has.Property(nameof(FormControlLayoutDto.PropertyName))
+            Has.Property(nameof(FormControl.PropertyName))
             .EqualTo(nameof(TestModel.TitleProperty))
-            .And.Property(nameof(FormControlLayoutDto.Width))
+            .And.Property(nameof(FormControl.Width))
             .EqualTo(6));
     }
 }

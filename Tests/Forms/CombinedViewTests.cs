@@ -15,21 +15,21 @@ public class CombinedViewTests
     [Test]
     public void WithConstantTitle_SetsTitle()
     {
-        var view = new CombinedView<TestModel>("Test");
+        var view = new CombinedViewBuilder<TestModel>("Test");
         Assert.That(view.Title.InnerValue(), Is.EqualTo("Test"));
     }
 
     [Test]
     public void WithPropertyTitle_SetsTitle()
     {
-        var view = new CombinedView<TestModel>(m => m.TitleProperty);
+        var view = new CombinedViewBuilder<TestModel>(m => m.TitleProperty);
         Assert.That(view.Title.InnerValue(), Is.EqualTo(nameof(TestModel.TitleProperty)));
     }
 
     [Test]
     public void Unify_SetsIsUnified()
     {
-        var view = new CombinedView<TestModel>();
+        var view = new CombinedViewBuilder<TestModel>();
         Assert.That(view.IsUnified, Is.False);
         view.Unify();
         Assert.That(view.IsUnified, Is.True);
@@ -39,8 +39,8 @@ public class CombinedViewTests
     [Test]
     public void WithViews_SetsViews()
     {
-        IView<TestModel> internalView = new Mock<IView<TestModel>>().Object;
-        var view = new CombinedView<TestModel>()
+        IViewBuilder<TestModel> internalView = new Mock<IViewBuilder<TestModel>>().Object;
+        var view = new CombinedViewBuilder<TestModel>()
         {
             internalView
         };

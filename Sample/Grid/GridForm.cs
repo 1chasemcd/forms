@@ -7,9 +7,9 @@ namespace Sample.Grid;
 
 public class GridForm : Form<GridFormModel>
 {
-    protected override IView<GridFormModel> View => new CombinedView<GridFormModel>()
+    protected override IViewBuilder<GridFormModel> View => new CombinedViewBuilder<GridFormModel>()
 {
-    new CombinedView<GridFormModel>()
+    new CombinedViewBuilder<GridFormModel>()
     {
         GridSettings(),
         TransactionGrid(),
@@ -18,9 +18,9 @@ public class GridForm : Form<GridFormModel>
     UserGrid(),
 };
 
-    private ControlView<GridFormModel> GridSettings()
+    private ControlViewBuilder<GridFormModel> GridSettings()
     {
-        return new ControlView<GridFormModel>()
+        return new ControlViewBuilder<GridFormModel>()
     {
         {x => x.AllowAdd, 3},
         {x => x.AllowEdit, 3},
@@ -28,9 +28,9 @@ public class GridForm : Form<GridFormModel>
     };
     }
 
-    private SubPropertyGridView<GridFormModel, Transaction> TransactionGrid()
+    private SubPropertyGridViewBuilder<GridFormModel, Transaction> TransactionGrid()
     {
-        return new SubPropertyGridView<GridFormModel, Transaction>(x => x.Transactions, t => t.Id)
+        return new SubPropertyGridViewBuilder<GridFormModel, Transaction>(x => x.Transactions, t => t.Id)
         {
             {t => t.Date, 3},
             {t => t.Time, 3},
@@ -48,9 +48,9 @@ public class GridForm : Form<GridFormModel>
         .CanDeleteWhen(m => m.AllowDelete);
     }
 
-    private SubPropertyGridView<GridFormModel, Transaction> TransactionGrid2()
+    private SubPropertyGridViewBuilder<GridFormModel, Transaction> TransactionGrid2()
     {
-        return new SubPropertyGridView<GridFormModel, Transaction>(x => x.Transactions2, t => t.Id)
+        return new SubPropertyGridViewBuilder<GridFormModel, Transaction>(x => x.Transactions2, t => t.Id)
         {
             t => t.Date,
             t => t.Time,
@@ -61,9 +61,9 @@ public class GridForm : Form<GridFormModel>
         .EnableEdit().WithEditForm(new TransactionEditForm());
     }
 
-    private SubPropertyGridView<GridFormModel, BasicUserModel> UserGrid()
+    private SubPropertyGridViewBuilder<GridFormModel, BasicUserModel> UserGrid()
     {
-        return new SubPropertyGridView<GridFormModel, BasicUserModel>(x => x.Users, t => t.Id)
+        return new SubPropertyGridViewBuilder<GridFormModel, BasicUserModel>(x => x.Users, t => t.Id)
         {
             {u => u.Id, 1},
             u => u.UserName
@@ -75,7 +75,7 @@ public class GridForm : Form<GridFormModel>
 
 public class TransactionEditForm : Form<Transaction>
 {
-    protected override IView<Transaction> View => new ControlView<Transaction>
+    protected override IViewBuilder<Transaction> View => new ControlViewBuilder<Transaction>
     {
         {t => t.Date, 6},
         {t => t.Time, 6},
@@ -88,7 +88,7 @@ public class TransactionEditForm : Form<Transaction>
 
 public class UserEditForm : Form<User>
 {
-    protected override IView<User> View => new ControlView<User>
+    protected override IViewBuilder<User> View => new ControlViewBuilder<User>
     {
         u => u.Id ,
         u => u.UserName,

@@ -1,6 +1,6 @@
 using FormsApi.Contract;
-using FormsApi.Contract.ControlMetadata;
-using FormsApi.Contract.MetadataCollection;
+using FormsApi.Contract.MetadataContainer;
+using FormsApi.Contract.PropertyMetadata;
 using FormsApi.Metadata;
 using FormsApi.Metadata.Services;
 
@@ -46,24 +46,24 @@ public class MetadataBuilderServiceTests
     {
         _service.CollectMetadataDictionary();
 
-        List<ModelMetadataCollectionDto> result = _service.BuildMetadata(typeof(TestModel));
+        List<ModelMetadataContainer> result = _service.BuildMetadata(typeof(TestModel));
 
         Assert.That(result, Is.Not.Null);
-        ModelMetadataCollectionDto modelMetadata = result.First(m => m.Type.GetRuntimeType() == typeof(TestModel));
+        ModelMetadataContainer modelMetadata = result.First(m => m.Type.GetRuntimeType() == typeof(TestModel));
 
         Assert.That(modelMetadata.PropertyMetadatas, Has.Count.EqualTo(4));
 
         // If it found the metadata definition, it should have the label "Test Name"
-        var nameProperty = modelMetadata.PropertyMetadatas[nameof(TestModel.Name)] as PrimitivePropertyMetadataDto;
+        var nameProperty = modelMetadata.PropertyMetadatas[nameof(TestModel.Name)] as PrimitivePropertyMetadataContainer;
         Assert.That(nameProperty, Is.Not.Null);
-        Assert.That(nameProperty!.Metadatas!.Any(m => m is LabelMetadataDto l && l.Value is ConstantDto c && c.Value.ToString() == "Test Name"), Is.True);
+        Assert.That(nameProperty!.Metadatas!.Any(m => m is LabelMetadata l && l.Value is Constant c && c.Value.ToString() == "Test Name"), Is.True);
     }
 
     [Test]
     public void BuildMetadata_Recursive_BuildsNestedMetadata()
     {
         _service.CollectMetadataDictionary();
-        List<ModelMetadataCollectionDto> result = _service.BuildMetadata(typeof(TestModel));
+        List<ModelMetadataContainer> result = _service.BuildMetadata(typeof(TestModel));
 
         using (Assert.EnterMultipleScope())
         {
@@ -77,26 +77,26 @@ public class MetadataBuilderServiceTests
     public void BuildMetadata_PrimitiveType_UsesDefaultInputTypeWhenNoMetadataDefinition()
     {
         _service.CollectMetadataDictionary();
-        List<ModelMetadataCollectionDto> result = _service.BuildMetadata(typeof(SubModel));
+        List<ModelMetadataContainer> result = _service.BuildMetadata(typeof(SubModel));
 
-        var cityProperty = result.First().PropertyMetadatas[nameof(SubModel.City)] as PrimitivePropertyMetadataDto;
+        var cityProperty = result.First().PropertyMetadatas[nameof(SubModel.City)] as PrimitivePropertyMetadataContainer;
         Assert.That(cityProperty, Is.Not.Null);
-        Assert.That(cityProperty!.Metadatas!.Any(m => m is ControlTypeMetadataDto i && i.Value == ControlType.Text), Is.True);
+        Assert.That(cityProperty!.Metadatas!.Any(m => m is ControlTypeMetadata i && i.Value == ControlType.Text), Is.True);
     }
 
     [Test]
     public void BuildMetadata_Enumerable_BuildsCorrectMetadata()
     {
         _service.CollectMetadataDictionary();
-        List<ModelMetadataCollectionDto> result = _service.BuildMetadata(typeof(TestModel));
+        List<ModelMetadataContainer> result = _service.BuildMetadata(typeof(TestModel));
 
-        ModelMetadataCollectionDto modelMetadata = result.First(m => m.Type.GetRuntimeType() == typeof(TestModel));
-        IPropertyMetadataDto childrenProperty = modelMetadata.PropertyMetadatas[nameof(TestModel.Children)];
+        ModelMetadataContainer modelMetadata = result.First(m => m.Type.GetRuntimeType() == typeof(TestModel));
+        PropertyMetadataContainer childrenProperty = modelMetadata.PropertyMetadatas[nameof(TestModel.Children)];
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(childrenProperty, Is.InstanceOf<EnumerablePropertyMetadataDto>());
-            Assert.That(((EnumerablePropertyMetadataDto)childrenProperty).EnumeratedType.GetRuntimeType(), Is.EqualTo(typeof(SubModel)));
+            Assert.That(childrenProperty, Is.InstanceOf<ArrayMetadataContainer>());
+            Assert.That(((ArrayMetadataContainer)childrenProperty).EnumeratedType.GetRuntimeType(), Is.EqualTo(typeof(SubModel)));
         }
 
     }

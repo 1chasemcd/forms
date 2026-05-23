@@ -151,7 +151,7 @@ public class MetadataExtensionsTests
     [Test]
     public void OnChange_SetsFormServiceMethod()
     {
-        Mock<IFormServiceMethod<TestModel>> recalc = new();
+        Mock<IFormServiceMethodBuilder<TestModel>> recalc = new();
 
         MockMetadataBuilder<TestModel> result = _builder.OnChange(recalc.Object);
 

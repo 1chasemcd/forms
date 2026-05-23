@@ -1,5 +1,5 @@
 using FormsApi.Contract;
-using FormsApi.Contract.MetadataCollection;
+using FormsApi.Contract.MetadataContainer;
 using FormsApi.Contract.View;
 using FormsApi.Forms.Services;
 using FormsApi.Metadata.Services;
@@ -18,8 +18,8 @@ public sealed class FormController(IFormRegistry registry, IFormBuilderService f
         if (form is null)
             return NotFound();
 
-        IReadOnlyList<BaseViewDto> views = form.ProvideBuilder(formBuilder);
-        List<ModelMetadataCollectionDto> metadatas = metadataBuilder.BuildMetadata(form.ModelType);
+        IReadOnlyList<View> views = form.ProvideBuilder(formBuilder);
+        List<ModelMetadataContainer> metadatas = metadataBuilder.BuildMetadata(form.ModelType);
 
         return Ok(new FormResponse
         {

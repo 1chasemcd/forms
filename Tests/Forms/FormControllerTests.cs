@@ -1,5 +1,5 @@
 using FormsApi.Contract;
-using FormsApi.Contract.MetadataCollection;
+using FormsApi.Contract.MetadataContainer;
 using FormsApi.Contract.View;
 using FormsApi.Forms;
 using FormsApi.Forms.Controllers;
@@ -20,7 +20,7 @@ public class FormControllerTests
 
     private sealed class TestForm : Form<TestModel>
     {
-        protected internal override IView<TestModel> View => null!;
+        protected internal override IViewBuilder<TestModel> View => null!;
     }
 
     [Test]
@@ -52,9 +52,9 @@ public class FormControllerTests
 
         var testForm = new TestForm();
 
-        BaseViewDto view = new Mock<BaseViewDto>().Object;
+        View view = new Mock<View>().Object;
 
-        var metadata = new List<ModelMetadataCollectionDto>
+        var metadata = new List<ModelMetadataContainer>
         {
             new()
             {

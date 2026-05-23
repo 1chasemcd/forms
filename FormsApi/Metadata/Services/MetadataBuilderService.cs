@@ -1,8 +1,8 @@
 using System.Numerics;
 using System.Reflection;
 using FormsApi.Contract;
-using FormsApi.Contract.ControlMetadata;
-using FormsApi.Contract.MetadataCollection;
+using FormsApi.Contract.MetadataContainer;
+using FormsApi.Contract.PropertyMetadata;
 using FormsApi.Metadata.Builders;
 
 namespace FormsApi.Metadata.Services;
@@ -10,7 +10,7 @@ namespace FormsApi.Metadata.Services;
 public interface IMetadataBuilderService
 {
     void CollectMetadataDictionary();
-    List<ModelMetadataCollectionDto> BuildMetadata(Type baseType);
+    List<ModelMetadataContainer> BuildMetadata(Type baseType);
 }
 
 internal sealed class MetadataBuilderService(MetadataProcessors metadataProcessors) : IMetadataBuilderService
@@ -38,28 +38,28 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
         return null;
     }
 
-    public List<ModelMetadataCollectionDto> BuildMetadata(Type baseType)
+    public List<ModelMetadataContainer> BuildMetadata(Type baseType)
     {
         ArgumentNullException.ThrowIfNull(baseType);
         ICollection<Type> alreadyBuilt = [];
         return CallBuildMetadata(baseType, alreadyBuilt);
     }
 
-    private List<ModelMetadataCollectionDto> CallBuildMetadata(Type baseType, ICollection<Type> alreadyBuilt)
+    private List<ModelMetadataContainer> CallBuildMetadata(Type baseType, ICollection<Type> alreadyBuilt)
     {
         if (alreadyBuilt.Contains(baseType)) return [];
         alreadyBuilt.Add(baseType);
         MethodInfo method = typeof(MetadataBuilderService)
             .GetMethod(nameof(BuildMetadataImpl), BindingFlags.Instance | BindingFlags.NonPublic)!
             .MakeGenericMethod(baseType)!;
-        return (List<ModelMetadataCollectionDto>)method.Invoke(this, new[] { alreadyBuilt })!;
+        return (List<ModelMetadataContainer>)method.Invoke(this, new[] { alreadyBuilt })!;
     }
 
-    private List<ModelMetadataCollectionDto> BuildMetadataImpl<T>(ICollection<Type> alreadyBuilt)
+    private List<ModelMetadataContainer> BuildMetadataImpl<T>(ICollection<Type> alreadyBuilt)
     {
-        List<ModelMetadataCollectionDto> result = [];
+        List<ModelMetadataContainer> result = [];
 
-        var modelMetadata = new ModelMetadataCollectionDto()
+        var modelMetadata = new ModelMetadataContainer()
         {
             Type = new TypeDto(typeof(T)),
             PropertyMetadatas = []
@@ -68,19 +68,19 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
 
         foreach (PropertyInfo prop in typeof(T).GetProperties())
         {
-            IPropertyMetadataDto propertyMetadata;
+            PropertyMetadataContainer propertyMetadata;
             if (IsPrimitiveType(prop.PropertyType))
             {
                 propertyMetadata = BuildPrimitiveMetadata<T>(prop);
             }
             else if (GetElementType(prop.PropertyType) is { } elementType)
             {
-                propertyMetadata = new EnumerablePropertyMetadataDto(elementType);
+                propertyMetadata = new ArrayMetadataContainer(elementType);
                 result.AddRange(CallBuildMetadata(elementType, alreadyBuilt));
             }
             else
             {
-                propertyMetadata = new SubPropertyMetadataDto(prop.PropertyType);
+                propertyMetadata = new SubPropertyMetadataContainer(prop.PropertyType);
                 result.AddRange(CallBuildMetadata(prop.PropertyType, alreadyBuilt));
             }
 
@@ -89,7 +89,7 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
         return result;
     }
 
-    private PrimitivePropertyMetadataDto BuildPrimitiveMetadata<T>(PropertyInfo prop)
+    private PrimitivePropertyMetadataContainer BuildPrimitiveMetadata<T>(PropertyInfo prop)
     {
         Metadata<T>? metadataDefinition = null;
         if (_metadataDefinitions.TryGetValue(typeof(T), out Type? defType))
@@ -97,23 +97,23 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
         IMetadataBuilder<T>? propertyMetadata = null;
         metadataDefinition?.MetadataBuilders.TryGetValue(prop.Name, out propertyMetadata);
         if (propertyMetadata is null)
-            return new PrimitivePropertyMetadataDto()
+            return new PrimitivePropertyMetadataContainer()
             {
                 Metadatas = new[]
                 {
-                    new ControlTypeMetadataDto() { Value = GetDefaultInputType(prop.PropertyType) }
+                    new ControlTypeMetadata() { Value = GetDefaultInputType(prop.PropertyType) }
                 }
             };
 
-        List<BaseControlMetadataDto> metadatas = [];
+        List<PropertyMetadata> metadatas = [];
 
-        foreach (Func<IMetadataBuilder<T>, BaseControlMetadataDto?> processor in metadataProcessors.GetProcessors<T>())
+        foreach (Func<IMetadataBuilder<T>, PropertyMetadata?> processor in metadataProcessors.GetProcessors<T>())
         {
-            BaseControlMetadataDto? processed = processor.Invoke(propertyMetadata);
+            PropertyMetadata? processed = processor.Invoke(propertyMetadata);
             if (processed is not null) metadatas.Add(processed);
         }
 
-        return new PrimitivePropertyMetadataDto() { Metadatas = metadatas };
+        return new PrimitivePropertyMetadataContainer() { Metadatas = metadatas };
     }
 
     private static ControlType GetDefaultInputType(Type type)

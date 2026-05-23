@@ -41,7 +41,7 @@ public class FormRegistryTests
     {
         var registry = new FormRegistry();
 
-        BaseViewDto view = new Mock<BaseViewDto>().Object;
+        View view = new Mock<View>().Object;
 
         IForm form = new Mock<IForm>().Object;
 

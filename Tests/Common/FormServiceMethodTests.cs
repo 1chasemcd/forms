@@ -17,9 +17,9 @@ public class FormServiceMethodTests
     [Test]
     public void Build_WhenExpressionIsValid_ReturnsFormServiceMethodDto()
     {
-        var sut = new FormServiceMethod<TestModel, TestService>(x => x.ValidMethod);
+        var sut = new FormServiceMethodBuilder<TestModel, TestService>(x => x.ValidMethod);
 
-        FormServiceMethodDto result = sut.Build();
+        FormServiceMethod result = sut.Build();
 
         Assert.That(result.Service, Is.Not.Null);
         using (Assert.EnterMultipleScope())
@@ -36,7 +36,7 @@ public class FormServiceMethodTests
         Expression<Func<TestService, Func<TestModel, FormServicePostAction?>>> expression =
             x => _ => null;
 
-        var sut = new FormServiceMethod<TestModel, TestService>(expression);
+        var sut = new FormServiceMethodBuilder<TestModel, TestService>(expression);
 
         InvalidOperationException? ex = Assert.Throws<InvalidOperationException>(() => sut.Build());
 

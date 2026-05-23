@@ -12,7 +12,7 @@ public class FormTests
 
     private sealed class TestForm : Form<TestModel>
     {
-        protected internal override IView<TestModel> View => null!;
+        protected internal override IViewBuilder<TestModel> View => null!;
     }
 
     [Test]
@@ -30,12 +30,12 @@ public class FormTests
     {
         var builder = new Mock<IFormBuilderService>();
         var sut = new TestForm();
-        var expectedResult = new List<BaseViewDto>();
+        var expectedResult = new List<View>();
 
         builder.Setup(x => x.BuildFormIntoViews(sut))
             .Returns(expectedResult);
 
-        IReadOnlyList<BaseViewDto> result = sut.ProvideBuilder(builder.Object);
+        IReadOnlyList<View> result = sut.ProvideBuilder(builder.Object);
 
         builder.Verify(x => x.BuildFormIntoViews(sut), Times.Once);
         Assert.That(result, Is.SameAs(expectedResult));

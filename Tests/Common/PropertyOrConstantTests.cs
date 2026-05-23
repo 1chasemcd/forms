@@ -15,41 +15,41 @@ public class PropertyOrConstantTests
     [Test]
     public void Build_WhenConstructedWithPropertySelector_ReturnsPropertyDto()
     {
-        var sut = new PropertyOrConstant<TestModel, string>(x => x.Name);
-        PropertyOrConstantDto result = sut.Build();
-        Assert.That(result, Is.TypeOf<PropertyDto>());
+        var sut = new PropertyOrConstantBuilder<TestModel, string>(x => x.Name);
+        PropertyOrConstant result = sut.Build();
+        Assert.That(result, Is.TypeOf<Property>());
         Assert.That(result.InnerValue(), Is.EqualTo(nameof(TestModel.Name)));
     }
 
     [Test]
     public void Build_WhenConstructedWithConstantValue_ReturnsConstantDto()
     {
-        var sut = new PropertyOrConstant<TestModel, string>("test");
-        PropertyOrConstantDto result = sut.Build();
-        Assert.That(result, Is.TypeOf<ConstantDto>());
+        var sut = new PropertyOrConstantBuilder<TestModel, string>("test");
+        PropertyOrConstant result = sut.Build();
+        Assert.That(result, Is.TypeOf<Constant>());
         Assert.That(result.InnerValue(), Is.EqualTo("test"));
     }
 
     [Test]
     public void Build_WhenConstructedUsingImplicitConstantConversion_ReturnsConstantDto()
     {
-        PropertyOrConstant<TestModel, int> sut = 42;
-        PropertyOrConstantDto result = sut.Build();
-        Assert.That(result, Is.TypeOf<ConstantDto>());
+        PropertyOrConstantBuilder<TestModel, int> sut = 42;
+        PropertyOrConstant result = sut.Build();
+        Assert.That(result, Is.TypeOf<Constant>());
         Assert.That(result.InnerValue(), Is.EqualTo(42));
     }
 
     [Test]
     public void InnerValue_Constant_GetsConstantValue()
     {
-        PropertyOrConstant<TestModel, int> sut = 42;
+        PropertyOrConstantBuilder<TestModel, int> sut = 42;
         Assert.That(sut.InnerValue(), Is.EqualTo(42));
     }
 
     [Test]
     public void InnerValue_Property_GetsPropertyNameAsString()
     {
-        PropertyOrConstant<TestModel, int> sut = new(x => x.Age);
+        PropertyOrConstantBuilder<TestModel, int> sut = new(x => x.Age);
         Assert.That(sut.InnerValue(), Is.EqualTo(nameof(TestModel.Age)));
     }
 }

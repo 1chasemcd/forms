@@ -1,4 +1,4 @@
-using FormsApi.Contract.ControlMetadata;
+using FormsApi.Contract.PropertyMetadata;
 using FormsApi.Metadata;
 using FormsApi.Metadata.Builders;
 

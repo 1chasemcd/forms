@@ -1,6 +1,6 @@
 using FormsApi.Common;
 using FormsApi.Contract;
-using FormsApi.Contract.ControlMetadata;
+using FormsApi.Contract.PropertyMetadata;
 using FormsApi.FormService;
 using FormsApi.Metadata.Builders;
 using FormsApi.Metadata.Services;
@@ -27,9 +27,9 @@ public class MetadataProcessorsTests
     }
 
     private T AssertProcessorApplied<T>(IMetadataBuilder<TestModel> subject)
-        where T : BaseControlMetadataDto
+        where T : PropertyMetadata
     {
-        IEnumerable<Func<IMetadataBuilder<TestModel>, BaseControlMetadataDto?>> processors =
+        IEnumerable<Func<IMetadataBuilder<TestModel>, PropertyMetadata?>> processors =
             _processors.GetProcessors<TestModel>();
 
         var all = processors.Select(p => p.Invoke(subject)).Where(x => x is not null && x is T).Cast<T>().ToList();
@@ -43,7 +43,7 @@ public class MetadataProcessorsTests
         var builderMock = new Mock<IMetadataBuilder<TestModel>>();
         builderMock.Setup(x => x.GetControlType()).Returns(ControlType.Text);
 
-        ControlTypeMetadataDto result = AssertProcessorApplied<ControlTypeMetadataDto>(builderMock.Object);
+        ControlTypeMetadata result = AssertProcessorApplied<ControlTypeMetadata>(builderMock.Object);
         Assert.That(result.Value, Is.EqualTo(ControlType.Text));
     }
 
@@ -55,7 +55,7 @@ public class MetadataProcessorsTests
             Enabled = true
         };
 
-        EnabledMetadataDto result = AssertProcessorApplied<EnabledMetadataDto>(builder);
+        EnabledMetadata result = AssertProcessorApplied<EnabledMetadata>(builder);
         Assert.That(result.Value.InnerValue(), Is.True);
     }
 
@@ -67,7 +67,7 @@ public class MetadataProcessorsTests
             Label = "Test Label"
         };
 
-        LabelMetadataDto result = AssertProcessorApplied<LabelMetadataDto>(builder);
+        LabelMetadata result = AssertProcessorApplied<LabelMetadata>(builder);
         Assert.That(result.Value.InnerValue(), Is.EqualTo("Test Label"));
     }
 
@@ -79,7 +79,7 @@ public class MetadataProcessorsTests
             MaxLength = 5
         };
 
-        MaxLengthMetadataDto result = AssertProcessorApplied<MaxLengthMetadataDto>(builder);
+        MaxLengthMetadata result = AssertProcessorApplied<MaxLengthMetadata>(builder);
         Assert.That(result.Value.InnerValue(), Is.EqualTo(5));
     }
 
@@ -91,7 +91,7 @@ public class MetadataProcessorsTests
             Precision = 5
         };
 
-        PrecisionMetadataDto result = AssertProcessorApplied<PrecisionMetadataDto>(builder);
+        PrecisionMetadata result = AssertProcessorApplied<PrecisionMetadata>(builder);
         Assert.That(result.Value.InnerValue(), Is.EqualTo(5));
     }
 
@@ -103,7 +103,7 @@ public class MetadataProcessorsTests
             Scale = 5
         };
 
-        ScaleMetadataDto result = AssertProcessorApplied<ScaleMetadataDto>(builder);
+        ScaleMetadata result = AssertProcessorApplied<ScaleMetadata>(builder);
         Assert.That(result.Value.InnerValue(), Is.EqualTo(5));
     }
 
@@ -112,14 +112,14 @@ public class MetadataProcessorsTests
     {
         var builder = new MockMetadataBuilder<TestModel>
         {
-            FormServiceMethod = new FormServiceMethod<TestModel, TestModel>(x => x.DoThing)
+            FormServiceMethod = new FormServiceMethodBuilder<TestModel, TestModel>(x => x.DoThing)
         };
 
-        FormServiceMethodMetadataDto result = AssertProcessorApplied<FormServiceMethodMetadataDto>(builder);
+        FormServiceMethodMetadata result = AssertProcessorApplied<FormServiceMethodMetadata>(builder);
         Assert.That(result.Value,
-            Has.Property(nameof(FormServiceMethodDto.Service))
+            Has.Property(nameof(FormServiceMethod.Service))
             .EqualTo(new TypeDto(typeof(TestModel)))
-            .And.Property(nameof(FormServiceMethodDto.Method))
+            .And.Property(nameof(FormServiceMethod.Method))
             .EqualTo(nameof(TestModel.DoThing)));
     }
 
@@ -131,7 +131,7 @@ public class MetadataProcessorsTests
             Required = true
         };
 
-        RequiredMetadataDto result = AssertProcessorApplied<RequiredMetadataDto>(builder);
+        RequiredMetadata result = AssertProcessorApplied<RequiredMetadata>(builder);
         Assert.That(result.Value.InnerValue(), Is.True);
     }
 
@@ -143,7 +143,7 @@ public class MetadataProcessorsTests
             MaxValue = 50
         };
 
-        MaxValueMetadataDto result = AssertProcessorApplied<MaxValueMetadataDto>(builder);
+        MaxValueMetadata result = AssertProcessorApplied<MaxValueMetadata>(builder);
         Assert.That(result.Value.InnerValue(), Is.EqualTo(50));
     }
 
@@ -155,7 +155,7 @@ public class MetadataProcessorsTests
             MinValue = 10
         };
 
-        MinValueMetadataDto result = AssertProcessorApplied<MinValueMetadataDto>(builder);
+        MinValueMetadata result = AssertProcessorApplied<MinValueMetadata>(builder);
         Assert.That(result.Value.InnerValue(), Is.EqualTo(10));
     }
 
@@ -167,7 +167,7 @@ public class MetadataProcessorsTests
             Visible = false
         };
 
-        VisibleMetadataDto result = AssertProcessorApplied<VisibleMetadataDto>(builder);
+        VisibleMetadata result = AssertProcessorApplied<VisibleMetadata>(builder);
         Assert.That(result.Value.InnerValue(), Is.False);
     }
 }

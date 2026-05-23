@@ -1,6 +1,6 @@
 using System.Numerics;
 using FormsApi.Common;
-using FormsApi.Contract.ControlMetadata;
+using FormsApi.Contract.PropertyMetadata;
 using FormsApi.Metadata.Interfaces;
 
 namespace FormsApi.Metadata.Builders;
@@ -16,14 +16,14 @@ public class NumericMetadataBuilder<TModel, TNumber> :
     IVisible<NumericMetadataBuilder<TModel, TNumber>, TModel>
     where TNumber : INumber<TNumber>
 {
-    public PropertyOrConstant<TModel, bool>? Enabled { get; set; }
-    public PropertyOrConstant<TModel, string?>? Label { get; set; }
-    public IFormServiceMethod<TModel>? FormServiceMethod { get; set; }
-    public PropertyOrConstant<TModel, bool>? Required { get; set; }
-    public PropertyOrConstant<TModel, TNumber>? MinValue { get; set; }
-    public PropertyOrConstant<TModel, TNumber>? MaxValue { get; set; }
-    public PropertyOrConstant<TModel, bool>? Visible { get; set; }
-    public PropertyOrConstant<TModel, int>? Precision { get; set; }
-    public PropertyOrConstant<TModel, int>? Scale { get; set; }
+    public PropertyOrConstantBuilder<TModel, bool>? Enabled { get; set; }
+    public PropertyOrConstantBuilder<TModel, string?>? Label { get; set; }
+    public IFormServiceMethodBuilder<TModel>? FormServiceMethod { get; set; }
+    public PropertyOrConstantBuilder<TModel, bool>? Required { get; set; }
+    public PropertyOrConstantBuilder<TModel, TNumber>? MinValue { get; set; }
+    public PropertyOrConstantBuilder<TModel, TNumber>? MaxValue { get; set; }
+    public PropertyOrConstantBuilder<TModel, bool>? Visible { get; set; }
+    public PropertyOrConstantBuilder<TModel, int>? Precision { get; set; }
+    public PropertyOrConstantBuilder<TModel, int>? Scale { get; set; }
     public ControlType GetControlType() => ControlType.Numeric;
 }

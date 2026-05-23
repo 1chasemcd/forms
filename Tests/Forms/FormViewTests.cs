@@ -11,7 +11,7 @@ public class FormViewTests
         public string? StringProperty { get; set; }
         public bool BoolProperty { get; set; }
     }
-    private sealed class TestFormView() : View<TestModel, TestFormView>;
+    private sealed class TestFormView() : ViewBuilder<TestModel, TestFormView>;
 
     [Test]
     public void WithTitle_AsConstant_SetsTitle()

@@ -1,0 +1,9 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace FormsApi.Contract.PropertyMetadata;
+
+public sealed record EnabledMetadata : PropertyMetadata
+{
+    [Required]
+    public required PropertyOrConstant Value { get; init; }
+}

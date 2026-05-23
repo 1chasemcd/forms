@@ -8,12 +8,12 @@ namespace FormsApi.Forms;
 public interface IForm
 {
     Type ModelType { get; }
-    IReadOnlyList<BaseViewDto> ProvideBuilder(IFormBuilderService builder);
+    IReadOnlyList<View> ProvideBuilder(IFormBuilderService builder);
 }
 public abstract class Form<TModel> : IForm
 {
     public Type ModelType => typeof(TModel);
-    protected internal abstract IView<TModel> View { get; }
-    public IReadOnlyList<BaseViewDto> ProvideBuilder(IFormBuilderService builder) => builder.BuildFormIntoViews(this);
+    protected internal abstract IViewBuilder<TModel> View { get; }
+    public IReadOnlyList<View> ProvideBuilder(IFormBuilderService builder) => builder.BuildFormIntoViews(this);
 
 }

@@ -4,7 +4,7 @@ namespace Sample.Home;
 
 public class HomeForm : Form<TestModel>
 {
-    protected override IView<TestModel> View => new CombinedView<TestModel>()
+    protected override IViewBuilder<TestModel> View => new CombinedViewBuilder<TestModel>()
     {
         { TopLeftView(), 4 },
         { TopRightView(), 8 },
@@ -12,9 +12,9 @@ public class HomeForm : Form<TestModel>
         GridView()
     };
 
-    private static ControlView<TestModel> TopLeftView()
+    private static ControlViewBuilder<TestModel> TopLeftView()
     {
-        return new ControlView<TestModel>("Top left view")
+        return new ControlViewBuilder<TestModel>("Top left view")
         {
             { m => m.TextField, 6 },
             { m => m.DateField, 6 },
@@ -23,27 +23,27 @@ public class HomeForm : Form<TestModel>
         };
     }
 
-    private static ControlView<TestModel> TopRightView()
+    private static ControlViewBuilder<TestModel> TopRightView()
     {
-        return new ControlView<TestModel>(title: "Additional Fields")
+        return new ControlViewBuilder<TestModel>(title: "Additional Fields")
         {
             m => m.CurrencyField,
             m => m.TextFieldWithInitialValue
         };
     }
 
-    private static CombinedView<TestModel> NestedCombinedView()
+    private static CombinedViewBuilder<TestModel> NestedCombinedView()
     {
-        return new CombinedView<TestModel>()
+        return new CombinedViewBuilder<TestModel>()
         {
             { BottomView(), 8 },
             { BottomViewRight(), 4 }
         }.Unify();
     }
 
-    private static ControlView<TestModel> BottomView()
+    private static ControlViewBuilder<TestModel> BottomView()
     {
-        return new ControlView<TestModel>()
+        return new ControlViewBuilder<TestModel>()
         {
             { m => m.NumericField, 6 },
             { m => m.ResultNumberPlus1, 6 },
@@ -53,9 +53,9 @@ public class HomeForm : Form<TestModel>
         };
     }
 
-    private static ControlView<TestModel> BottomViewRight()
+    private static ControlViewBuilder<TestModel> BottomViewRight()
     {
-        return new ControlView<TestModel>("Inner View")
+        return new ControlViewBuilder<TestModel>("Inner View")
         {
             m => m.CheckBox,
             m => m.StaticTextAtTheBottom,
@@ -63,9 +63,9 @@ public class HomeForm : Form<TestModel>
         };
     }
 
-    private static SubPropertyGridView<TestModel, Movie> GridView()
+    private static SubPropertyGridViewBuilder<TestModel, Movie> GridView()
     {
-        return new SubPropertyGridView<TestModel, Movie>(m => m.Movies, r => r.Name)
+        return new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies, r => r.Name)
         {
             { m => m.Name, 6},
             { m => m.ReleaseDate },
