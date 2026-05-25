@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
-import {
-  ModelMetadataContainer,
-  PropertyMetadata,
-  PropertyMetadataContainer,
-  PropertyOrConstant,
-} from '../api/api.g';
+import { ModelMetadataContainer, PropertyMetadata, PropertyMetadataContainer } from '../api/api.g';
 import { MetadataType, MetadataValueByType } from '../utils/api-utils';
-import { pascalCaseToWords } from '../utils/string-utils';
 import { ControlPath } from '../utils/form-utils';
 
 @Injectable()
@@ -72,14 +66,5 @@ export class MetadataLookupService {
       (x): x is Extract<PropertyMetadata, { $type: T }> => x.$type === metadataType,
     );
     return propMetadata?.value as MetadataValueByType<T> | undefined;
-  }
-
-  getLabelMetadata(path: ControlPath): PropertyOrConstant {
-    return (
-      this.getPropertyMetadata(path, 'label') ?? {
-        $type: 'constant',
-        value: pascalCaseToWords(path.at(-1)?.toString()),
-      }
-    );
   }
 }

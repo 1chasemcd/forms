@@ -6,7 +6,7 @@ import { CheckboxInput } from '../../dynamic-control/checkbox/checkbox-input';
 import { ControlType, FormControlInfoContainer } from '../../api/api.g';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { ControlPath } from '../../utils/form-utils';
-import { FormModelService } from '../../dynamic-form/form-model-service';
+import { FormModelService } from '../../form-services/form-model-service';
 
 @Component({
   selector: 'app-grid-cell',

@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { MetadataProcessorRegistryService } from '../metadata/metadata-processor-registry-service';
-import { FormFieldEnablementService } from '../form-processor/form-field-enablement-service';
 import { MetadataLookupService } from '../metadata/metadata-lookup-service';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { getOrAddArray, getOrAddControl, getOrAddGroup } from '../utils/api-utils';
@@ -9,7 +8,6 @@ import { ControlPath, parentPath } from '../utils/form-utils';
 @Injectable()
 export class FormModelService {
   private metadataProcessorRegistry = inject(MetadataProcessorRegistryService);
-  private enablementService = inject(FormFieldEnablementService);
   private metadataLookup = inject(MetadataLookupService);
 
   private _model: FormGroup = new FormGroup({});
@@ -38,7 +36,6 @@ export class FormModelService {
         getOrAddGroup(formGroup, propertyName, group);
       } else {
         const control = getOrAddControl(formGroup, propertyName);
-        // this.enablementService.registerControl(control);
         metadataContainer.metadatas.forEach((m) =>
           this.metadataProcessorRegistry.getMetadataProcessor(m)?.process(control, formGroup, m),
         );

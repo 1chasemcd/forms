@@ -1,12 +1,12 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { widthToCss } from '../utils/width-utils';
 import { DynamicControl } from '../dynamic-control/dynamic-control/dynamic-control';
-import { applyPropertyOrConstant } from '../utils/api-utils';
 import { SubpropertyGridViewComponent } from '../grid/subproperty-grid-view/subproperty-grid-view';
 import { NgClass } from '@angular/common';
-import { ViewLookupService } from '../dynamic-form/view-lookup-service';
-import { FormModelService } from '../dynamic-form/form-model-service';
+import { ViewLookupService } from '../form-services/view-lookup-service';
+import { FormModelService } from '../form-services/form-model-service';
 import { ControlPath } from '../utils/form-utils';
+import { PropertyOrConstantEvaluationService } from '../form-services/property-or-constant-evaluation-service';
 
 @Component({
   selector: 'app-dynamic-view',
@@ -19,6 +19,7 @@ import { ControlPath } from '../utils/form-utils';
 export class DynamicView implements OnInit {
   private readonly viewLookup = inject(ViewLookupService);
   private readonly formModelService = inject(FormModelService);
+  private readonly pocEvaluator = inject(PropertyOrConstantEvaluationService);
 
   readonly viewId = input.required<number>();
   readonly modelPath = input.required<ControlPath>();
@@ -28,7 +29,11 @@ export class DynamicView implements OnInit {
   title = signal('');
 
   ngOnInit(): void {
-    applyPropertyOrConstant(this.view()?.title, this.formModelService.model, this.title.set);
+    const title = this.view()?.title;
+    if (title)
+      this.pocEvaluator
+        .observe<string>(title, this.modelPath())
+        .subscribe((t) => this.title.set(t));
   }
 
   readonly classes = computed(() =>

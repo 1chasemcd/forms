@@ -6,10 +6,11 @@ import { catchError, of, throwError } from 'rxjs';
 import { DynamicView } from '../dynamic-view/dynamic-view';
 import { MetadataLookupService } from '../metadata/metadata-lookup-service';
 import { MetadataProcessorRegistryService } from '../metadata/metadata-processor-registry-service';
-import { ViewLookupService } from './view-lookup-service';
-import { FormModelService } from './form-model-service';
-import { PropertyOrConstantEvaluationService } from './property-or-constant-evaluation-service';
+import { ViewLookupService } from '../form-services/view-lookup-service';
+import { FormModelService } from '../form-services/form-model-service';
+import { PropertyOrConstantEvaluationService } from '../form-services/property-or-constant-evaluation-service';
 import { ServiceMethodService } from '../service-method/service-method-service';
+import { ControlEnablementService } from '../form-services/control-enablement-service';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -22,6 +23,7 @@ import { ServiceMethodService } from '../service-method/service-method-service';
     FormModelService,
     PropertyOrConstantEvaluationService,
     ServiceMethodService,
+    ControlEnablementService,
   ],
 })
 export class DynamicForm implements OnInit {

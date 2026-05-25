@@ -5,9 +5,10 @@ import { GridCell } from '../grid-cell/grid-cell';
 import { GridSelectionType, SubPropertyGridView } from '../../api/api.g';
 import { CheckboxInput } from '../../dynamic-control/checkbox/checkbox-input';
 import { ControlPath } from '../../utils/form-utils';
-import { FormModelService } from '../../dynamic-form/form-model-service';
-import { PropertyOrConstantEvaluationService } from '../../dynamic-form/property-or-constant-evaluation-service';
+import { FormModelService } from '../../form-services/form-model-service';
+import { PropertyOrConstantEvaluationService } from '../../form-services/property-or-constant-evaluation-service';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
+import { pascalCaseToWords } from '../../utils/string-utils';
 
 @Component({
   selector: 'app-subproperty-grid-view',
@@ -38,8 +39,8 @@ export class SubpropertyGridViewComponent implements OnInit {
       const index = this.labels.push('') - 1;
       const controlPath = [...this.arrayPath(), controlInfo.propertyName];
       this.pocEvaluator
-        .observe<string>(this.metadataLookup.getLabelMetadata(controlPath), this.modelPath())
-        .subscribe((l) => (this.labels[index] = l));
+        .propertyMetadataValueChanges<string>(controlPath, 'label')
+        .subscribe((l) => (this.labels[index] = l ?? pascalCaseToWords(controlInfo.propertyName)));
     }
   }
 

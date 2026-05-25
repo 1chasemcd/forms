@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { ServiceMethod, ServiceMethodClient } from '../api/api.g';
-import { FormModelService } from '../dynamic-form/form-model-service';
+import { FormModelService } from '../form-services/form-model-service';
 import { ControlPath } from '../utils/form-utils';
 
 @Injectable({ providedIn: 'root' })

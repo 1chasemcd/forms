@@ -13,19 +13,6 @@ export type MetadataValueByType<TType extends MetadataType> = Extract<
   { $type: TType }
 >['value'];
 
-export function applyPropertyOrConstant<T>(
-  poc: PropertyOrConstant | null | undefined,
-  formGroup: FormGroup,
-  callback: (value: T) => void,
-) {
-  if (poc === null || poc === undefined) return;
-  if (poc.$type === 'constant') callback(poc.value);
-  else {
-    const propertyControl = getOrAddControl(formGroup, poc.value);
-    propertyControl?.valueChanges.subscribe(callback);
-  }
-}
-
 export function getPocObservable(
   poc: PropertyOrConstant,
   formGroup: FormGroup,

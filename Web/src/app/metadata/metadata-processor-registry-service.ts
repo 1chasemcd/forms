@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { PropertyMetadata } from '../api/api.g';
 import { AbstractControl, FormGroup, Validators } from '@angular/forms';
 import { getPocObservable, MetadataByType, MetadataType } from '../utils/api-utils';
-import { FormFieldEnablementService } from '../form-processor/form-field-enablement-service';
+import { ControlEnablementService } from '../form-services/control-enablement-service';
 import {
   createMaxLengthValidator,
   createMaxValueValidator,
@@ -17,7 +17,7 @@ export interface MetadataProcessor<T extends PropertyMetadata> {
 
 @Injectable()
 export class MetadataProcessorRegistryService {
-  private enablementService = inject(FormFieldEnablementService);
+  private enablementService = inject(ControlEnablementService);
 
   private metadataProcessors = new Map<string, MetadataProcessor<PropertyMetadata>>();
 

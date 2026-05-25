@@ -13,11 +13,13 @@ public class TestModelMetadata : Metadata<TestModel>
 
         Numeric(m => m.NumericField)
             .WithMaxValue(100)
-            .WithMinValue(50);
+            .WithMinValue(50)
+            .OnChange(InvokeServiceMethod<HomeService>(s => s.Reserialize));
 
 
         Text(m => m.TextField)
             .WithMaxLength(10)
+            .WithLabel(m => m.SetTheLabelOnAnotherField)
             .EnabledWhen(m => m.CheckBox);
 
         TextArea(m => m.TextAreaInput)

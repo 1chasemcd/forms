@@ -8,10 +8,11 @@ import { CustomLabelValue } from '../label-value/label-value';
 import { DynamicInput } from '../dynamic-input/dynamic-input';
 import { StandardInputWrapper } from '../standard-input/standard-input-wrapper';
 import { ControlType, FormControlInfoContainer } from '../../api/api.g';
-import { FormModelService } from '../../dynamic-form/form-model-service';
+import { FormModelService } from '../../form-services/form-model-service';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { ControlPath } from '../../utils/form-utils';
-import { PropertyOrConstantEvaluationService } from '../../dynamic-form/property-or-constant-evaluation-service';
+import { PropertyOrConstantEvaluationService } from '../../form-services/property-or-constant-evaluation-service';
+import { pascalCaseToWords } from '../../utils/string-utils';
 
 @Component({
   selector: 'app-dynamic-control',
@@ -47,14 +48,12 @@ export class DynamicControl implements OnInit {
   readonly label = signal('');
 
   ngOnInit() {
-    const visibleMetadata = this.metadataLookup.getPropertyMetadata(this.path(), 'visible');
-    if (visibleMetadata)
-      this.pocEvaluator
-        .observe<boolean>(visibleMetadata, this.parentPath())
-        .subscribe(this.visible.set);
     this.pocEvaluator
-      .observe<string>(this.metadataLookup.getLabelMetadata(this.path()), this.parentPath())
-      .subscribe(this.label.set);
+      .propertyMetadataValueChanges<boolean>(this.path(), 'visible')
+      .subscribe((v) => this.visible.set(v ?? true));
+    this.pocEvaluator
+      .propertyMetadataValueChanges<string>(this.path(), 'label')
+      .subscribe((l) => this.label.set(l ?? pascalCaseToWords(this.controlInfo().propertyName)));
   }
 
   executeServiceMethod() {
