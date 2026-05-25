@@ -9,22 +9,19 @@
     shouldStyleUnifiedView() && !subpropertyGridView() ? 'm-4' : '',
   ]"
 >
-  @if (combinedViews(); as views) {
-    @for (childView of views; track $index) {
+  @if (combinedView(); as view) {
+    @for (childViewId of view.viewIds; track $index) {
       <app-dynamic-view
-        [formView]="childView"
-        [formContext]="formContext()"
+        [viewId]="childViewId"
+        [modelPath]="modelPath()"
         [alreadyInUnifiedView]="shouldStyleUnifiedView() || alreadyInUnifiedView()"
       ></app-dynamic-view>
     }
-  } @else if (fieldView(); as view) {
-    @for (field of view.fields; track $index) {
-      <app-dynamic-field [field]="field" [formContext]="formContext()"></app-dynamic-field>
+  } @else if (controlView(); as view) {
+    @for (control of view.controls; track $index) {
+      <app-dynamic-control [controlInfo]="control" [parentPath]="modelPath()"></app-dynamic-control>
     }
   } @else if (subpropertyGridView(); as view) {
-    <app-subproperty-grid-view
-      [gridView]="view"
-      [formContext]="formContext()"
-    ></app-subproperty-grid-view>
+    <app-subproperty-grid-view [view]="view" [modelPath]="modelPath()"></app-subproperty-grid-view>
   }
 </div>

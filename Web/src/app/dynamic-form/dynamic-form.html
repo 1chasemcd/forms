@@ -1,12 +1,9 @@
-@if (formContext && formDefinition) {
+@if (model) {
   <form
     (ngSubmit)="onSubmit()"
-    [formGroup]="formContext.formGroup"
+    [formGroup]="model"
     class="p-4 min-[72rem]:max-w-6xl 2xl:max-w-3/4 w-full m-auto"
   >
-    <app-dynamic-view
-      [formView]="formDefinition.view"
-      [formContext]="formContext"
-    ></app-dynamic-view>
+    <app-dynamic-view [viewId]="0" , [modelPath]="[]"></app-dynamic-view>
   </form>
 }

@@ -1,11 +1,12 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { FieldDefinition, FieldType, MetadataType, RecalculateEvent } from '../../api/api.g';
-import { DynamicInput } from '../../dynamic-field/dynamic-input/dynamic-input';
-import { getMetadata } from '../../utils/api-utils';
-import { RecalculateEventService } from '../../recalculate-event-service/recalculate-event-service';
-import { CheckboxInput } from '../../dynamic-field/checkbox/checkbox-input';
-import { FormContext } from '../../dynamic-form/form-context';
+import { DynamicInput } from '../../dynamic-control/dynamic-input/dynamic-input';
+import { ServiceMethodService } from '../../service-method/service-method-service';
+import { CheckboxInput } from '../../dynamic-control/checkbox/checkbox-input';
+import { ControlType, FormControlInfoContainer } from '../../api/api.g';
+import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
+import { ControlPath } from '../../utils/form-utils';
+import { FormModelService } from '../../dynamic-form/form-model-service';
 
 @Component({
   selector: 'app-grid-cell',
@@ -13,19 +14,23 @@ import { FormContext } from '../../dynamic-form/form-context';
   templateUrl: './grid-cell.html',
 })
 export class GridCell {
-  readonly FieldType = FieldType;
+  readonly ControlType = ControlType;
 
-  readonly field = input.required<FieldDefinition>();
-  readonly rowContext = input.required<FormContext>();
+  readonly controlInfo = input.required<FormControlInfoContainer>();
+  readonly parentPath = input.required<ControlPath>();
 
-  private readonly recalculateEventService = inject(RecalculateEventService);
+  private readonly serviceMethodService = inject(ServiceMethodService);
+  private readonly metadataLookup = inject(MetadataLookupService);
+  private readonly formModelService = inject(FormModelService);
 
-  readonly control = computed(
-    () => this.rowContext().getOrAddControl(this.field().property) as FormControl,
+  private readonly path = computed(() => [...this.parentPath(), this.controlInfo().propertyName]);
+  readonly control = computed(() => this.formModelService.get<FormControl>(this.path()));
+  readonly controlType = computed(
+    () => this.metadataLookup.getPropertyMetadata(this.path(), 'controlType') ?? ControlType.Text,
   );
 
-  executeRecalculate() {
-    const recalc = getMetadata<RecalculateEvent>(this.field(), MetadataType.RecalculateEvent);
-    if (recalc) this.recalculateEventService.runRecalculate(this.rowContext(), recalc);
+  executeServiceMethod() {
+    const method = this.metadataLookup.getPropertyMetadata(this.path(), 'formServiceMethod');
+    if (method) this.serviceMethodService.runMethod(this.parentPath(), method);
   }
 }

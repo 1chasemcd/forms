@@ -1,15 +1,13 @@
 using System.Collections;
 using System.Linq.Expressions;
-using FormsApi.Common;
 using FormsApi.Contract;
-using FormsApi.Contract.View;
 
 namespace FormsApi.Forms;
 
 public sealed class ControlViewBuilder<TModel> : ViewBuilder<TModel, ControlViewBuilder<TModel>>, IEnumerable
 {
-    internal IReadOnlyList<FormControl> ControlList => _controlList;
-    private readonly List<FormControl> _controlList = [];
+    internal IReadOnlyList<FormControlInfoContainer> ControlList => _controlList;
+    private readonly List<FormControlInfoContainer> _controlList = [];
 
     public ControlViewBuilder(string? title = null)
     {

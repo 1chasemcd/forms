@@ -1,7 +1,8 @@
 using System.Linq.Expressions;
 using System.Numerics;
 using FormsApi.Common;
-using FormsApi.FormService;
+using FormsApi.Contract;
+using FormsApi.Contract.PostRequest;
 using FormsApi.Metadata.Builders;
 
 namespace FormsApi.Metadata;
@@ -52,9 +53,9 @@ public abstract class Metadata<TModel>
     }
 
 
-    protected FormServiceMethodBuilder<TModel, TService> InvokeServiceMethod<TService>(
-        Expression<Func<TService, Func<TModel, FormServicePostAction?>>> selector)
+    protected ServiceMethodBuilder<TModel, TService> InvokeServiceMethod<TService>(
+        Expression<Func<TService, Func<TModel, PostRequestAction?>>> selector)
     {
-        return new FormServiceMethodBuilder<TModel, TService>(selector);
+        return new ServiceMethodBuilder<TModel, TService>(selector);
     }
 }

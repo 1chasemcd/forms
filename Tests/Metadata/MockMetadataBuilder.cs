@@ -11,7 +11,7 @@ public class MockMetadataBuilder<TModel> :
     ILabelable<MockMetadataBuilder<TModel>, TModel>,
     IMaxLengthable<MockMetadataBuilder<TModel>, TModel>,
     IPrecisionAndScalable<MockMetadataBuilder<TModel>, TModel>,
-    IRecalculatable<MockMetadataBuilder<TModel>, TModel>,
+    IServiceMethodCaller<MockMetadataBuilder<TModel>, TModel>,
     IRequirable<MockMetadataBuilder<TModel>, TModel>,
     IValueRangable<MockMetadataBuilder<TModel>, TModel, int>,
     IVisible<MockMetadataBuilder<TModel>, TModel>
@@ -19,7 +19,7 @@ public class MockMetadataBuilder<TModel> :
     public PropertyOrConstantBuilder<TModel, bool>? Enabled { get; set; }
     public PropertyOrConstantBuilder<TModel, string?>? Label { get; set; }
     public PropertyOrConstantBuilder<TModel, int>? MaxLength { get; set; }
-    public IFormServiceMethodBuilder<TModel>? FormServiceMethod { get; set; }
+    public IServiceMethodBuilder<TModel>? ServiceMethod { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Required { get; set; }
     public PropertyOrConstantBuilder<TModel, int>? MinValue { get; set; }
     public PropertyOrConstantBuilder<TModel, int>? MaxValue { get; set; }

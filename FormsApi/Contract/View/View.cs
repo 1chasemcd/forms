@@ -6,7 +6,7 @@ namespace FormsApi.Contract.View;
     TypeDiscriminatorPropertyName = "$type",
     UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor
 )]
-[JsonDerivedType(typeof(ControlView), "fieldView")]
+[JsonDerivedType(typeof(ControlView), "controlView")]
 [JsonDerivedType(typeof(CombinedView), "combinedView")]
 [JsonDerivedType(typeof(SubPropertyGridView), "subPropertyGridView")]
 public abstract record View

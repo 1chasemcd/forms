@@ -1,20 +1,20 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using FormsApi.Contract;
-using FormsApi.FormService;
+using FormsApi.Contract.PostRequest;
 
 namespace FormsApi.Common;
 
-public interface IFormServiceMethodBuilder<TModel>
+public interface IServiceMethodBuilder<TModel>
 {
-    FormServiceMethod Build();
+    Contract.ServiceMethod Build();
 }
-public sealed class FormServiceMethodBuilder<TModel, TService>(Expression<Func<TService, Func<TModel, FormServicePostAction?>>> method) : IFormServiceMethodBuilder<TModel>
+public sealed class ServiceMethodBuilder<TModel, TService>(Expression<Func<TService, Func<TModel, PostRequestAction?>>> method) : IServiceMethodBuilder<TModel>
 {
 
-    public FormServiceMethod Build()
+    public Contract.ServiceMethod Build()
     {
-        return new FormServiceMethod
+        return new Contract.ServiceMethod
         {
             Service = new TypeDto(typeof(TService)),
             Method = GetMethodName(),

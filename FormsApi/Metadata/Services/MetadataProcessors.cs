@@ -39,8 +39,8 @@ internal sealed class MetadataProcessors
             : null;
 
         yield return propertyMetadata =>
-            propertyMetadata is IFormServiceCaller<T> x && x.FormServiceMethod is not null
-            ? new FormServiceMethodMetadata() { Value = x.FormServiceMethod.Build() }
+            propertyMetadata is IServiceMethodCaller<T> x && x.ServiceMethod is not null
+            ? new ServiceMethodMetadata() { Value = x.ServiceMethod.Build() }
             : null;
 
         yield return propertyMetadata =>

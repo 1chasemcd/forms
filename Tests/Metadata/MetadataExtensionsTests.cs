@@ -151,14 +151,14 @@ public class MetadataExtensionsTests
     [Test]
     public void OnChange_SetsFormServiceMethod()
     {
-        Mock<IFormServiceMethodBuilder<TestModel>> recalc = new();
+        Mock<IServiceMethodBuilder<TestModel>> recalc = new();
 
         MockMetadataBuilder<TestModel> result = _builder.OnChange(recalc.Object);
 
         Assert.Multiple(() =>
         {
             Assert.That(result, Is.SameAs(_builder));
-            Assert.That(_builder.FormServiceMethod, Is.SameAs(recalc.Object));
+            Assert.That(_builder.ServiceMethod, Is.SameAs(recalc.Object));
         });
     }
 

@@ -6,10 +6,12 @@ import {
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
-import { RecalculateEventClient } from './api/api.g';
+import { FormClient, RepositoryClient, ServiceMethodClient } from './api/api.g';
 export const appConfig: ApplicationConfig = {
   providers: [
-    RecalculateEventClient,
+    ServiceMethodClient,
+    RepositoryClient,
+    FormClient,
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),

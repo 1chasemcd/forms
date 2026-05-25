@@ -10,7 +10,7 @@ public class NumericMetadataBuilder<TModel, TNumber> :
     IEnablable<NumericMetadataBuilder<TModel, TNumber>, TModel>,
     ILabelable<NumericMetadataBuilder<TModel, TNumber>, TModel>,
     IPrecisionAndScalable<NumericMetadataBuilder<TModel, TNumber>, TModel>,
-    IRecalculatable<NumericMetadataBuilder<TModel, TNumber>, TModel>,
+    IServiceMethodCaller<NumericMetadataBuilder<TModel, TNumber>, TModel>,
     IRequirable<NumericMetadataBuilder<TModel, TNumber>, TModel>,
     IValueRangable<NumericMetadataBuilder<TModel, TNumber>, TModel, TNumber>,
     IVisible<NumericMetadataBuilder<TModel, TNumber>, TModel>
@@ -18,7 +18,7 @@ public class NumericMetadataBuilder<TModel, TNumber> :
 {
     public PropertyOrConstantBuilder<TModel, bool>? Enabled { get; set; }
     public PropertyOrConstantBuilder<TModel, string?>? Label { get; set; }
-    public IFormServiceMethodBuilder<TModel>? FormServiceMethod { get; set; }
+    public IServiceMethodBuilder<TModel>? ServiceMethod { get; set; }
     public PropertyOrConstantBuilder<TModel, bool>? Required { get; set; }
     public PropertyOrConstantBuilder<TModel, TNumber>? MinValue { get; set; }
     public PropertyOrConstantBuilder<TModel, TNumber>? MaxValue { get; set; }

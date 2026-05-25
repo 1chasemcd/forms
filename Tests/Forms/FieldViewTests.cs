@@ -34,9 +34,9 @@ public class FieldViewTests
         };
 
         Assert.That(view.ControlList.Single(),
-            Has.Property(nameof(FormControl.PropertyName))
+            Has.Property(nameof(FormControlInfoContainer.PropertyName))
             .EqualTo(nameof(TestModel.TitleProperty))
-            .And.Property(nameof(FormControl.Width))
+            .And.Property(nameof(FormControlInfoContainer.Width))
             .EqualTo(6));
     }
 }

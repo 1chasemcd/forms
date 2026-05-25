@@ -1,5 +1,6 @@
 using System.Reflection;
-using FormsApi.FormService;
+using FormsApi.Contract;
+using FormsApi.Contract.PostRequest;
 using FormsApi.Repository.Handlers;
 
 namespace Sample.Home;
@@ -13,13 +14,13 @@ public class HomeService(ILogger<HomeService> logger) : IRepositoryCreateHandler
             logger.LogInformation("Saving model with {count} movies.", toSave.Movies.Count);
     }
 
-    public FormServicePostAction? SetNumericValue(TestModel model)
+    public PostRequestAction? SetNumericValue(TestModel model)
     {
         model.NumericField = 12345;
         return null;
     }
 
-    public FormServicePostAction? ResetForm(TestModel model)
+    public PostRequestAction? ResetForm(TestModel model)
     {
         CopyMembers(new TestModel(), model);
         return null;
@@ -44,5 +45,5 @@ public class HomeService(ILogger<HomeService> logger) : IRepositoryCreateHandler
         }
     }
 
-    public FormServicePostAction? Reserialize(TestModel _) => null;
+    public PostRequestAction? Reserialize(TestModel _) => null;
 }

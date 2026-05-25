@@ -1,8 +1,9 @@
-using FormsApi.Contract.PropertyMetadata;
+using System.ComponentModel.DataAnnotations;
 
 namespace FormsApi.Contract.MetadataContainer;
 
 public sealed record PrimitivePropertyMetadataContainer : PropertyMetadataContainer
 {
-    public IEnumerable<PropertyMetadata.PropertyMetadata>? Metadatas { get; init; }
+    [Required]
+    public required IEnumerable<PropertyMetadata.PropertyMetadata> Metadatas { get; init; }
 }

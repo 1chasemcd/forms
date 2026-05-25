@@ -1,9 +1,0 @@
-<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
-<label class="flex h-12 items-center gap-2 cursor-pointer">
-  <app-checkbox-input
-    [control]="control()"
-    (recalculateEvent)="recalculateEvent.emit()"
-  ></app-checkbox-input>
-
-  <span class="text-black">{{ label() }}</span>
-</label>

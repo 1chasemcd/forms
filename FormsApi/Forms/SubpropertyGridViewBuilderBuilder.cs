@@ -8,7 +8,7 @@ namespace FormsApi.Forms;
 
 public interface ISubPropertyGridViewBuilder<TModel> : IViewBuilder<TModel>
 {
-    IReadOnlyList<FormControl> ControlList { get; }
+    IReadOnlyList<FormControlInfoContainer> ControlList { get; }
     string SubProperty { get; }
     string IdProperty { get; }
     PropertyOrConstantBuilder<TModel, bool>? CanAdd { get; }
@@ -25,8 +25,8 @@ public sealed class SubPropertyGridViewBuilder<TModel, TSub>(
     Expression<Func<TModel, IEnumerable<TSub>?>> subProperty, Expression<Func<TSub, object?>> idProperty)
     : ViewBuilder<TModel, SubPropertyGridViewBuilder<TModel, TSub>>, ISubPropertyGridViewBuilder<TModel>, IEnumerable
 {
-    public IReadOnlyList<FormControl> ControlList => _controlList;
-    private readonly List<FormControl> _controlList = [];
+    public IReadOnlyList<FormControlInfoContainer> ControlList => _controlList;
+    private readonly List<FormControlInfoContainer> _controlList = [];
     public string SubProperty { get; } = subProperty.GetPropertyName();
     public string IdProperty { get; } = idProperty.GetPropertyName();
     public PropertyOrConstantBuilder<TModel, bool>? CanAdd { get; private set; }

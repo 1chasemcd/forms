@@ -8,7 +8,7 @@ namespace FormsApi.Contract.PropertyMetadata;
 )]
 [JsonDerivedType(typeof(ControlTypeMetadata), "controlType")]
 [JsonDerivedType(typeof(EnabledMetadata), "enabled")]
-[JsonDerivedType(typeof(FormServiceMethodMetadata), "formServiceMethod")]
+[JsonDerivedType(typeof(ServiceMethodMetadata), "formServiceMethod")]
 [JsonDerivedType(typeof(LabelMetadata), "label")]
 [JsonDerivedType(typeof(MaxLengthMetadata), "maxLength")]
 [JsonDerivedType(typeof(MaxValueMetadata), "maxValue")]

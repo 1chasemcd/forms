@@ -1,7 +1,7 @@
 using FormsApi.Common;
 using FormsApi.Contract;
+using FormsApi.Contract.PostRequest;
 using FormsApi.Contract.PropertyMetadata;
-using FormsApi.FormService;
 using FormsApi.Metadata.Builders;
 using FormsApi.Metadata.Services;
 using Moq;
@@ -23,7 +23,7 @@ public class MetadataProcessorsTests
     {
         public string? Name { get; set; }
         public int Age { get; set; }
-        public FormServicePostAction DoThing(TestModel _) => null!;
+        public PostRequestAction DoThing(TestModel _) => null!;
     }
 
     private T AssertProcessorApplied<T>(IMetadataBuilder<TestModel> subject)
@@ -108,18 +108,18 @@ public class MetadataProcessorsTests
     }
 
     [Test]
-    public void RecalculateProcessor_ReturnsCorrectDto()
+    public void ServiceMethodProcessor_ReturnsCorrectDto()
     {
         var builder = new MockMetadataBuilder<TestModel>
         {
-            FormServiceMethod = new FormServiceMethodBuilder<TestModel, TestModel>(x => x.DoThing)
+            ServiceMethod = new ServiceMethodBuilder<TestModel, TestModel>(x => x.DoThing)
         };
 
-        FormServiceMethodMetadata result = AssertProcessorApplied<FormServiceMethodMetadata>(builder);
+        ServiceMethodMetadata result = AssertProcessorApplied<ServiceMethodMetadata>(builder);
         Assert.That(result.Value,
-            Has.Property(nameof(FormServiceMethod.Service))
+            Has.Property(nameof(ServiceMethod.Service))
             .EqualTo(new TypeDto(typeof(TestModel)))
-            .And.Property(nameof(FormServiceMethod.Method))
+            .And.Property(nameof(ServiceMethod.Method))
             .EqualTo(nameof(TestModel.DoThing)));
     }
 

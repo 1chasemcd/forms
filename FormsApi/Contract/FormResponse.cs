@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using FormsApi.Contract.MetadataContainer;
-using FormsApi.Contract.View;
 
 namespace FormsApi.Contract;
 

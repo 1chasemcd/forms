@@ -5,7 +5,7 @@ namespace FormsApi.Contract.View;
 public sealed record SubPropertyGridView : View
 {
     [Required]
-    public required IReadOnlyList<FormControl> Controls { get; init; }
+    public required IReadOnlyList<FormControlInfoContainer> Controls { get; init; }
     [Required]
     public required string SubProperty { get; init; }
     [Required]

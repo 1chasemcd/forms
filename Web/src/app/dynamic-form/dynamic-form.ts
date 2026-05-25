@@ -1,39 +1,44 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FileResponse, FormDefinitionClient, FormDefinition, RepositoryClient } from '../api/api.g';
+import { Component, inject, OnInit } from '@angular/core';
+import { FileResponse, FormClient, FormResponse, RepositoryClient } from '../api/api.g';
 import { ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { catchError, of, throwError } from 'rxjs';
 import { DynamicView } from '../dynamic-view/dynamic-view';
-import { FormValueService } from './form-value-service';
-import { FormFactory } from './form-factory';
-import { StandardProcessorsService } from '../form-processor/standard-processors-service';
-import { FormContext } from './form-context';
-import { GridRowFactory } from './grid-row-factory';
+import { MetadataLookupService } from '../metadata/metadata-lookup-service';
+import { MetadataProcessorRegistryService } from '../metadata/metadata-processor-registry-service';
+import { ViewLookupService } from './view-lookup-service';
+import { FormModelService } from './form-model-service';
 
 @Component({
   selector: 'app-dynamic-form',
   imports: [ReactiveFormsModule, DynamicView],
   templateUrl: './dynamic-form.html',
-  providers: [FormDefinitionClient, RepositoryClient, FormFactory],
+  providers: [
+    MetadataLookupService,
+    MetadataProcessorRegistryService,
+    ViewLookupService,
+    FormModelService,
+  ],
 })
-export class DynamicForm implements OnInit, OnDestroy {
-  private readonly formDefinitionClient = inject(FormDefinitionClient);
+export class DynamicForm implements OnInit {
+  private readonly formClient = inject(FormClient);
   private readonly repositoryClient = inject(RepositoryClient);
-  private readonly formFactory = inject(FormFactory);
-  private readonly formValueService = inject(FormValueService);
-  private readonly standardProcessors = inject(StandardProcessorsService);
+  private readonly formModelService = inject(FormModelService);
+  private readonly metadataProcessorRegistry = inject(MetadataProcessorRegistryService);
   private readonly route = inject(ActivatedRoute);
-  private readonly gridRowFactory = inject(GridRowFactory);
+  private readonly metadataLookup = inject(MetadataLookupService);
+  private readonly viewLookup = inject(ViewLookupService);
 
-  formDefinition?: FormDefinition;
-  formContext?: FormContext;
+  get model() {
+    return this.formModelService.model;
+  }
 
   ngOnInit() {
-    this.standardProcessors.register();
+    this.metadataProcessorRegistry.initialize();
     const path = this.route.snapshot.paramMap.get('path');
-    if (path == null) return;
+    if (!path) return;
 
-    this.formDefinitionClient
+    this.formClient
       .getForm(path)
       .pipe(
         catchError((error) => {
@@ -47,28 +52,21 @@ export class DynamicForm implements OnInit, OnDestroy {
       .subscribe((f) => this.handleFormResponse(f));
   }
 
-  ngOnDestroy() {
-    this.gridRowFactory.clear();
-  }
-
   private handleFormPathNotFound() {
     console.log('Form not found');
   }
 
-  private handleFormResponse(form: FormDefinition | null) {
+  private handleFormResponse(form: FormResponse | null) {
     if (form == null) return;
-    this.formDefinition = form;
-    this.formContext = this.formFactory.createFormContext(form.view);
-    if (form.modelType)
-      this.repositoryClient
-        .create(form.modelType)
-        .subscribe((r) => this.handleRepositoryResponse(r));
+    this.metadataLookup.initialize(form.modelType, form.modelMetadatas);
+    this.viewLookup.initialize(form.views);
+    this.formModelService.initialize();
+    this.repositoryClient.create(form.modelType).subscribe((r) => this.handleRepositoryResponse(r));
   }
 
   private handleRepositoryResponse(resp: FileResponse) {
     resp.data.text().then((text) => {
-      if (this.formContext && this.formDefinition)
-        this.formValueService.patchValues(this.formContext, JSON.parse(text));
+      this.formModelService.patchValues([], JSON.parse(text));
     });
   }
 

@@ -34,9 +34,9 @@ public class SubPropertyGridViewTests
         };
 
         Assert.That(view.ControlList.Single(),
-            Has.Property(nameof(FormControl.PropertyName))
+            Has.Property(nameof(FormControlInfoContainer.PropertyName))
             .EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1))
-            .And.Property(nameof(FormControl.Width))
+            .And.Property(nameof(FormControlInfoContainer.Width))
             .EqualTo(6));
     }
 
