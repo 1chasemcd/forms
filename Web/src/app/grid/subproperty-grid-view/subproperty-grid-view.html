@@ -33,12 +33,14 @@
         </label>
       }
       @for (column of view().controls; track $index) {
-        <div class="border-t border-t-gray-200 group-hover:bg-violet-50 p-px">
+        <div
+          class="border-t border-t-gray-200 group-hover:bg-violet-50 group-focus-within:bg-violet-50 pb-px px-px"
+        >
           <app-grid-cell
-            class="block h-10 px-3 has-enabled:hover:ring focus-within:ring focus-within:border-violet-600 ring-gray-400 rounded-sm"
+            class="block h-10 px-3 has-enabled:hover:ring focus-within:ring focus-within:ring-violet-600 ring-gray-400 rounded-sm"
             ngGridCell
             [controlInfo]="column"
-            [parentPath]="arrayPath()"
+            [parentPath]="createRowPath(row)()"
           >
           </app-grid-cell>
         </div>

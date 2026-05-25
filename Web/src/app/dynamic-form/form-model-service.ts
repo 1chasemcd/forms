@@ -38,7 +38,7 @@ export class FormModelService {
         getOrAddGroup(formGroup, propertyName, group);
       } else {
         const control = getOrAddControl(formGroup, propertyName);
-        this.enablementService.registerControl(control);
+        // this.enablementService.registerControl(control);
         metadataContainer.metadatas.forEach((m) =>
           this.metadataProcessorRegistry.getMetadataProcessor(m)?.process(control, formGroup, m),
         );
@@ -49,11 +49,12 @@ export class FormModelService {
   }
 
   get<T extends AbstractControl>(path: ControlPath) {
+    if (!Array.isArray(path) || path.length == 0) return this._model as unknown as T;
     return this._model.get(path) as T;
   }
 
   getOrAdd<T extends AbstractControl>(path: ControlPath, toAdd: T): T {
-    const existing = this._model.get(path) as T;
+    const existing = this.get<T>(path);
     if (existing) return existing;
     const lastKey = path.at(-1) as unknown as string | number; // if we make it here path is not empty
     if (typeof lastKey === 'number') {

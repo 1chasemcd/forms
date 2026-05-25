@@ -78,7 +78,7 @@ export class MetadataLookupService {
     return (
       this.getPropertyMetadata(path, 'label') ?? {
         $type: 'constant',
-        value: pascalCaseToWords(path[-1].toString()),
+        value: pascalCaseToWords(path.at(-1)?.toString()),
       }
     );
   }

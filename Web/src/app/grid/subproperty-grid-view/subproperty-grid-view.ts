@@ -76,6 +76,15 @@ export class SubpropertyGridViewComponent implements OnInit {
     return row.get(this.view().idProperty)?.value;
   }
 
+  private getRowIndex(row: FormGroup) {
+    const id = this.getRowId(row);
+    return this.rows().controls.findIndex((x) => this.getRowId(x) == id);
+  }
+
+  createRowPath(row: FormGroup) {
+    return computed(() => [...this.arrayPath(), this.getRowIndex(row)]);
+  }
+
   getControlFromRow(row: FormGroup, propertyName: string) {
     return row.get(propertyName) as FormControl;
   }

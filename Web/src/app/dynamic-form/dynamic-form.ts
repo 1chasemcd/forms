@@ -8,6 +8,8 @@ import { MetadataLookupService } from '../metadata/metadata-lookup-service';
 import { MetadataProcessorRegistryService } from '../metadata/metadata-processor-registry-service';
 import { ViewLookupService } from './view-lookup-service';
 import { FormModelService } from './form-model-service';
+import { PropertyOrConstantEvaluationService } from './property-or-constant-evaluation-service';
+import { ServiceMethodService } from '../service-method/service-method-service';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -18,6 +20,8 @@ import { FormModelService } from './form-model-service';
     MetadataProcessorRegistryService,
     ViewLookupService,
     FormModelService,
+    PropertyOrConstantEvaluationService,
+    ServiceMethodService,
   ],
 })
 export class DynamicForm implements OnInit {
@@ -29,6 +33,10 @@ export class DynamicForm implements OnInit {
   private readonly metadataLookup = inject(MetadataLookupService);
   private readonly viewLookup = inject(ViewLookupService);
 
+  private _initialized = false;
+  get initialized() {
+    return this._initialized;
+  }
   get model() {
     return this.formModelService.model;
   }
@@ -61,6 +69,7 @@ export class DynamicForm implements OnInit {
     this.metadataLookup.initialize(form.modelType, form.modelMetadatas);
     this.viewLookup.initialize(form.views);
     this.formModelService.initialize();
+    this._initialized = true;
     this.repositoryClient.create(form.modelType).subscribe((r) => this.handleRepositoryResponse(r));
   }
 

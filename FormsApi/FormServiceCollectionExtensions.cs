@@ -32,6 +32,7 @@ public static class FormServiceCollectionExtensions
         services.TryAddSingleton<MetadataProcessors>();
         services.TryAddSingleton<IRepositoryServiceFactory, RepositoryServiceFactory>();
         services.TryAddSingleton<IRepositoryResolver, RepositoryResolver>();
+        services.TryAddSingleton<IFormBuilderService, FormBuilderService>();
         services.TryAddSingleton(typeof(DefaultRepositoryCreateHandler<>));
 
         if (setupAction != null)
