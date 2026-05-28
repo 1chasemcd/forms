@@ -15,9 +15,18 @@ export class ControlEnablementService {
     this.dependencies.set(control, []);
 
     subject.subscribe((value) => {
-      if (value) this.maybeEnableChildren(control);
-      else control.disable({ emitEvent: false });
+      if (value) {
+        if (this.areParentsEnabled(control)) this.maybeEnableChildren(control);
+      } else control.disable({ emitEvent: false });
     });
+  }
+
+  private areParentsEnabled(control: AbstractControl): boolean {
+    const parent = control.parent;
+    if (!parent) return true;
+    const deps = this.dependencies.get(parent);
+    if (deps && deps.findIndex((x) => !x) >= 0) return false;
+    return this.areParentsEnabled(parent);
   }
 
   private maybeEnableChildren(control: AbstractControl) {

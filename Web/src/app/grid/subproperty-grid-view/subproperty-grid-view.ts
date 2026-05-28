@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal, WritableSignal } from '@angular/core';
 import { Grid } from '@angular/aria/grid';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { GridCell } from '../grid-cell/grid-cell';
@@ -27,18 +27,18 @@ export class SubpropertyGridViewComponent implements OnInit {
   private readonly controlValues = inject(ControlValueService);
 
   readonly arrayPath = computed(() => joinPath(this.modelPath(), this.view().subProperty));
-  readonly labels: string[] = [];
+  readonly labels: WritableSignal<string>[] = [];
   readonly rows = computed(() => this.modelService.get<FormArray<FormGroup>>(this.arrayPath()));
 
   readonly selectAllControl = new FormControl(false);
 
   ngOnInit() {
     for (const controlInfo of this.view().controls) {
-      const index = this.labels.push('') - 1;
+      const index = this.labels.push(signal(pascalCaseToWords(controlInfo.propertyName))) - 1;
       const controlPath = joinPath(this.arrayPath(), controlInfo.propertyName);
       this.controlValues
         .observe<string>(controlPath, 'label')
-        ?.subscribe((l) => (this.labels[index] = l ?? pascalCaseToWords(controlInfo.propertyName)));
+        ?.subscribe((l) => this.labels[index].set(l));
     }
   }
 

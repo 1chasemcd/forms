@@ -5,7 +5,7 @@ import { PropertyOrConstant } from '../api/api.g';
 import { ControlPath, isControlPath, joinPath, parentPath } from '../utils/form-utils';
 import { MetadataType } from '../utils/api-utils';
 import { MetadataLookupService } from '../metadata/metadata-lookup-service';
-import { AbstractControl, FormControl } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 
 @Injectable()
 export class ControlValueService {
@@ -13,16 +13,22 @@ export class ControlValueService {
   private readonly metadataLookup = inject(MetadataLookupService);
 
   observe<T>(path: ControlPath): Observable<T> | undefined;
-  observe<T>(control: AbstractControl): Observable<T> | undefined;
+  observe<T>(control: FormControl | null): Observable<T> | undefined;
   observe<T>(basePath: ControlPath, relativePath: ControlPath): Observable<T> | undefined;
   observe<T>(basePath: ControlPath, poc: PropertyOrConstant): Observable<T> | undefined;
-  observe<T>(baseControl: AbstractControl, relativePath: ControlPath): Observable<T> | undefined;
-  observe<T>(baseControl: AbstractControl, poc: PropertyOrConstant): Observable<T> | undefined;
   observe<T>(
-    param1: ControlPath | AbstractControl,
+    baseControl: FormArray | FormGroup | null,
+    relativePath: ControlPath,
+  ): Observable<T> | undefined;
+  observe<T>(
+    baseControl: FormArray | FormGroup | null,
+    poc: PropertyOrConstant,
+  ): Observable<T> | undefined;
+  observe<T>(
+    param1: ControlPath | AbstractControl | null,
     param2?: PropertyOrConstant | ControlPath,
   ): Observable<T> | undefined {
-    if (param1 instanceof AbstractControl) {
+    if (param1 === null || param1 instanceof AbstractControl) {
       if (!param2) return this.observeControl(param1, []);
       if (isControlPath(param2)) return this.observeControl(param1, param2);
       return this.observePropertyOrConstant(param1, param2);
@@ -34,9 +40,10 @@ export class ControlValueService {
   }
 
   private observeControl<T>(
-    baseControl: AbstractControl,
+    baseControl: AbstractControl | null,
     relativePath: ControlPath,
   ): Observable<T> | undefined {
+    if (!baseControl) return undefined;
     const observed = baseControl.get(relativePath) as FormControl<T> | null;
     if (!observed) return undefined;
     return observed.valueChanges.pipe(startWith(observed.value));
@@ -49,7 +56,7 @@ export class ControlValueService {
   }
 
   private observePropertyOrConstant<T>(
-    parent: ControlPath | AbstractControl,
+    parent: ControlPath | AbstractControl | null,
     propertyOrConstant: PropertyOrConstant,
   ): Observable<T> | undefined {
     if (propertyOrConstant.$type === 'constant') return of(propertyOrConstant.value);
