@@ -1,12 +1,12 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DynamicInput } from '../../dynamic-control/dynamic-input/dynamic-input';
-import { ServiceMethodService } from '../../service-method/service-method-service';
 import { CheckboxInput } from '../../dynamic-control/checkbox/checkbox-input';
 import { ControlType, FormControlInfoContainer } from '../../api/api.g';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { ControlPath, joinPath } from '../../utils/form-utils';
 import { FormModelService } from '../../form-services/form-model-service';
+import { ServiceMethodService } from '../../service-method/service-method-service';
 
 @Component({
   selector: 'app-grid-cell',

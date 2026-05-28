@@ -3,7 +3,6 @@ import { widthToCss } from '../../utils/width-utils';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ServiceMethodService } from '../../service-method/service-method-service';
 import { Button } from '../button/button';
-import { Checkbox } from '../checkbox/checkbox';
 import { CustomLabelValue } from '../label-value/label-value';
 import { DynamicInput } from '../dynamic-input/dynamic-input';
 import { StandardInputWrapper } from '../standard-input/standard-input-wrapper';
@@ -13,6 +12,7 @@ import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { ControlPath, joinPath } from '../../utils/form-utils';
 import { ControlValueService } from '../../form-services/control-value-service';
 import { pascalCaseToWords } from '../../utils/string-utils';
+import { Checkbox } from '../checkbox/checkbox';
 
 @Component({
   selector: 'app-dynamic-control',
