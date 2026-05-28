@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, OnInit, signal } from '@angular/core';
 import { widthToCss } from '../../utils/width-utils';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ServiceMethodService } from '../../service-method/service-method-service';
@@ -10,8 +10,8 @@ import { StandardInputWrapper } from '../standard-input/standard-input-wrapper';
 import { ControlType, FormControlInfoContainer } from '../../api/api.g';
 import { FormModelService } from '../../form-services/form-model-service';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
-import { ControlPath } from '../../utils/form-utils';
-import { PropertyOrConstantEvaluationService } from '../../form-services/property-or-constant-evaluation-service';
+import { ControlPath, joinPath } from '../../utils/form-utils';
+import { ControlValueService } from '../../form-services/control-value-service';
 import { pascalCaseToWords } from '../../utils/string-utils';
 
 @Component({
@@ -32,28 +32,30 @@ import { pascalCaseToWords } from '../../utils/string-utils';
 export class DynamicControl implements OnInit {
   private readonly formModelService = inject(FormModelService);
   private readonly metadataLookup = inject(MetadataLookupService);
-  private readonly pocEvaluator = inject(PropertyOrConstantEvaluationService);
+  private readonly controlValues = inject(ControlValueService);
   private readonly serviceMethodService = inject(ServiceMethodService);
 
   readonly controlInfo = input.required<FormControlInfoContainer>();
   readonly parentPath = input.required<ControlPath>();
 
-  private readonly path = computed(() => [...this.parentPath(), this.controlInfo().propertyName]);
+  private readonly path = computed(() =>
+    joinPath(this.parentPath(), this.controlInfo().propertyName),
+  );
   readonly width = computed(() => widthToCss(this.controlInfo().width));
   readonly control = computed(() => this.formModelService.get<FormControl>(this.path()));
   readonly controlType = computed(
     () => this.metadataLookup.getPropertyMetadata(this.path(), 'controlType') ?? ControlType.Text,
   );
   readonly visible = signal(true);
-  readonly label = signal('');
+  readonly label = linkedSignal(() => pascalCaseToWords(this.controlInfo().propertyName));
 
   ngOnInit() {
-    this.pocEvaluator
-      .propertyMetadataValueChanges<boolean>(this.path(), 'visible')
-      .subscribe((v) => this.visible.set(v ?? true));
-    this.pocEvaluator
-      .propertyMetadataValueChanges<string>(this.path(), 'label')
-      .subscribe((l) => this.label.set(l ?? pascalCaseToWords(this.controlInfo().propertyName)));
+    this.controlValues
+      .observe<boolean>(this.path(), 'visible')
+      ?.subscribe((v) => this.visible.set(v));
+    this.controlValues
+      .observeMetadata<string>(this.path(), 'label')
+      ?.subscribe((l) => this.label.set(l));
   }
 
   executeServiceMethod() {

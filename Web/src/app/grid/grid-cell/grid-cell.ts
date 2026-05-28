@@ -5,7 +5,7 @@ import { ServiceMethodService } from '../../service-method/service-method-servic
 import { CheckboxInput } from '../../dynamic-control/checkbox/checkbox-input';
 import { ControlType, FormControlInfoContainer } from '../../api/api.g';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
-import { ControlPath } from '../../utils/form-utils';
+import { ControlPath, joinPath } from '../../utils/form-utils';
 import { FormModelService } from '../../form-services/form-model-service';
 
 @Component({
@@ -23,7 +23,9 @@ export class GridCell {
   private readonly metadataLookup = inject(MetadataLookupService);
   private readonly formModelService = inject(FormModelService);
 
-  private readonly path = computed(() => [...this.parentPath(), this.controlInfo().propertyName]);
+  private readonly path = computed(() =>
+    joinPath(this.parentPath(), this.controlInfo().propertyName),
+  );
   readonly control = computed(() => this.formModelService.get<FormControl>(this.path()));
   readonly controlType = computed(
     () => this.metadataLookup.getPropertyMetadata(this.path(), 'controlType') ?? ControlType.Text,

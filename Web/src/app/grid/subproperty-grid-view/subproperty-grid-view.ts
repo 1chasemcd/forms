@@ -4,10 +4,9 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular
 import { GridCell } from '../grid-cell/grid-cell';
 import { GridSelectionType, SubPropertyGridView } from '../../api/api.g';
 import { CheckboxInput } from '../../dynamic-control/checkbox/checkbox-input';
-import { ControlPath } from '../../utils/form-utils';
+import { ControlPath, joinPath } from '../../utils/form-utils';
 import { FormModelService } from '../../form-services/form-model-service';
-import { PropertyOrConstantEvaluationService } from '../../form-services/property-or-constant-evaluation-service';
-import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
+import { ControlValueService } from '../../form-services/control-value-service';
 import { pascalCaseToWords } from '../../utils/string-utils';
 
 @Component({
@@ -25,10 +24,9 @@ export class SubpropertyGridViewComponent implements OnInit {
   readonly modelPath = input.required<ControlPath>();
 
   private readonly modelService = inject(FormModelService);
-  private readonly pocEvaluator = inject(PropertyOrConstantEvaluationService);
-  private readonly metadataLookup = inject(MetadataLookupService);
+  private readonly controlValues = inject(ControlValueService);
 
-  readonly arrayPath = computed(() => [...this.modelPath(), this.view().subProperty]);
+  readonly arrayPath = computed(() => joinPath(this.modelPath(), this.view().subProperty));
   readonly labels: string[] = [];
   readonly rows = computed(() => this.modelService.get<FormArray<FormGroup>>(this.arrayPath()));
 
@@ -37,10 +35,10 @@ export class SubpropertyGridViewComponent implements OnInit {
   ngOnInit() {
     for (const controlInfo of this.view().controls) {
       const index = this.labels.push('') - 1;
-      const controlPath = [...this.arrayPath(), controlInfo.propertyName];
-      this.pocEvaluator
-        .propertyMetadataValueChanges<string>(controlPath, 'label')
-        .subscribe((l) => (this.labels[index] = l ?? pascalCaseToWords(controlInfo.propertyName)));
+      const controlPath = joinPath(this.arrayPath(), controlInfo.propertyName);
+      this.controlValues
+        .observe<string>(controlPath, 'label')
+        ?.subscribe((l) => (this.labels[index] = l ?? pascalCaseToWords(controlInfo.propertyName)));
     }
   }
 
@@ -79,11 +77,11 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   private getRowIndex(row: FormGroup) {
     const id = this.getRowId(row);
-    return this.rows().controls.findIndex((x) => this.getRowId(x) == id);
+    return this.rows()?.controls.findIndex((x) => this.getRowId(x) == id);
   }
 
   createRowPath(row: FormGroup) {
-    return computed(() => [...this.arrayPath(), this.getRowIndex(row)]);
+    return computed(() => joinPath(this.arrayPath(), this.getRowIndex(row)));
   }
 
   getControlFromRow(row: FormGroup, propertyName: string) {
@@ -101,13 +99,13 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   selectAllUpdated() {
     const value = this.selectAllControl.value;
-    for (const row of this.rows().controls) {
+    for (const row of this.rows()?.controls ?? []) {
       this.getSelectionControl(row).setValue(value);
     }
   }
 
   private unselectAllOthers(idToKeep: unknown) {
-    for (const row of this.rows().controls) {
+    for (const row of this.rows()?.controls ?? []) {
       if (this.getRowId(row) === idToKeep) continue;
       this.getSelectionControl(row).setValue(false);
     }
@@ -115,7 +113,7 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   private updateSelectAllState() {
     let allSelected = true;
-    for (const row of this.rows().controls) {
+    for (const row of this.rows()?.controls ?? []) {
       const value = this.getSelectionControl(row).value;
       if (!value) allSelected = false;
     }

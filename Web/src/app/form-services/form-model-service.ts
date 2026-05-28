@@ -1,9 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { MetadataProcessorRegistryService } from '../metadata/metadata-processor-registry-service';
 import { MetadataLookupService } from '../metadata/metadata-lookup-service';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
-import { getOrAddArray, getOrAddControl, getOrAddGroup } from '../utils/api-utils';
-import { ControlPath, parentPath } from '../utils/form-utils';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { ControlPath, joinPath, lastOfPath, parentPath } from '../utils/form-utils';
 
 @Injectable()
 export class FormModelService {
@@ -30,30 +29,37 @@ export class FormModelService {
     for (const [propertyName, metadataContainer] of Object.entries(
       rootMetadata.propertyMetadatas,
     )) {
-      if (metadataContainer.$type === 'enumerable') getOrAddArray(formGroup, propertyName);
-      else if (metadataContainer.$type === 'subproperty') {
-        const group = this.createFormGroup(metadataContainer.subPropertyType);
-        getOrAddGroup(formGroup, propertyName, group);
-      } else {
-        const control = getOrAddControl(formGroup, propertyName);
-        metadataContainer.metadatas.forEach((m) =>
-          this.metadataProcessorRegistry.getMetadataProcessor(m)?.process(control, formGroup, m),
-        );
-      }
+      if (metadataContainer.$type === 'enumerable')
+        formGroup.addControl(propertyName, new FormArray([]));
+      else if (metadataContainer.$type === 'subproperty')
+        formGroup.addControl(propertyName, this.createFormGroup(metadataContainer.subPropertyType));
+      else formGroup.addControl(propertyName, new FormControl(''));
+    }
+
+    for (const [propertyName, metadataContainer] of Object.entries(
+      rootMetadata.propertyMetadatas,
+    )) {
+      if (metadataContainer.$type !== 'primitive') continue;
+      const control = formGroup.get(propertyName);
+      if (!control) continue;
+      metadataContainer.metadatas.forEach((m) =>
+        this.metadataProcessorRegistry.getMetadataProcessor(m)?.process(control, m),
+      );
     }
 
     return formGroup;
   }
 
-  get<T extends AbstractControl>(path: ControlPath) {
-    if (!Array.isArray(path) || path.length == 0) return this._model as unknown as T;
+  get<T extends AbstractControl>(path: ControlPath): T | null {
+    if (!path || !Array.isArray(path)) return null;
+    if (path.length == 0) return this._model as unknown as T;
     return this._model.get(path) as T;
   }
 
-  getOrAdd<T extends AbstractControl>(path: ControlPath, toAdd: T): T {
+  private getOrAdd<T extends AbstractControl>(path: ControlPath, toAdd: T): T {
     const existing = this.get<T>(path);
     if (existing) return existing;
-    const lastKey = path.at(-1) as unknown as string | number; // if we make it here path is not empty
+    const lastKey = lastOfPath(path);
     if (typeof lastKey === 'number') {
       const parent = this.getOrAdd(parentPath(path), new FormArray<T>([]));
       parent.setControl(lastKey, toAdd);
@@ -65,23 +71,20 @@ export class FormModelService {
   }
 
   patchValues(path: ControlPath, values: Record<string, unknown>) {
-    const group = this.getOrAdd(path, new FormGroup({}));
-
     for (const [key, value] of Object.entries(values)) {
-      const propPath = [...path, key];
+      const propPath = joinPath(path, key);
       const propMetadata = this.metadataLookup.lookupByPath(propPath);
-      if (!propMetadata) continue;
-      if (propMetadata.$type === 'enumerable') {
+      if (propMetadata?.$type === 'enumerable') {
         this.patchArrayValues(
           value as Record<string, unknown>[],
           propPath,
           propMetadata.enumeratedType,
         );
-      } else if (propMetadata.$type === 'subproperty') {
+      } else if (propMetadata?.$type === 'subproperty') {
         this.patchValues(propPath, value as Record<string, unknown>);
       } else {
-        const toSet = getOrAddControl(group, key);
-        toSet.setValue(value);
+        const toSet = this.getOrAdd(propPath, new FormControl());
+        toSet?.setValue(value);
       }
     }
   }
@@ -104,7 +107,7 @@ export class FormModelService {
     for (const [index, row] of valuesArray.entries()) {
       const rowGroup = this.createFormGroup(gridType);
       array.push(rowGroup);
-      this.patchValues([...path, index], row);
+      this.patchValues(joinPath(path, index), row);
     }
   }
 

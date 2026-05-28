@@ -30,12 +30,12 @@ export class ControlEnablementService {
       Object.values(control.controls).forEach((c) => this.maybeEnableChildren(c));
   }
 
-  enabledFor(control: AbstractControl, event: Observable<unknown>) {
+  enabledFor(control: AbstractControl, event?: Observable<unknown>) {
     this.registerControl(control);
     const deps = this.dependencies.get(control) as unknown as boolean[];
     const index = deps.push(false) - 1;
 
-    event.subscribe((x) => {
+    event?.subscribe((x) => {
       const deps = this.dependencies.get(control) as unknown as boolean[];
       const subj = this.enablementSubjects.get(control) as unknown as BehaviorSubject<boolean>;
       deps[index] = !!x;

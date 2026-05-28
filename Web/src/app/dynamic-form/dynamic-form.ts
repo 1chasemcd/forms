@@ -8,9 +8,10 @@ import { MetadataLookupService } from '../metadata/metadata-lookup-service';
 import { MetadataProcessorRegistryService } from '../metadata/metadata-processor-registry-service';
 import { ViewLookupService } from '../form-services/view-lookup-service';
 import { FormModelService } from '../form-services/form-model-service';
-import { PropertyOrConstantEvaluationService } from '../form-services/property-or-constant-evaluation-service';
+import { ControlValueService } from '../form-services/control-value-service';
 import { ServiceMethodService } from '../service-method/service-method-service';
 import { ControlEnablementService } from '../form-services/control-enablement-service';
+import { DefaultMetadataProcessorsService } from '../metadata/default-metadata-processors-service';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -21,16 +22,17 @@ import { ControlEnablementService } from '../form-services/control-enablement-se
     MetadataProcessorRegistryService,
     ViewLookupService,
     FormModelService,
-    PropertyOrConstantEvaluationService,
+    ControlValueService,
     ServiceMethodService,
     ControlEnablementService,
+    DefaultMetadataProcessorsService,
   ],
 })
 export class DynamicForm implements OnInit {
   private readonly formClient = inject(FormClient);
   private readonly repositoryClient = inject(RepositoryClient);
   private readonly formModelService = inject(FormModelService);
-  private readonly metadataProcessorRegistry = inject(MetadataProcessorRegistryService);
+  private readonly defaultMetadataProcessors = inject(DefaultMetadataProcessorsService);
   private readonly route = inject(ActivatedRoute);
   private readonly metadataLookup = inject(MetadataLookupService);
   private readonly viewLookup = inject(ViewLookupService);
@@ -44,7 +46,7 @@ export class DynamicForm implements OnInit {
   }
 
   ngOnInit() {
-    this.metadataProcessorRegistry.initialize();
+    this.defaultMetadataProcessors.initialize();
     const path = this.route.snapshot.paramMap.get('path');
     if (!path) return;
 

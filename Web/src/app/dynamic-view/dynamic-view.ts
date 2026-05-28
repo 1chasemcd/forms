@@ -4,9 +4,8 @@ import { DynamicControl } from '../dynamic-control/dynamic-control/dynamic-contr
 import { SubpropertyGridViewComponent } from '../grid/subproperty-grid-view/subproperty-grid-view';
 import { NgClass } from '@angular/common';
 import { ViewLookupService } from '../form-services/view-lookup-service';
-import { FormModelService } from '../form-services/form-model-service';
 import { ControlPath } from '../utils/form-utils';
-import { PropertyOrConstantEvaluationService } from '../form-services/property-or-constant-evaluation-service';
+import { ControlValueService } from '../form-services/control-value-service';
 
 @Component({
   selector: 'app-dynamic-view',
@@ -18,8 +17,7 @@ import { PropertyOrConstantEvaluationService } from '../form-services/property-o
 })
 export class DynamicView implements OnInit {
   private readonly viewLookup = inject(ViewLookupService);
-  private readonly formModelService = inject(FormModelService);
-  private readonly pocEvaluator = inject(PropertyOrConstantEvaluationService);
+  private readonly controlValues = inject(ControlValueService);
 
   readonly viewId = input.required<number>();
   readonly modelPath = input.required<ControlPath>();
@@ -31,9 +29,9 @@ export class DynamicView implements OnInit {
   ngOnInit(): void {
     const title = this.view()?.title;
     if (title)
-      this.pocEvaluator
-        .observe<string>(title, this.modelPath())
-        .subscribe((t) => this.title.set(t));
+      this.controlValues
+        .observe<string>(this.modelPath(), title)
+        ?.subscribe((t) => this.title.set(t));
   }
 
   readonly classes = computed(() =>

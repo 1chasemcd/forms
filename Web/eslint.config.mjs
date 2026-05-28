@@ -29,6 +29,12 @@ export default defineConfig([
         },
       ],
       '@typescript-eslint/no-extraneous-class': 'off',
+      '@typescript-eslint/unified-signatures': [
+        'error',
+        {
+          ignoreDifferentlyNamedParameters: true,
+        },
+      ],
     },
   },
   {

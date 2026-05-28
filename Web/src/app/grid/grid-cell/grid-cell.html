@@ -1,27 +1,29 @@
 <!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
-@switch (controlType()) {
-  @case (ControlType.Button) {}
-  @case (ControlType.LabelValue) {}
-  @case (ControlType.TextArea) {
-    <app-dynamic-input
-      [control]="control()"
-      [controlType]="ControlType.Text"
-      (valueChange)="executeServiceMethod()"
-    ></app-dynamic-input>
-  }
-  @case (ControlType.CheckBox) {
-    <label>
-      <app-checkbox-input
-        [control]="control()"
-        (checkedChange)="executeServiceMethod()"
-      ></app-checkbox-input>
-    </label>
-  }
-  @default {
-    <app-dynamic-input
-      [control]="control()"
-      [controlType]="controlType()"
-      (valueChange)="executeServiceMethod()"
-    ></app-dynamic-input>
+@if (control(); as control) {
+  @switch (controlType()) {
+    @case (ControlType.Button) {}
+    @case (ControlType.LabelValue) {}
+    @case (ControlType.TextArea) {
+      <app-dynamic-input
+        [control]="control"
+        [controlType]="ControlType.Text"
+        (valueChange)="executeServiceMethod()"
+      ></app-dynamic-input>
+    }
+    @case (ControlType.CheckBox) {
+      <label>
+        <app-checkbox-input
+          [control]="control"
+          (checkedChange)="executeServiceMethod()"
+        ></app-checkbox-input>
+      </label>
+    }
+    @default {
+      <app-dynamic-input
+        [control]="control"
+        [controlType]="controlType()"
+        (valueChange)="executeServiceMethod()"
+      ></app-dynamic-input>
+    }
   }
 }

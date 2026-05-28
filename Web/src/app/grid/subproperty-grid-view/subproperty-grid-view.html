@@ -22,7 +22,7 @@
   </div>
 
   <!-- Rows -->
-  @for (row of rows().controls; track getRowId(row)) {
+  @for (row of rows()?.controls; track getRowId(row)) {
     <div ngGridRow class="contents group" [formGroup]="row">
       @if (view().gridSelectionOptions; as opts) {
         <label class="px-3 border-t border-t-gray-200 group-hover:bg-violet-50">
