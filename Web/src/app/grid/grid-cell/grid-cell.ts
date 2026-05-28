@@ -1,17 +1,19 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { DynamicInput } from '../../dynamic-control/dynamic-input/dynamic-input';
-import { CheckboxInput } from '../../dynamic-control/checkbox/checkbox-input';
 import { ControlType, FormControlInfoContainer } from '../../api/api.g';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { ControlPath, joinPath } from '../../utils/form-utils';
 import { FormModelService } from '../../form-services/form-model-service';
-import { ServiceMethodService } from '../../service-method/service-method-service';
+import { CheckboxIcon } from '../../dynamic-control/checkbox/checkbox-icon';
+import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-grid-cell',
-  imports: [ReactiveFormsModule, DynamicInput, CheckboxInput],
+  imports: [ReactiveFormsModule, CheckboxIcon, DatePipe, CurrencyPipe, DecimalPipe],
   templateUrl: './grid-cell.html',
+  host: {
+    class: 'h-full p-2 min-w-full w-0',
+  },
 })
 export class GridCell {
   readonly ControlType = ControlType;
@@ -19,7 +21,6 @@ export class GridCell {
   readonly controlInfo = input.required<FormControlInfoContainer>();
   readonly parentPath = input.required<ControlPath>();
 
-  private readonly serviceMethodService = inject(ServiceMethodService);
   private readonly metadataLookup = inject(MetadataLookupService);
   private readonly formModelService = inject(FormModelService);
 
@@ -31,8 +32,7 @@ export class GridCell {
     () => this.metadataLookup.getPropertyMetadata(this.path(), 'controlType') ?? ControlType.Text,
   );
 
-  executeServiceMethod() {
-    const method = this.metadataLookup.getPropertyMetadata(this.path(), 'formServiceMethod');
-    if (method) this.serviceMethodService.runMethod(this.parentPath(), method);
+  timeToDate(time: unknown) {
+    return new Date(`1970-01-01T${time}`);
   }
 }

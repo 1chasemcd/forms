@@ -1,29 +1,27 @@
-<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
 @if (control(); as control) {
   @switch (controlType()) {
     @case (ControlType.Button) {}
     @case (ControlType.LabelValue) {}
     @case (ControlType.TextArea) {
-      <app-dynamic-input
-        [control]="control"
-        [controlType]="ControlType.Text"
-        (valueChange)="executeServiceMethod()"
-      ></app-dynamic-input>
+      <span>{{ control.value?.toString().split('\n').at(0) }}</span>
     }
     @case (ControlType.CheckBox) {
-      <label>
-        <app-checkbox-input
-          [control]="control"
-          (checkedChange)="executeServiceMethod()"
-        ></app-checkbox-input>
-      </label>
+      <app-checkbox-icon [checked]="control.value"></app-checkbox-icon>
+    }
+    @case (ControlType.Date) {
+      <span>{{ control.value | date: 'MM/dd/yyyy' }}</span>
+    }
+    @case (ControlType.Time) {
+      <span>{{ timeToDate(control.value) | date: 'h:mm a' }}</span>
+    }
+    @case (ControlType.Currency) {
+      <span>{{ control.value | currency }}</span>
+    }
+    @case (ControlType.Numeric) {
+      <span>{{ control.value | number }}</span>
     }
     @default {
-      <app-dynamic-input
-        [control]="control"
-        [controlType]="controlType()"
-        (valueChange)="executeServiceMethod()"
-      ></app-dynamic-input>
+      <span>{{ control.value }}</span>
     }
   }
 }
