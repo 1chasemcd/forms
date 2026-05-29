@@ -35,12 +35,7 @@ export class DynamicView implements OnInit {
   }
 
   readonly classes = computed(() =>
-    [
-      this.width(),
-      this.shouldStyleUnifiedView()
-        ? 'bg-white rounded-lg shadow'
-        : 'grid grid-cols-12 gap-4 content-start',
-    ].join(' '),
+    [this.width(), this.shouldStyleUnifiedView() ? 'bg-white rounded-lg shadow' : ''].join(' '),
   );
 
   readonly combinedView = computed(() => {

@@ -1,8 +1,10 @@
-@if (draft(); as draft) {
-  <app-dynamic-input [control]="draft" [controlType]="controlType()"></app-dynamic-input>
-} @else if (control(); as control) {
-  <app-grid-cell-content
-    [value]="control.value"
-    [controlType]="controlType()"
-  ></app-grid-cell-content>
-}
+<div class="flex-1">
+  @if (draft(); as draft) {
+    <app-dynamic-input [control]="draft" [controlType]="controlType()"></app-dynamic-input>
+  } @else if (control(); as control) {
+    <app-grid-cell-content
+      [value]="control.value"
+      [controlType]="controlType()"
+    ></app-grid-cell-content>
+  }
+</div>

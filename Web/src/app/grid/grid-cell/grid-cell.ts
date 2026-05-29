@@ -19,7 +19,7 @@ import { startWith } from 'rxjs';
     '(mouseup)': 'finishStartEdit()',
     '(focusout)': 'stopEdit()',
     '[class]': `
-    "block px-3 py-2 min-h-full min-w-full w-0 overflow-scroll border rounded border-transparent"
+    "flex items-center px-3 h-10 min-w-full w-0 overflow-scroll border rounded border-transparent"
     +" [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     + (isEnabled() ? " focus-within:hover:border-violet-600 focus-within:border-violet-600 hover:border-gray-400" : "")`,
   },
