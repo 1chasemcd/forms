@@ -1,27 +1,8 @@
-@if (control(); as control) {
-  @switch (controlType()) {
-    @case (ControlType.Button) {}
-    @case (ControlType.LabelValue) {}
-    @case (ControlType.TextArea) {
-      <span>{{ control.value?.toString().split('\n').at(0) }}</span>
-    }
-    @case (ControlType.CheckBox) {
-      <app-checkbox-icon [checked]="control.value"></app-checkbox-icon>
-    }
-    @case (ControlType.Date) {
-      <span>{{ control.value | date: 'MM/dd/yyyy' }}</span>
-    }
-    @case (ControlType.Time) {
-      <span>{{ timeToDate(control.value) | date: 'h:mm a' }}</span>
-    }
-    @case (ControlType.Currency) {
-      <span>{{ control.value | currency }}</span>
-    }
-    @case (ControlType.Numeric) {
-      <span>{{ control.value | number }}</span>
-    }
-    @default {
-      <span>{{ control.value }}</span>
-    }
-  }
+@if (draft(); as draft) {
+  <app-dynamic-input [control]="draft" [controlType]="controlType()"></app-dynamic-input>
+} @else if (control(); as control) {
+  <app-grid-cell-content
+    [value]="control.value"
+    [controlType]="controlType()"
+  ></app-grid-cell-content>
 }

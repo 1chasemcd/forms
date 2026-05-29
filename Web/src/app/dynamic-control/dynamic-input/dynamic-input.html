@@ -1,20 +1,20 @@
 @switch (controlType()) {
   @case (ControlType.Currency) {
-    <input [formControl]="control()" appStandardInputDirective appNumberFormat />
+    <input #input [formControl]="control()" appStandardInputDirective appNumberFormat />
   }
   @case (ControlType.Numeric) {
-    <input [formControl]="control()" appStandardInputDirective appNumberFormat />
+    <input #input [formControl]="control()" appStandardInputDirective appNumberFormat />
   }
   @case (ControlType.Date) {
-    <input [formControl]="control()" type="date" appStandardInputDirective />
+    <input #input [formControl]="control()" type="date" appStandardInputDirective />
   }
   @case (ControlType.Text) {
-    <input [formControl]="control()" appStandardInputDirective />
+    <input #input [formControl]="control()" appStandardInputDirective />
   }
   @case (ControlType.TextArea) {
-    <textarea [formControl]="control()" rows="3" appStandardInputDirective></textarea>
+    <textarea #input [formControl]="control()" rows="3" appStandardInputDirective></textarea>
   }
   @case (ControlType.Time) {
-    <input [formControl]="control()" type="time" appStandardInputDirective />
+    <input #input [formControl]="control()" type="time" appStandardInputDirective />
   }
 }

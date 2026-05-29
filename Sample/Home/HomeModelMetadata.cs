@@ -40,5 +40,8 @@ public class MovieMetadata : Metadata<Movie>
         Numeric(m => m.MyPersonalRating)
             .WithMinValue(0)
             .WithMaxValue(5);
+        Text(m => m.Name).Disabled();
+        Text(m => m.DirectorName).Disabled();
+        Date(m => m.ReleaseDate).Disabled();
     }
 }

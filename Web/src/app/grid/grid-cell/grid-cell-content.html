@@ -1,0 +1,33 @@
+@switch (controlType()) {
+  @case (ControlType.Button) {}
+  @case (ControlType.LabelValue) {}
+  @case (ControlType.CheckBox) {
+    <app-checkbox-icon [checked]="!!value()"></app-checkbox-icon>
+  }
+  @default {
+    <span
+      [class]="'whitespace-nowrap overflow-hidden' + (shouldFloatRight() ? ' float-right' : '')"
+    >
+      @switch (controlType()) {
+        @case (ControlType.TextArea) {
+          {{ valueAsString().split('\n').at(0) }}
+        }
+        @case (ControlType.Date) {
+          {{ valueAsNumber() | date: 'MM/dd/yyyy' }}
+        }
+        @case (ControlType.Time) {
+          {{ valueAsTime() | date: 'hh:mm a' }}
+        }
+        @case (ControlType.Currency) {
+          {{ valueAsNumber() | currency }}
+        }
+        @case (ControlType.Numeric) {
+          {{ valueAsNumber() | number }}
+        }
+        @default {
+          {{ value() }}
+        }
+      }
+    </span>
+  }
+}

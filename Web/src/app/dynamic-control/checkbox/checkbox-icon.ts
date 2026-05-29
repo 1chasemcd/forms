@@ -14,7 +14,7 @@ import { Component, computed, input } from '@angular/core';
     </svg>
   }`,
   host: {
-    '[class]': '"flex h-5 w-5 items-center justify-center rounded border " + colorClass()',
+    '[class]': '"m-auto flex h-5 w-5 items-center justify-center rounded border " + colorClass()',
   },
 })
 export class CheckboxIcon {

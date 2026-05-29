@@ -1,5 +1,5 @@
 <!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
-<div ngGrid class="grid overflow-x-auto" [style.gridTemplateColumns]="gridTemplateColumns()">
+<div ngGrid class="grid" [style.gridTemplateColumns]="gridTemplateColumns()">
   <!-- Header -->
   <div ngGridRow class="contents">
     @if (view().gridSelectionOptions?.selectionType === GridSelectionType.Multiple) {
@@ -34,13 +34,13 @@
       }
       @for (column of view().controls; track $index) {
         <div
-          class="border-t border-t-gray-200 group-hover:bg-violet-50 group-focus-within:bg-violet-50 pb-px px-px"
+          class="border-t border-t-gray-200 group-hover:bg-violet-50 group-focus-within:bg-violet-50"
         >
           <app-grid-cell
-            class="block h-10 px-3 has-enabled:hover:ring focus-within:ring focus-within:ring-violet-600 ring-gray-400 rounded-sm"
             ngGridCell
             [controlInfo]="column"
             [parentPath]="createRowPath(row)()"
+            [parentView]="this.view()"
           >
           </app-grid-cell>
         </div>

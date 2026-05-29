@@ -71,6 +71,6 @@ public class HomeForm : Form<TestModel>
             { m => m.ReleaseDate },
             { m => m.DirectorName },
             m => m.MyPersonalRating
-        }.WithTitle("A Grid View");
+        }.WithTitle("A Grid View").EnableEdit();
     }
 }

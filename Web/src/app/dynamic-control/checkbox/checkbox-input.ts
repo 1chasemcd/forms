@@ -7,7 +7,8 @@ import { CheckboxIcon } from './checkbox-icon';
   imports: [ReactiveFormsModule, CheckboxIcon],
   templateUrl: './checkbox-input.html',
   host: {
-    class: 'flex items-center justify-center h-full',
+    class:
+      'flex items-center justify-center my-auto focus-within:border-violet-600 rounded border border-transparent p-px',
   },
 })
 export class CheckboxInput {

@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, ElementRef, input, output, viewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { StandardInputDirective } from '../standard-input/standard-input-directive';
 import { NumberFormatDirective } from '../../formatters/number-format-directive';
@@ -19,6 +19,12 @@ export class DynamicInput {
   readonly control = input.required<FormControl>();
   readonly valueChange = output();
   private initialValue = '';
+  private readonly inputEl = viewChild<ElementRef<HTMLInputElement | HTMLTextAreaElement>>('input');
+
+  focus() {
+    this.inputEl()?.nativeElement.focus();
+    this.inputEl()?.nativeElement.select();
+  }
 
   focused() {
     this.initialValue = this.control().value;

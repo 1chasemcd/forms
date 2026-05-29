@@ -8,7 +8,6 @@ import { ControlPath, joinPath } from '../../utils/form-utils';
 import { FormModelService } from '../../form-services/form-model-service';
 import { ControlValueService } from '../../form-services/control-value-service';
 import { pascalCaseToWords } from '../../utils/string-utils';
-import { ControlEnablementService } from '../../form-services/control-enablement-service';
 
 @Component({
   selector: 'app-subproperty-grid-view',
@@ -26,7 +25,6 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   private readonly modelService = inject(FormModelService);
   private readonly controlValues = inject(ControlValueService);
-  private readonly enablementService = inject(ControlEnablementService);
 
   readonly arrayPath = computed(() => joinPath(this.modelPath(), this.view().subProperty));
   readonly labels: WritableSignal<string>[] = [];
