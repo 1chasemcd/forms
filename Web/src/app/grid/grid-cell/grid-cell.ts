@@ -2,7 +2,7 @@ import { Component, computed, inject, input, OnInit, signal, viewChild } from '@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ControlType, FormControlInfoContainer, SubPropertyGridView } from '../../api/api.g';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
-import { ControlPath, joinPath } from '../../utils/form-utils';
+import { ControlPath, joinPath, parentPath } from '../../utils/form-utils';
 import { FormModelService } from '../../form-services/form-model-service';
 import { GridCellContent } from './grid-cell-content';
 import { ServiceMethodService } from '../../service-method/service-method-service';
@@ -28,7 +28,7 @@ export class GridCell implements OnInit {
   readonly ControlType = ControlType;
 
   readonly controlInfo = input.required<FormControlInfoContainer>();
-  readonly parentPath = input.required<ControlPath>();
+  readonly rowModelPath = input.required<ControlPath>();
   readonly parentView = input.required<SubPropertyGridView>();
 
   private readonly metadataLookup = inject(MetadataLookupService);
@@ -42,7 +42,7 @@ export class GridCell implements OnInit {
   readonly draft = signal<FormControl | null>(null);
 
   private readonly path = computed(() =>
-    joinPath(this.parentPath(), this.controlInfo().propertyName),
+    joinPath(this.rowModelPath(), this.controlInfo().propertyName),
   );
   readonly control = computed(() => this.formModelService.get<FormControl>(this.path()));
   readonly controlType = computed(
@@ -65,12 +65,12 @@ export class GridCell implements OnInit {
     if (parentView.editViewId !== undefined) return;
     if (parentView.canEdit)
       this.controlValues
-        .observe(this.parentPath(), parentView.canEdit)
+        .observe(parentPath(parentPath(this.rowModelPath())), parentView.canEdit)
         ?.subscribe((x) => this.gridEnabled.set(!!x));
     if (parentView.canEdit?.$type === 'constant' && !parentView.canEdit.value) return;
     if (parentView.canEditRow)
       this.controlValues
-        .observe(this.parentPath(), parentView.canEditRow)
+        .observe(this.rowModelPath(), parentView.canEditRow)
         ?.subscribe((x) => this.rowEnabled.set(!!x));
     if (parentView.canEditRow?.$type === 'constant' && !parentView.canEditRow.value) return;
     this.control()
@@ -114,6 +114,6 @@ export class GridCell implements OnInit {
 
   executeServiceMethod() {
     const method = this.metadataLookup.getPropertyMetadata(this.path(), 'formServiceMethod');
-    if (method) this.serviceMethodService.runMethod(this.parentPath(), method);
+    if (method) this.serviceMethodService.runMethod(this.rowModelPath(), method);
   }
 }
