@@ -3,14 +3,12 @@
   <!-- Header -->
   <div class="contents">
     @if (view().gridSelectionOptions?.selectionType === GridSelectionType.Multiple) {
-      <div class="flex items-center px-2">
-        <label>
-          <app-checkbox-input
-            [control]="selectAllControl"
-            (checkedChange)="selectAllUpdated()"
-          ></app-checkbox-input>
-        </label>
-      </div>
+      <label class="flex items-center px-2">
+        <app-checkbox-input
+          [control]="selectAllControl"
+          (checkedChange)="selectAllUpdated()"
+        ></app-checkbox-input>
+      </label>
     } @else if (view().gridSelectionOptions) {
       <div></div>
     }
@@ -40,10 +38,10 @@
       }
       @for (column of view().controls; track $index) {
         <app-grid-cell
+          class="group-hover:bg-violet-50 group-focus-within:bg-violet-50"
           [controlInfo]="column"
           [rowModelPath]="createRowPath(row)()"
           [parentView]="this.view()"
-          class="group-hover:bg-violet-50 group-focus-within:bg-violet-50"
         >
         </app-grid-cell>
       }

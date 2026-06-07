@@ -23,10 +23,6 @@ import { startWith } from 'rxjs';
   selector: 'app-grid-cell',
   imports: [ReactiveFormsModule, GridCellContent, DynamicInput],
   templateUrl: './grid-cell.html',
-  host: {
-    '[class]': `"border rounded border-transparent h-10 px-2"
-    + (isEnabled() ? " focus-within:hover:border-violet-600 focus-within:border-violet-600 hover:border-gray-400" : "")`,
-  },
 })
 export class GridCell implements OnInit {
   readonly ControlType = ControlType;
@@ -86,7 +82,6 @@ export class GridCell implements OnInit {
   startEdit(event: FocusEvent) {
     if (!this.isEnabled()) return;
     if (this.draft()) return;
-    this.maybeHandleCheckbox();
     const tempControl = new FormControl(
       this.control()?.value,
       this.control()?.validator,
@@ -113,7 +108,9 @@ export class GridCell implements OnInit {
     control?.markAsDirty();
   }
 
-  private maybeHandleCheckbox() {
+  maybeHandleCheckbox() {
+    if (!this.isEnabled()) return;
+    if (this.draft()) return;
     if (this.controlType() !== ControlType.CheckBox) return;
     const current = this.control()?.value;
     this.control()?.setValue(!current);

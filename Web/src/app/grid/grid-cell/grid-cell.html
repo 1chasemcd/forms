@@ -1,20 +1,27 @@
-@if (draft(); as draft) {
-  <div
-    (focusout)="stopEdit()"
-    class="w-full h-full [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-  >
-    <app-dynamic-input [control]="draft" [controlType]="controlType()" class=""></app-dynamic-input>
-  </div>
-} @else if (control(); as control) {
-  <div
-    (focusin)="startEdit($event)"
-    tabindex="0"
-    class="flex items-center w-full h-full [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-  >
+<div
+  [attr.tabindex]="isEnabled() && !draft() ? 0 : null"
+  (focusin)="startEdit($event)"
+  [class]="
+    'flex items-center border rounded border-transparent px-2 w-full h-10' +
+    ' [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden' +
+    (isEnabled()
+      ? ' focus-within:hover:border-violet-600 focus-within:border-violet-600 hover:border-gray-400'
+      : '')
+  "
+>
+  @if (draft(); as draft) {
+    <app-dynamic-input
+      (focusout)="stopEdit()"
+      [control]="draft"
+      [controlType]="controlType()"
+      class="flex-1"
+    ></app-dynamic-input>
+  } @else if (control(); as control) {
     <app-grid-cell-content
+      (mousedown)="maybeHandleCheckbox()"
       [value]="control.value"
       [controlType]="controlType()"
       class="flex-1"
     ></app-grid-cell-content>
-  </div>
-}
+  }
+</div>
