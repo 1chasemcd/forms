@@ -1,3 +1,4 @@
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
 @switch (controlType()) {
   @case (ControlType.Currency) {
     <input #input [formControl]="control()" appStandardInputDirective appNumberFormat />
@@ -16,5 +17,14 @@
   }
   @case (ControlType.Time) {
     <input #input [formControl]="control()" type="time" appStandardInputDirective />
+  }
+  @case (ControlType.CheckBox) {
+    <label
+      #input
+      class="w-full h-full flex items-center justify-center"
+      (mousedown)="$event.preventDefault()"
+    >
+      <app-checkbox-input [control]="control()"></app-checkbox-input>
+    </label>
   }
 }

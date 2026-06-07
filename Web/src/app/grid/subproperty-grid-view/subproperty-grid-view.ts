@@ -1,5 +1,4 @@
 import { Component, computed, inject, input, OnInit, signal, WritableSignal } from '@angular/core';
-import { Grid } from '@angular/aria/grid';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { GridCell } from '../grid-cell/grid-cell';
 import { GridSelectionType, SubPropertyGridView } from '../../api/api.g';
@@ -8,10 +7,11 @@ import { ControlPath, joinPath } from '../../utils/form-utils';
 import { FormModelService } from '../../form-services/form-model-service';
 import { ControlValueService } from '../../form-services/control-value-service';
 import { pascalCaseToWords } from '../../utils/string-utils';
+import { Icon } from '../../icon/icon';
 
 @Component({
   selector: 'app-subproperty-grid-view',
-  imports: [Grid, ReactiveFormsModule, GridCell, CheckboxInput],
+  imports: [ReactiveFormsModule, GridCell, CheckboxInput, Icon],
   templateUrl: './subproperty-grid-view.html',
   host: {
     class: 'col-span-12',
@@ -48,6 +48,7 @@ export class SubpropertyGridViewComponent implements OnInit {
       .join(' ');
 
     if (this.view().gridSelectionOptions) columns = 'max-content ' + columns;
+    if (this.view().editViewId !== undefined) columns += ' max-content';
 
     return columns;
   });

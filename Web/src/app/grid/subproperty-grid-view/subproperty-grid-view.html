@@ -1,13 +1,13 @@
 <!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
-<div ngGrid class="grid" [style.gridTemplateColumns]="gridTemplateColumns()">
+<div class="grid" [style.gridTemplateColumns]="gridTemplateColumns()">
   <!-- Header -->
-  <div ngGridRow class="contents">
+  <div class="contents">
     @if (view().gridSelectionOptions?.selectionType === GridSelectionType.Multiple) {
-      <div class="flex items-center px-3">
+      <div class="flex items-center px-2">
         <label>
           <app-checkbox-input
             [control]="selectAllControl"
-            (recalculateEvent)="selectAllUpdated()"
+            (checkedChange)="selectAllUpdated()"
           ></app-checkbox-input>
         </label>
       </div>
@@ -15,35 +15,44 @@
       <div></div>
     }
     @for (label of labels; track $index) {
-      <div class="font-semibold px-3 h-8 content-center">
+      <div class="font-semibold px-2 h-8 content-center">
         {{ label() }}
       </div>
+    }
+    @if (view().editViewId) {
+      <div></div>
     }
   </div>
 
   <!-- Rows -->
   @for (row of rows()?.controls; track getRowId(row)) {
-    <div ngGridRow class="contents group" [formGroup]="row">
+    <div class="contents group">
+      <div class="col-span-full h-0 border-t border-t-gray-200"></div>
       @if (view().gridSelectionOptions; as opts) {
-        <label class="flex items-center px-3 border-t border-t-gray-200 group-hover:bg-violet-50">
+        <label
+          class="flex items-center px-2 group-hover:bg-violet-50 group-focus-within:bg-violet-50"
+        >
           <app-checkbox-input
             [control]="getControlFromRow(row, opts.selectionProperty)"
-            (recalculateEvent)="selectionPropertyUpdated(row)"
+            (checkedChange)="selectionPropertyUpdated(row)"
           ></app-checkbox-input>
         </label>
       }
       @for (column of view().controls; track $index) {
-        <div
-          class="border-t border-t-gray-200 group-hover:bg-violet-50 group-focus-within:bg-violet-50"
+        <app-grid-cell
+          [controlInfo]="column"
+          [rowModelPath]="createRowPath(row)()"
+          [parentView]="this.view()"
+          class="group-hover:bg-violet-50 group-focus-within:bg-violet-50"
         >
-          <app-grid-cell
-            ngGridCell
-            [controlInfo]="column"
-            [rowModelPath]="createRowPath(row)()"
-            [parentView]="this.view()"
-          >
-          </app-grid-cell>
-        </div>
+        </app-grid-cell>
+      }
+      @if (view().editViewId !== undefined) {
+        <button
+          class="outline-none flex items-center px-2 h-full group-hover:bg-violet-50 group-focus-within:bg-violet-50 text-gray-400 hover:text-violet-600 focus:text-violet-600"
+        >
+          <app-icon name="pencil-square"></app-icon>
+        </button>
       }
     </div>
   }

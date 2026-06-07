@@ -3,10 +3,11 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { StandardInputDirective } from '../standard-input/standard-input-directive';
 import { NumberFormatDirective } from '../../formatters/number-format-directive';
 import { ControlType } from '../../api/api.g';
+import { CheckboxInput } from '../checkbox/checkbox-input';
 
 @Component({
   selector: 'app-dynamic-input',
-  imports: [ReactiveFormsModule, StandardInputDirective, NumberFormatDirective],
+  imports: [ReactiveFormsModule, StandardInputDirective, NumberFormatDirective, CheckboxInput],
   templateUrl: './dynamic-input.html',
   host: {
     '(focusin)': 'focused()',
@@ -19,11 +20,15 @@ export class DynamicInput {
   readonly control = input.required<FormControl>();
   readonly valueChange = output();
   private initialValue = '';
-  private readonly inputEl = viewChild<ElementRef<HTMLInputElement | HTMLTextAreaElement>>('input');
+  private readonly inputEl = viewChild<ElementRef>('input');
 
   focus() {
-    this.inputEl()?.nativeElement.focus();
-    this.inputEl()?.nativeElement.select();
+    const el = this.inputEl();
+    if (el instanceof HTMLLabelElement) return el.nativeElement.focus();
+    const nativeElement = el?.nativeElement;
+    nativeElement?.focus();
+    if (nativeElement instanceof HTMLInputElement || nativeElement instanceof HTMLTextAreaElement)
+      nativeElement.select();
   }
 
   focused() {

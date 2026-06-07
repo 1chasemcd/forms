@@ -69,7 +69,7 @@ public class GridForm : Form<GridFormModel>
             u => u.UserName
         }
         .WithTitle("Users").EnableAdd().EnableEdit();
-        .WithEditForm(new UserEditForm());
+        // .WithEditForm(new UserEditForm());
     }
 }
 

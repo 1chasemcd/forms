@@ -1,10 +1,20 @@
-<div class="flex-1">
-  @if (draft(); as draft) {
-    <app-dynamic-input [control]="draft" [controlType]="controlType()"></app-dynamic-input>
-  } @else if (control(); as control) {
+@if (draft(); as draft) {
+  <div
+    (focusout)="stopEdit()"
+    class="w-full h-full [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+  >
+    <app-dynamic-input [control]="draft" [controlType]="controlType()" class=""></app-dynamic-input>
+  </div>
+} @else if (control(); as control) {
+  <div
+    (focusin)="startEdit($event)"
+    tabindex="0"
+    class="flex items-center w-full h-full [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+  >
     <app-grid-cell-content
       [value]="control.value"
       [controlType]="controlType()"
+      class="flex-1"
     ></app-grid-cell-content>
-  }
-</div>
+  </div>
+}

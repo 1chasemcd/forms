@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, OnInit, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ControlType, FormControlInfoContainer, SubPropertyGridView } from '../../api/api.g';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
@@ -15,12 +24,7 @@ import { startWith } from 'rxjs';
   imports: [ReactiveFormsModule, GridCellContent, DynamicInput],
   templateUrl: './grid-cell.html',
   host: {
-    '(mousedown)': 'startEdit($event)',
-    '(mouseup)': 'finishStartEdit()',
-    '(focusout)': 'stopEdit()',
-    '[class]': `
-    "flex items-center px-3 h-10 min-w-full w-0 overflow-scroll border rounded border-transparent"
-    +" [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    '[class]': `"border rounded border-transparent h-10 px-2"
     + (isEnabled() ? " focus-within:hover:border-violet-600 focus-within:border-violet-600 hover:border-gray-400" : "")`,
   },
 })
@@ -34,6 +38,7 @@ export class GridCell implements OnInit {
   private readonly metadataLookup = inject(MetadataLookupService);
   private readonly formModelService = inject(FormModelService);
   private readonly controlValues = inject(ControlValueService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   private readonly serviceMethodService = inject(ServiceMethodService);
 
@@ -78,26 +83,27 @@ export class GridCell implements OnInit {
       .subscribe(() => this.controlEnabled.set(this.control()?.enabled ?? false));
   }
 
-  startEdit(event: MouseEvent) {
+  startEdit(event: FocusEvent) {
     if (!this.isEnabled()) return;
     if (this.draft()) return;
-    if (this.controlType() === ControlType.CheckBox) return this.handleCheckbox();
+    this.maybeHandleCheckbox();
     const tempControl = new FormControl(
       this.control()?.value,
       this.control()?.validator,
       this.control()?.asyncValidator,
     );
-    event.preventDefault();
+    event?.preventDefault();
     this.draft.set(tempControl);
-  }
-
-  finishStartEdit() {
-    this.inputElement()?.focus();
+    this.cdr.detectChanges();
+    queueMicrotask(() => {
+      this.inputElement()?.focus();
+    });
   }
 
   stopEdit() {
     this.commitValue();
-    this.draft.set(null);
+    setTimeout(() => this.draft.set(null));
+
     this.executeServiceMethod();
   }
 
@@ -106,7 +112,9 @@ export class GridCell implements OnInit {
     control?.setValue(this.draft()?.value);
     control?.markAsDirty();
   }
-  private handleCheckbox() {
+
+  private maybeHandleCheckbox() {
+    if (this.controlType() !== ControlType.CheckBox) return;
     const current = this.control()?.value;
     this.control()?.setValue(!current);
     this.executeServiceMethod();
