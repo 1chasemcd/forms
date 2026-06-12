@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using FormsApi.Contract.MetadataContainer;
 
-
 namespace FormsApi.Contract;
 
 public sealed record FormResponse

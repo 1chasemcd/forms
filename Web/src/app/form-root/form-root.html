@@ -1,0 +1,18 @@
+@if (currentForm(); as current) {
+  <app-dynamic-form
+    [formModel]="current.model"
+    [viewId]="current.viewId"
+    [modelPath]="current.modelPathRoot"
+  >
+  </app-dynamic-form>
+} @else if (error()) {
+  An error occurred
+} @else if (notFound()) {
+  Form not found
+} @else {
+  <div class="flex-1 flex justify-center items-center">
+    <app-card class="p-2">
+      <app-spinner></app-spinner>
+    </app-card>
+  </div>
+}
