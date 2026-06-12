@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
-import { DynamicForm } from './dynamic-form/dynamic-form';
+import { FormRoot } from './form-root/form-root';
 
 export const routes: Routes = [
   {
-    path: 'form/:path',
-    component: DynamicForm,
+    path: 'form',
+    children: [
+      {
+        path: '**',
+        component: FormRoot,
+      },
+    ],
   },
 ];

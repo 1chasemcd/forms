@@ -1,9 +1,3 @@
-@if (initialized) {
-  <form
-    (ngSubmit)="onSubmit()"
-    [formGroup]="model"
-    class="p-4 min-[72rem]:max-w-6xl 2xl:max-w-3/4 w-full m-auto"
-  >
-    <app-dynamic-view [viewId]="0" , [modelPath]="[]"></app-dynamic-view>
-  </form>
-}
+<form (ngSubmit)="onSubmit()" [formGroup]="model" class="p-4">
+  <app-dynamic-view [viewId]="0" , [modelPath]="[]"></app-dynamic-view>
+</form>
