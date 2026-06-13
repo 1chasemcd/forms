@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { View } from '../api/api.g';
+import { View } from '../../api/api.g';
 
 @Injectable()
 export class ViewLookupService {

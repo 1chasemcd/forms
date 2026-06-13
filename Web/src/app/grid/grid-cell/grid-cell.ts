@@ -12,11 +12,11 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ControlType, FormControlInfoContainer, SubPropertyGridView } from '../../api/api.g';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { ControlPath, joinPath, parentPath } from '../../utils/form-utils';
-import { FormModelService } from '../../form-services/form-model-service';
+import { FormModelService } from '../../form/form-services/form-model-service';
 import { GridCellContent } from './grid-cell-content';
 import { ServiceMethodService } from '../../service-method/service-method-service';
 import { DynamicInput } from '../../dynamic-control/dynamic-input/dynamic-input';
-import { ControlValueService } from '../../form-services/control-value-service';
+import { ControlValueService } from '../../form/form-services/control-value-service';
 import { startWith } from 'rxjs';
 
 @Component({

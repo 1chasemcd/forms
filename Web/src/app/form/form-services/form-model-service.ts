@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { MetadataProcessorRegistryService } from '../metadata/metadata-processor-registry-service';
-import { MetadataLookupService } from '../metadata/metadata-lookup-service';
+import { MetadataProcessorRegistryService } from '../../metadata/metadata-processor-registry-service';
+import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { ControlPath, joinPath, lastOfPath, parentPath } from '../utils/form-utils';
+import { ControlPath, joinPath, lastOfPath, parentPath } from '../../utils/form-utils';
 
 @Injectable()
 export class FormModelService {

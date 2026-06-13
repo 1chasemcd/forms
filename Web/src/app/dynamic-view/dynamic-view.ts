@@ -3,9 +3,9 @@ import { widthToCss } from '../utils/width-utils';
 import { DynamicControl } from '../dynamic-control/dynamic-control/dynamic-control';
 import { SubpropertyGridViewComponent } from '../grid/subproperty-grid-view/subproperty-grid-view';
 import { NgClass } from '@angular/common';
-import { ViewLookupService } from '../form-services/view-lookup-service';
+import { ViewLookupService } from '../form/form-services/view-lookup-service';
 import { ControlPath } from '../utils/form-utils';
-import { ControlValueService } from '../form-services/control-value-service';
+import { ControlValueService } from '../form/form-services/control-value-service';
 
 @Component({
   selector: 'app-dynamic-view',
@@ -21,7 +21,7 @@ export class DynamicView implements OnInit {
 
   readonly viewId = input.required<number>();
   readonly modelPath = input.required<ControlPath>();
-  readonly alreadyInUnifiedView = input(false);
+  readonly parentIsUnified = input(false);
 
   readonly view = computed(() => this.viewLookup.lookupById(this.viewId()));
   title = signal('');
@@ -35,7 +35,7 @@ export class DynamicView implements OnInit {
   }
 
   readonly classes = computed(() =>
-    [this.width(), this.shouldStyleUnifiedView() ? 'bg-white rounded-lg shadow' : ''].join(' '),
+    [this.width(), this.parentIsUnified() ? '' : 'rounded-lg border border-gray-200'].join(' '),
   );
 
   readonly combinedView = computed(() => {
@@ -52,9 +52,4 @@ export class DynamicView implements OnInit {
     return view?.$type == 'subPropertyGridView' ? view : null;
   });
   readonly width = computed(() => widthToCss(this.view()?.width));
-
-  readonly shouldStyleUnifiedView = computed(() => {
-    const view = this.view();
-    return !this.alreadyInUnifiedView() && (view?.$type !== 'combinedView' || view?.unify);
-  });
 }

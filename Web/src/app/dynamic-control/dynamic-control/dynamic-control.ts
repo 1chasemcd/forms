@@ -7,10 +7,10 @@ import { CustomLabelValue } from '../label-value/label-value';
 import { DynamicInput } from '../dynamic-input/dynamic-input';
 import { StandardInputWrapper } from '../standard-input/standard-input-wrapper';
 import { ControlType, FormControlInfoContainer } from '../../api/api.g';
-import { FormModelService } from '../../form-services/form-model-service';
+import { FormModelService } from '../../form/form-services/form-model-service';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { ControlPath, joinPath } from '../../utils/form-utils';
-import { ControlValueService } from '../../form-services/control-value-service';
+import { ControlValueService } from '../../form/form-services/control-value-service';
 import { pascalCaseToWords } from '../../utils/string-utils';
 import { Checkbox } from '../checkbox/checkbox';
 

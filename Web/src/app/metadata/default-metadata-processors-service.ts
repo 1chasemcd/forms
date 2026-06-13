@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { MetadataProcessorRegistryService } from './metadata-processor-registry-service';
-import { ControlEnablementService } from '../form-services/control-enablement-service';
-import { ControlValueService } from '../form-services/control-value-service';
+import { ControlEnablementService } from '../form/form-services/control-enablement-service';
+import { ControlValueService } from '../form/form-services/control-value-service';
 import { Validators } from '@angular/forms';
 import {
   createMaxLengthValidator,

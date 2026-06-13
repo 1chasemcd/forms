@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { FormModelService } from './form-model-service';
 import { Observable, of, startWith } from 'rxjs';
-import { PropertyOrConstant } from '../api/api.g';
-import { ControlPath, isControlPath, joinPath, parentPath } from '../utils/form-utils';
-import { MetadataType } from '../utils/api-utils';
-import { MetadataLookupService } from '../metadata/metadata-lookup-service';
+import { PropertyOrConstant } from '../../api/api.g';
+import { ControlPath, isControlPath, joinPath, parentPath } from '../../utils/form-utils';
+import { MetadataType } from '../../utils/api-utils';
+import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 
 @Injectable()

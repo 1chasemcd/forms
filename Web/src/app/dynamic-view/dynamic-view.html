@@ -6,7 +6,7 @@
 <div
   [ngClass]="[
     'grid grid-cols-12 gap-4 col-span-12 content-start',
-    shouldStyleUnifiedView() && !subpropertyGridView() ? 'm-4' : '',
+    parentIsUnified() || subpropertyGridView() ? '' : 'm-4',
   ]"
 >
   @if (combinedView(); as view) {
@@ -14,7 +14,7 @@
       <app-dynamic-view
         [viewId]="childViewId"
         [modelPath]="modelPath()"
-        [alreadyInUnifiedView]="shouldStyleUnifiedView() || alreadyInUnifiedView()"
+        [parentIsUnified]="combinedView()?.unify ?? false"
       ></app-dynamic-view>
     }
   } @else if (controlView(); as view) {

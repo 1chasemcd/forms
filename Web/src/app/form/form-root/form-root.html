@@ -1,8 +1,8 @@
 @if (currentForm(); as current) {
   <app-dynamic-form
     [formModel]="current.model"
-    [viewId]="current.viewId"
-    [modelPath]="current.modelPathRoot"
+    [viewId]="current.view"
+    [modelPath]="current.$type === 'subproperty' ? current.path : ''"
   >
   </app-dynamic-form>
 } @else if (error()) {
@@ -11,8 +11,6 @@
   Form not found
 } @else {
   <div class="flex-1 flex justify-center items-center">
-    <app-card class="p-2">
-      <app-spinner></app-spinner>
-    </app-card>
+    <app-spinner></app-spinner>
   </div>
 }

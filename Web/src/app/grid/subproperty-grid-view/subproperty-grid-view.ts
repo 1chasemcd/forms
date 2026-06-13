@@ -4,10 +4,11 @@ import { GridCell } from '../grid-cell/grid-cell';
 import { GridSelectionType, SubPropertyGridView } from '../../api/api.g';
 import { CheckboxInput } from '../../dynamic-control/checkbox/checkbox-input';
 import { ControlPath, joinPath } from '../../utils/form-utils';
-import { FormModelService } from '../../form-services/form-model-service';
-import { ControlValueService } from '../../form-services/control-value-service';
+import { FormModelService } from '../../form/form-services/form-model-service';
+import { ControlValueService } from '../../form/form-services/control-value-service';
 import { pascalCaseToWords } from '../../utils/string-utils';
-import { Icon } from '../../icon/icon';
+import { Icon } from '../../components/icon/icon';
+import { FormStackService } from '../../form/form-services/form-stack-service';
 
 @Component({
   selector: 'app-subproperty-grid-view',
@@ -25,6 +26,7 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   private readonly modelService = inject(FormModelService);
   private readonly controlValues = inject(ControlValueService);
+  private readonly formStack = inject(FormStackService);
 
   readonly arrayPath = computed(() => joinPath(this.modelPath(), this.view().subProperty));
   readonly labels: WritableSignal<string>[] = [];
@@ -82,7 +84,7 @@ export class SubpropertyGridViewComponent implements OnInit {
   }
 
   createRowPath(row: FormGroup) {
-    return computed(() => joinPath(this.arrayPath(), this.getRowIndex(row)));
+    return joinPath(this.arrayPath(), this.getRowIndex(row));
   }
 
   getControlFromRow(row: FormGroup, propertyName: string) {
@@ -103,6 +105,12 @@ export class SubpropertyGridViewComponent implements OnInit {
     for (const row of this.rows()?.controls ?? []) {
       this.getSelectionControl(row).setValue(value);
     }
+  }
+
+  startEdit(row: FormGroup) {
+    const viewId = this.view().editViewId;
+    if (!viewId) return;
+    this.formStack.pushSubproperty(viewId, this.createRowPath(row));
   }
 
   private unselectAllOthers(idToKeep: unknown) {

@@ -1,17 +1,22 @@
 import { Component, effect, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { DynamicView } from '../dynamic-view/dynamic-view';
+import { DynamicView } from '../../dynamic-view/dynamic-view';
 import { FormModelService } from '../form-services/form-model-service';
 import { ControlValueService } from '../form-services/control-value-service';
-import { ServiceMethodService } from '../service-method/service-method-service';
+import { ServiceMethodService } from '../../service-method/service-method-service';
 import { ControlEnablementService } from '../form-services/control-enablement-service';
-import { FormResultModel } from './form-stack-model';
-import { ControlPath } from '../utils/form-utils';
-import { DefaultMetadataProcessorsService } from '../metadata/default-metadata-processors-service';
+import { ControlPath } from '../../utils/form-utils';
+import { DefaultMetadataProcessorsService } from '../../metadata/default-metadata-processors-service';
+import { Card } from '../../components/card/card';
+
+type FormResultModel = {
+  model: Record<string, unknown>;
+  commitChanges: boolean;
+};
 
 @Component({
   selector: 'app-dynamic-form',
-  imports: [ReactiveFormsModule, DynamicView],
+  imports: [ReactiveFormsModule, DynamicView, Card],
   templateUrl: './dynamic-form.html',
   providers: [
     FormModelService,
