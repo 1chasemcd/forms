@@ -17,7 +17,8 @@ import { Checkbox } from '../checkbox/checkbox';
 @Component({
   selector: 'app-dynamic-control',
   host: {
-    '[class]': 'width() + " content-center"',
+    class: 'content-center',
+    '[class]': 'width()',
   },
   templateUrl: './dynamic-control.html',
   imports: [

@@ -4,10 +4,10 @@
   </h2>
 }
 <div
-  [ngClass]="[
-    'grid grid-cols-12 gap-4 col-span-12 content-start',
-    parentIsUnified() || subpropertyGridView() ? '' : 'm-4',
-  ]"
+  [ngClass]="{
+    'grid grid-cols-12 gap-4 col-span-12 content-start': true,
+    'm-4': !parentIsUnified() && !subpropertyGridView(),
+  }"
 >
   @if (combinedView(); as view) {
     @for (childViewId of view.viewIds; track $index) {

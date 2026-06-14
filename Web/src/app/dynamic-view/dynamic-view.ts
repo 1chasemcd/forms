@@ -1,16 +1,18 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
-import { widthToCss } from '../utils/width-utils';
 import { DynamicControl } from '../dynamic-control/dynamic-control/dynamic-control';
 import { SubpropertyGridViewComponent } from '../grid/subproperty-grid-view/subproperty-grid-view';
 import { NgClass } from '@angular/common';
 import { ViewLookupService } from '../form/form-services/view-lookup-service';
 import { ControlPath } from '../utils/form-utils';
 import { ControlValueService } from '../form/form-services/control-value-service';
+import { widthToCss } from '../utils/width-utils';
 
 @Component({
   selector: 'app-dynamic-view',
   host: {
-    '[class]': 'classes()',
+    class: 'rounded-lg border-gray-200',
+    '[class]': 'width()',
+    '[class.border]': '!parentIsUnified()',
   },
   imports: [DynamicControl, SubpropertyGridViewComponent, NgClass],
   templateUrl: './dynamic-view.html',
@@ -33,10 +35,6 @@ export class DynamicView implements OnInit {
         .observe<string>(this.modelPath(), title)
         ?.subscribe((t) => this.title.set(t));
   }
-
-  readonly classes = computed(() =>
-    [this.width(), this.parentIsUnified() ? '' : 'rounded-lg border border-gray-200'].join(' '),
-  );
 
   readonly combinedView = computed(() => {
     const view = this.view();
