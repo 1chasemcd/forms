@@ -4,7 +4,7 @@ import { ServiceMethod, ServiceMethodClient } from '../api/api.g';
 import { FormModelService } from '../form/form-services/form-model-service';
 import { ControlPath } from '../utils/form-utils';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class ServiceMethodService {
   private serviceMethodClient = inject(ServiceMethodClient);
   private formModelService = inject(FormModelService);

@@ -2,7 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { MetadataProcessorRegistryService } from '../../metadata/metadata-processor-registry-service';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { ControlPath, joinPath, lastOfPath, parentPath } from '../../utils/form-utils';
+import {
+  ControlPath,
+  isControlPath,
+  joinPath,
+  lastOfPath,
+  parentPath,
+} from '../../utils/form-utils';
 
 @Injectable()
 export class FormModelService {
@@ -51,7 +57,7 @@ export class FormModelService {
   }
 
   get<T extends AbstractControl>(path: ControlPath): T | null {
-    if (!path || !Array.isArray(path)) return null;
+    if (!isControlPath(path)) return null;
     if (path.length == 0) return this._model as unknown as T;
     return this._model.get(path) as T;
   }
