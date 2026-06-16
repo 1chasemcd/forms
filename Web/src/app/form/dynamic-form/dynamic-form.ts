@@ -7,7 +7,6 @@ import { ServiceMethodService } from '../../service-method/service-method-servic
 import { ControlEnablementService } from '../form-services/control-enablement-service';
 import { ControlPath } from '../../utils/form-utils';
 import { DefaultMetadataProcessorsService } from '../../metadata/default-metadata-processors-service';
-import { Card } from '../../components/card/card';
 
 type FormResultModel = {
   model: Record<string, unknown>;
@@ -16,7 +15,7 @@ type FormResultModel = {
 
 @Component({
   selector: 'app-dynamic-form',
-  imports: [ReactiveFormsModule, DynamicView, Card],
+  imports: [ReactiveFormsModule, DynamicView],
   templateUrl: './dynamic-form.html',
   providers: [
     FormModelService,
@@ -26,7 +25,7 @@ type FormResultModel = {
     DefaultMetadataProcessorsService,
   ],
   host: {
-    class: 'min-[72rem]:max-w-6xl 2xl:max-w-3/4 w-full',
+    class: 'min-[72rem]:max-w-6xl 2xl:max-w-3/4 w-full h-full p-4',
   },
 })
 export class DynamicForm {

@@ -1,10 +1,8 @@
-<app-card class="p-4 my-4">
-  <form (ngSubmit)="onSubmit()" [formGroup]="model" class="flex-1">
-    <app-dynamic-view
-      [viewId]="viewId()"
-      ,
-      [modelPath]="modelPath()"
-      [parentIsUnified]="true"
-    ></app-dynamic-view>
-  </form>
-</app-card>
+<form (ngSubmit)="onSubmit()" [formGroup]="model" class="flex-1 h-full p-4 rounded-lg bg-white">
+  <app-dynamic-view
+    [viewId]="viewId()"
+    ,
+    [modelPath]="modelPath()"
+    [parentIsUnified]="true"
+  ></app-dynamic-view>
+</form>
