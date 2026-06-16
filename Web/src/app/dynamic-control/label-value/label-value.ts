@@ -3,8 +3,8 @@ import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-label-value',
-  imports: [],
   templateUrl: './label-value.html',
+  styleUrl: './label-value.css',
 })
 export class CustomLabelValue {
   readonly label = input.required<string>();

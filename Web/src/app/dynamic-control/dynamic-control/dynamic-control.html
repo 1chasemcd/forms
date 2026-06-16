@@ -2,30 +2,69 @@
   @if (visible()) {
     @switch (controlType()) {
       @case ('button') {
-        <app-button
-          [label]="label()"
-          (clicked)="executeServiceMethod()"
-          [enabled]="control.enabled"
-        ></app-button>
+        <button matButton="outlined" [disabled]="!control.enabled" (click)="executeServiceMethod()">
+          {{ label() }}
+        </button>
       }
       @case ('checkBox') {
-        <app-checkbox
-          [control]="control"
-          [label]="label()"
-          (checkedChange)="executeServiceMethod()"
-        ></app-checkbox>
+        <mat-checkbox [formControl]="control" (change)="executeServiceMethod()">{{
+          label()
+        }}</mat-checkbox>
       }
       @case ('labelValue') {
         <app-label-value [label]="label()" [control]="control"></app-label-value>
       }
-      @default {
-        <app-standard-input-wrapper [label]="label()">
-          <app-dynamic-input
-            [control]="control"
-            [controlType]="controlType()"
-            (valueChange)="executeServiceMethod()"
-          ></app-dynamic-input>
-        </app-standard-input-wrapper>
+      @case ('text') {
+        <mat-form-field class="w-full">
+          <mat-label>{{ label() }}</mat-label>
+          <input matInput [formControl]="control" (blur)="executeServiceMethod()"
+        /></mat-form-field>
+      }
+      @case ('textArea') {
+        <mat-form-field class="w-full">
+          <mat-label>{{ label() }}</mat-label>
+          <textarea matInput [formControl]="control" (blur)="executeServiceMethod()"></textarea>
+        </mat-form-field>
+      }
+      @case ('numeric') {
+        <mat-form-field class="w-full">
+          <mat-label>{{ label() }}</mat-label>
+          <input
+            matInput
+            class="text-right"
+            type="number"
+            inputmode="numeric"
+            [formControl]="control"
+            (blur)="executeServiceMethod()"
+        /></mat-form-field>
+      }
+      @case ('currency') {
+        <mat-form-field class="w-full">
+          <mat-label>{{ label() }}</mat-label>
+          <input
+            matInput
+            class="text-right"
+            type="number"
+            inputmode="numeric"
+            [formControl]="control"
+            (blur)="executeServiceMethod()"
+          />
+          <span matTextPrefix>$&nbsp;</span>
+        </mat-form-field>
+      }
+      @case ('time') {
+        <mat-form-field class="w-full">
+          <mat-label>{{ label() }}</mat-label>
+          <input matInput type="time" [formControl]="control" (blur)="executeServiceMethod()" />
+        </mat-form-field>
+      }
+      @case ('date') {
+        <mat-form-field>
+          <mat-label>{{ label() }}</mat-label>
+          <input matInput type="date" [formControl]="control" (blur)="executeServiceMethod()" />
+          <!-- <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker> -->
+        </mat-form-field>
       }
     }
   }

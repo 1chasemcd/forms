@@ -1,0 +1,27 @@
+.lv-label {
+  display: inline-block;
+  font-family: var(--mat-form-field-outlined-label-text-font, var(--mat-sys-body-large-font));
+  font-size: var(--mat-form-field-outlined-label-text-size, var(--mat-sys-body-large-size));
+  line-height: var(--mat-form-field-outlined-label-text-line-height);
+  font-weight: var(--mat-form-field-outlined-label-text-weight, var(--mat-sys-body-large-weight));
+  letter-spacing: var(
+    --mat-form-field-outlined-label-text-tracking,
+    var(--mat-sys-body-large-tracking)
+  );
+  color: var(--mat-form-field-outlined-label-text-color, var(--mat-sys-on-surface-variant));
+  transform-origin: left center;
+  transform: scale(var(--mat-mdc-form-field-floating-label-scale, 0.75));
+}
+
+.lv-value {
+  display: inline-block;
+  color: var(--mat-form-field-outlined-input-text-color, var(--mat-sys-on-surface));
+  font-family: var(--mat-form-field-container-text-font, var(--mat-sys-body-large-font));
+  font-size: var(--mat-form-field-container-text-size, var(--mat-sys-body-large-size));
+  line-height: var(
+    --mat-form-field-container-text-line-height,
+    var(--mat-sys-body-large-line-height)
+  );
+  letter-spacing: var(--mat-form-field-container-text-tracking, var(--mat-sys-body-large-tracking));
+  font-weight: var(--mat-form-field-container-text-weight, var(--mat-sys-body-large-weight));
+}

@@ -2,17 +2,19 @@ import { Component, computed, inject, input, linkedSignal, OnInit, signal } from
 import { widthToCss } from '../../utils/width-utils';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ServiceMethodService } from '../../service-method/service-method-service';
-import { Button } from '../button/button';
 import { CustomLabelValue } from '../label-value/label-value';
-import { DynamicInput } from '../dynamic-input/dynamic-input';
-import { StandardInputWrapper } from '../standard-input/standard-input-wrapper';
 import { ControlType, FormControlInfoContainer } from '../../api/api.g';
 import { FormModelService } from '../../form/form-services/form-model-service';
 import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { ControlPath, joinPath } from '../../utils/form-utils';
 import { ControlValueService } from '../../form/form-services/control-value-service';
 import { pascalCaseToWords } from '../../utils/string-utils';
-import { Checkbox } from '../checkbox/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-dynamic-control',
@@ -22,13 +24,15 @@ import { Checkbox } from '../checkbox/checkbox';
   },
   templateUrl: './dynamic-control.html',
   imports: [
-    Button,
-    Checkbox,
     ReactiveFormsModule,
     CustomLabelValue,
-    DynamicInput,
-    StandardInputWrapper,
+    MatCheckboxModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
   ],
+  providers: [provideNativeDateAdapter()],
 })
 export class DynamicControl implements OnInit {
   private readonly formModelService = inject(FormModelService);
