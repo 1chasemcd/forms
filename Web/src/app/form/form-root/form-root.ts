@@ -22,7 +22,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     FormStackService,
   ],
   host: {
-    class: 'flex-1 flex justify-center gap-4',
+    class: 'flex-1 flex justify-center',
   },
 })
 export class FormRoot implements OnInit {
