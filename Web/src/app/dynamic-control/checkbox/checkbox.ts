@@ -1,10 +1,10 @@
 import { Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { CheckboxInput } from './checkbox-input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-checkbox',
-  imports: [ReactiveFormsModule, CheckboxInput],
+  imports: [ReactiveFormsModule, MatCheckboxModule],
   templateUrl: './checkbox.html',
 })
 export class Checkbox {

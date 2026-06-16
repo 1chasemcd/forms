@@ -1,9 +1,1 @@
-<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
-<label class="flex h-12 items-center gap-2 cursor-pointer" (mousedown)="$event.preventDefault()">
-  <app-checkbox-input
-    [control]="control()"
-    (checkedChange)="checkedChange.emit()"
-  ></app-checkbox-input>
-
-  <span class="text-black">{{ label() }}</span>
-</label>
+<mat-checkbox [formControl]="control()" (change)="checkedChange.emit()">{{ label() }}</mat-checkbox>
