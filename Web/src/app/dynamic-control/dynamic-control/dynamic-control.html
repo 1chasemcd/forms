@@ -59,12 +59,11 @@
         </mat-form-field>
       }
       @case ('date') {
-        <mat-form-field>
-          <mat-label>{{ label() }}</mat-label>
-          <input matInput type="date" [formControl]="control" (blur)="executeServiceMethod()" />
-          <!-- <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker> -->
-        </mat-form-field>
+        <app-date-input
+          [label]="label()"
+          [formControl]="control"
+          (focusout)="executeServiceMethod()"
+        ></app-date-input>
       }
     }
   }

@@ -14,7 +14,7 @@
 }
 
 .lv-value {
-  display: inline-block;
+  display: block;
   color: var(--mat-form-field-outlined-input-text-color, var(--mat-sys-on-surface));
   font-family: var(--mat-form-field-container-text-font, var(--mat-sys-body-large-font));
   font-size: var(--mat-form-field-container-text-size, var(--mat-sys-body-large-size));

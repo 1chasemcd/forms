@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { DateInput } from '../date-input/date-input';
 
 @Component({
   selector: 'app-dynamic-control',
@@ -31,8 +31,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
+    DateInput,
   ],
-  providers: [provideNativeDateAdapter()],
 })
 export class DynamicControl implements OnInit {
   private readonly formModelService = inject(FormModelService);

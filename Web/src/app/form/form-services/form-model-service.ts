@@ -9,7 +9,6 @@ import {
   lastOfPath,
   parentPath,
 } from '../../utils/form-utils';
-import { ControlType } from '../../api/api.g';
 
 @Injectable()
 export class FormModelService {
@@ -40,7 +39,7 @@ export class FormModelService {
         formGroup.addControl(propertyName, new FormArray([]));
       else if (metadataContainer.$type === 'subproperty')
         formGroup.addControl(propertyName, this.createFormGroup(metadataContainer.subPropertyType));
-      else formGroup.addControl(propertyName, new FormControl());
+      else formGroup.addControl(propertyName, new FormControl(''));
     }
 
     for (const [propertyName, metadataContainer] of Object.entries(
@@ -90,10 +89,7 @@ export class FormModelService {
       } else if (propMetadata?.$type === 'subproperty') {
         this.patchValues(propPath, value as Record<string, unknown>);
       } else {
-        const toSet = this.getOrAdd(propPath, new FormControl());
-        const controlType = this.metadataLookup.getPropertyMetadata(propPath, 'controlType');
-        if (controlType === ControlType.Date) toSet?.setValue(value);
-        else toSet?.setValue(value);
+        this.getOrAdd(propPath, new FormControl(value));
       }
     }
   }
