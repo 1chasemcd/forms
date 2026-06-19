@@ -39,8 +39,3 @@ export function joinPath(path1?: ControlPath, path2?: ControlPath | number | str
   if (!Array.isArray(path1)) return [path1, ...path2];
   return [...path1, ...path2];
 }
-
-export function pathAsString(path: ControlPath): string {
-  if (Array.isArray(path)) return path.join('.');
-  return path;
-}
