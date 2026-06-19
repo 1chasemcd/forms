@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { formatAsDate, mapIndices } from '../../utils/string-utils';
 
 @Component({
   selector: 'app-date-input',
@@ -15,8 +15,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
         matInput
         [matDatepicker]="picker"
         [value]="dateValue"
+        (input)="onInput($event)"
         (dateChange)="onDateChange($event.value)"
-        (blur)="onTouched()"
         [disabled]="disabled"
       />
 
@@ -31,7 +31,6 @@ import { provideNativeDateAdapter } from '@angular/material/core';
       useExisting: forwardRef(() => DateInput),
       multi: true,
     },
-    provideNativeDateAdapter(),
   ],
   imports: [MatDatepickerModule, MatFormFieldModule, MatInputModule],
 })
@@ -60,8 +59,24 @@ export class DateInput implements ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
+  onInput(event: InputEvent) {
+    const target = event.target as HTMLInputElement;
+    const initial = target.value;
+    let cursorPos = target.selectionStart ?? initial.length;
+
+    const formatted = formatAsDate(initial);
+
+    const indexMap = mapIndices(initial, formatted);
+    indexMap.push(formatted.length); // cursor position at end of original should map to end of new string
+    let finalPosIndex = cursorPos;
+    while (!Number.isInteger(indexMap.at(finalPosIndex)) && finalPosIndex > 0) finalPosIndex--;
+    cursorPos = indexMap[finalPosIndex] ?? 0;
+
+    target.value = formatted;
+    target.setSelectionRange(cursorPos, cursorPos);
+  }
+
   onDateChange(date: Date | null): void {
-    console.log(date);
     this.dateValue = date;
     this.onChange(date ? this.formatDateOnly(date) : null);
   }
