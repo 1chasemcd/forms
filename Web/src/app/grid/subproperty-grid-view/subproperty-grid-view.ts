@@ -26,9 +26,7 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   readonly arrayPath = computed(() => joinPath(this.path(), this.view().subProperty));
   readonly labels: WritableSignal<string>[] = [];
-  readonly rows = computed(() =>
-    this.formStack.activeModel.get<FormArray<FormGroup>>(this.arrayPath()),
-  );
+  readonly rows = signal<FormGroup[]>([]);
 
   readonly selectAllControl = new FormControl(false);
 
@@ -40,6 +38,9 @@ export class SubpropertyGridViewComponent implements OnInit {
         .getMetadataValue<string>(controlPath, 'label')
         ?.subscribe((l) => this.labels[index].set(l));
     }
+    this.formStack.activeModel
+      .get<FormArray>(this.arrayPath())
+      ?.valueChanges.subscribe((x: FormArray) => this.rows.set(x.controls as FormGroup[]));
   }
 
   readonly gridTemplateColumns = computed(() => {
@@ -78,7 +79,7 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   private getRowIndex(row: FormGroup) {
     const id = this.getRowId(row);
-    return this.rows()?.controls.findIndex((x) => this.getRowId(x) == id);
+    return this.rows().findIndex((x) => this.getRowId(x) == id);
   }
 
   createRowPath(row: FormGroup) {
@@ -100,7 +101,7 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   selectAllUpdated() {
     const value = this.selectAllControl.value;
-    for (const row of this.rows()?.controls ?? []) {
+    for (const row of this.rows()) {
       this.getSelectionControl(row).setValue(value);
     }
   }
@@ -112,7 +113,7 @@ export class SubpropertyGridViewComponent implements OnInit {
   }
 
   private unselectAllOthers(idToKeep: unknown) {
-    for (const row of this.rows()?.controls ?? []) {
+    for (const row of this.rows()) {
       if (this.getRowId(row) === idToKeep) continue;
       this.getSelectionControl(row).setValue(false);
     }
@@ -120,7 +121,7 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   private updateSelectAllState() {
     let allSelected = true;
-    for (const row of this.rows()?.controls ?? []) {
+    for (const row of this.rows()) {
       const value = this.getSelectionControl(row).value;
       if (!value) allSelected = false;
     }

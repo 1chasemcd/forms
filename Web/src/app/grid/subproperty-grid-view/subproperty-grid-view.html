@@ -23,7 +23,7 @@
   </div>
 
   <!-- Rows -->
-  @for (row of rows()?.controls; track getRowId(row)) {
+  @for (row of rows(); track getRowId(row)) {
     <div class="contents group">
       <div class="col-span-full h-0 border-t border-t-gray-200"></div>
       @if (view().gridSelectionOptions; as opts) {

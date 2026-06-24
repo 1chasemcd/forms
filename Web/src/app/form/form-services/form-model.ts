@@ -37,10 +37,11 @@ export class FormModel {
     for (const [propertyName, metadataContainer] of Object.entries(
       rootMetadata.propertyMetadatas,
     )) {
-      if (metadataContainer.$type === 'enumerable') controls[propertyName] = new FormArray([]);
+      if (metadataContainer.$type === 'enumerable')
+        controls[propertyName] = new FormArray<FormGroup>([]);
       else if (metadataContainer.$type === 'subproperty')
         controls[propertyName] = this.createFormGroup(metadataContainer.subPropertyType);
-      else controls[propertyName] = new FormControl();
+      else controls[propertyName] = new FormControl('');
     }
 
     return new FormGroup(controls);
@@ -88,6 +89,11 @@ export class FormModel {
   }
 
   patchValues(values: Record<string, unknown>, path: ControlPath = []) {
+    this.patchValuesImpl(values, path);
+    this.get(path)?.updateValueAndValidity();
+  }
+
+  private patchValuesImpl(values: Record<string, unknown>, path: ControlPath = []) {
     for (const [key, value] of Object.entries(values)) {
       const propPath = joinPath(path, key);
       const propMetadata = this.metadataLookup.lookupByPath(this.root, propPath);
@@ -98,10 +104,10 @@ export class FormModel {
           propMetadata.enumeratedType,
         );
       } else if (propMetadata?.$type === 'subproperty') {
-        this.patchValues(value as Record<string, unknown>, propPath);
+        this.patchValuesImpl(value as Record<string, unknown>, propPath);
       } else {
         const control = this.getOrAdd(propPath, new FormControl());
-        control.setValue(value);
+        control.setValue(value, { emitEvent: false });
       }
     }
   }
@@ -112,21 +118,19 @@ export class FormModel {
     gridType: string,
   ) {
     const array = this.getOrAdd(path, new FormArray<FormGroup>([]));
+    array.clear({ emitEvent: false });
 
     if (!Array.isArray(valuesArray) || valuesArray.length == 0) {
-      array.clear();
       return;
     }
-
-    array.clear();
 
     // TODO make this more efficient
     for (const [index, row] of valuesArray.entries()) {
       const rowPath = joinPath(path, index);
       const rowGroup = this.createFormGroup(gridType);
       this.applyMetadata(rowGroup, rowPath);
-      array.push(rowGroup);
-      this.patchValues(row, rowPath);
+      array.push(rowGroup, { emitEvent: false });
+      this.patchValuesImpl(row, rowPath);
     }
   }
 
