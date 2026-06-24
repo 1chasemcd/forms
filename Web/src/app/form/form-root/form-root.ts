@@ -3,23 +3,27 @@ import { FormClient, FormResponse, SwaggerException } from '../../api/api.g';
 import { ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { catchError, of } from 'rxjs';
-import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
 import { MetadataProcessorRegistryService } from '../../metadata/metadata-processor-registry-service';
 import { ViewLookupService } from '../form-services/view-lookup-service';
 import { DynamicForm } from '../dynamic-form/dynamic-form';
 import { Spinner } from '../../components/spinner/spinner';
 import { FormStackService } from '../form-services/form-stack-service';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { MetadataLookupService } from '../../metadata/metadata-lookup';
+import { DefaultMetadataProcessorsService } from '../../metadata/default-metadata-processors-service';
+import { ServiceMethodService } from '../../service-method/service-method-service';
 
 @Component({
   selector: 'app-form-root',
   imports: [ReactiveFormsModule, DynamicForm, Spinner],
   templateUrl: './form-root.html',
   providers: [
-    MetadataLookupService,
     MetadataProcessorRegistryService,
+    DefaultMetadataProcessorsService,
     ViewLookupService,
+    MetadataLookupService,
     FormStackService,
+    ServiceMethodService,
+    DefaultMetadataProcessorsService,
   ],
   host: {
     class: 'flex-1 flex justify-center',
@@ -28,16 +32,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class FormRoot implements OnInit {
   private readonly formClient = inject(FormClient);
   private readonly route = inject(ActivatedRoute);
-
-  private readonly metadataLookup = inject(MetadataLookupService);
+  private readonly defaultMetadataProcessors = inject(DefaultMetadataProcessorsService);
   private readonly viewLookup = inject(ViewLookupService);
-  private readonly formStack = inject(FormStackService);
+  private readonly metadataLookup = inject(MetadataLookupService);
+  readonly formStack = inject(FormStackService);
 
-  readonly currentForm = toSignal(this.formStack.active());
   readonly notFound = signal(false);
   readonly error = signal(false);
 
   ngOnInit() {
+    this.defaultMetadataProcessors.initialize();
+
     const path = this.route.snapshot.url.join('/');
     if (!path) return;
 
@@ -55,7 +60,7 @@ export class FormRoot implements OnInit {
   private handleFormResponse(form: FormResponse | null) {
     if (form == null) return;
 
-    this.metadataLookup.initialize(form.modelType, form.modelMetadatas);
+    this.metadataLookup.initialize(form.modelMetadatas);
     this.viewLookup.initialize(form.views);
     this.formStack.pushRepository(0, form.modelType);
   }

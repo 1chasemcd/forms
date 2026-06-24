@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { FormModel } from './form-model';
 
-@Injectable()
-export class ControlEnablementService {
+export class ControlEnablementStore {
   private readonly dependencies = new WeakMap<AbstractControl, boolean[]>();
   private readonly enablementSubjects = new WeakMap<AbstractControl, BehaviorSubject<boolean>>();
+
+  constructor(private readonly model: FormModel) {}
 
   private registerControl(control: AbstractControl) {
     if (this.enablementSubjects.has(control)) return;
@@ -17,7 +18,7 @@ export class ControlEnablementService {
     subject.subscribe((value) => {
       if (value) {
         if (this.areParentsEnabled(control)) this.maybeEnableChildren(control);
-      } else control.disable({ emitEvent: false });
+      } else control.disable();
     });
   }
 

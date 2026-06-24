@@ -1,8 +1,7 @@
-@if (currentForm(); as current) {
+@if (this.formStack.activeEntry(); as active) {
   <app-dynamic-form
-    [formModel]="current.model"
-    [viewId]="current.view"
-    [modelPath]="current.$type === 'subproperty' ? current.path : ''"
+    [viewId]="active.view"
+    [path]="active.$type === 'subproperty' ? active.path : ''"
   >
   </app-dynamic-form>
 } @else if (error()) {

@@ -13,15 +13,15 @@
     @for (childViewId of view.viewIds; track $index) {
       <app-dynamic-view
         [viewId]="childViewId"
-        [modelPath]="modelPath()"
+        [path]="path()"
         [parentIsUnified]="combinedView()?.unify ?? false"
       ></app-dynamic-view>
     }
   } @else if (controlView(); as view) {
     @for (control of view.controls; track $index) {
-      <app-dynamic-control [controlInfo]="control" [parentPath]="modelPath()"></app-dynamic-control>
+      <app-dynamic-control [controlInfo]="control" [parentPath]="path()"></app-dynamic-control>
     }
   } @else if (subpropertyGridView(); as view) {
-    <app-subproperty-grid-view [view]="view" [modelPath]="modelPath()"></app-subproperty-grid-view>
+    <app-subproperty-grid-view [view]="view" [path]="path()"></app-subproperty-grid-view>
   }
 </div>

@@ -10,14 +10,13 @@ import {
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ControlType, FormControlInfoContainer, SubPropertyGridView } from '../../api/api.g';
-import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
+import { MetadataLookupService } from '../../metadata/metadata-lookup';
 import { ControlPath, joinPath, parentPath } from '../../utils/form-utils';
-import { FormModelService } from '../../form/form-services/form-model-service';
 import { GridCellContent } from './grid-cell-content';
 import { ServiceMethodService } from '../../service-method/service-method-service';
 import { DynamicInput } from '../../dynamic-control/dynamic-input/dynamic-input';
-import { ControlValueService } from '../../form/form-services/control-value-service';
 import { startWith } from 'rxjs';
+import { FormStackService } from '../../form/form-services/form-stack-service';
 
 @Component({
   selector: 'app-grid-cell',
@@ -32,8 +31,7 @@ export class GridCell implements OnInit {
   readonly parentView = input.required<SubPropertyGridView>();
 
   private readonly metadataLookup = inject(MetadataLookupService);
-  private readonly formModelService = inject(FormModelService);
-  private readonly controlValues = inject(ControlValueService);
+  private readonly formStack = inject(FormStackService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   private readonly serviceMethodService = inject(ServiceMethodService);
@@ -45,9 +43,11 @@ export class GridCell implements OnInit {
   private readonly path = computed(() =>
     joinPath(this.rowModelPath(), this.controlInfo().propertyName),
   );
-  readonly control = computed(() => this.formModelService.get<FormControl>(this.path()));
+  readonly control = computed(() => this.formStack.activeModel.get<FormControl>(this.path()));
   readonly controlType = computed(
-    () => this.metadataLookup.getPropertyMetadata(this.path(), 'controlType') ?? ControlType.Text,
+    () =>
+      this.formStack.activeModel.valueRefAugmentor.getMetadataValue(this.path(), 'controlType') ??
+      ControlType.Text,
   );
 
   readonly controlEnabled = signal(false);
@@ -65,13 +65,13 @@ export class GridCell implements OnInit {
     const parentView = this.parentView();
     if (parentView.editViewId !== undefined) return;
     if (parentView.canEdit)
-      this.controlValues
-        .observe(parentPath(parentPath(this.rowModelPath())), parentView.canEdit)
+      this.formStack.activeModel.valueRefAugmentor
+        .getValue(parentPath(parentPath(this.rowModelPath())), parentView.canEdit)
         ?.subscribe((x) => this.gridEnabled.set(!!x));
     if (parentView.canEdit?.$type === 'constant' && !parentView.canEdit.value) return;
     if (parentView.canEditRow)
-      this.controlValues
-        .observe(this.rowModelPath(), parentView.canEditRow)
+      this.formStack.activeModel.valueRefAugmentor
+        .getValue(this.rowModelPath(), parentView.canEditRow)
         ?.subscribe((x) => this.rowEnabled.set(!!x));
     if (parentView.canEditRow?.$type === 'constant' && !parentView.canEditRow.value) return;
     this.control()
@@ -118,7 +118,10 @@ export class GridCell implements OnInit {
   }
 
   executeServiceMethod() {
-    const method = this.metadataLookup.getPropertyMetadata(this.path(), 'formServiceMethod');
+    const method = this.formStack.activeModel.valueRefAugmentor.getMetadataValue(
+      this.path(),
+      'formServiceMethod',
+    );
     if (method) this.serviceMethodService.runMethod(this.rowModelPath(), method);
   }
 }

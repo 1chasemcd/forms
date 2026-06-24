@@ -26,8 +26,12 @@ export function lastOfPath(path?: ControlPath): string | number {
   if (typeof path !== 'string') return path[-1];
 
   const lastIndexOf = path.lastIndexOf('.');
-  if (lastIndexOf > 0) return path.slice(lastIndexOf + 1);
-  return path;
+  if (lastIndexOf > 0) {
+    const last = path.slice(lastIndexOf + 1);
+    if (last.match(/\d+/)) return Number(last);
+    else return last;
+  }
+  return '';
 }
 
 export function joinPath(path1?: ControlPath, path2?: ControlPath | number | string): ControlPath {
@@ -38,4 +42,14 @@ export function joinPath(path1?: ControlPath, path2?: ControlPath | number | str
   if (!Array.isArray(path2)) return [...path1, path2];
   if (!Array.isArray(path1)) return [path1, ...path2];
   return [...path1, ...path2];
+}
+
+export function pathAsString(path: ControlPath): string {
+  if (Array.isArray(path)) return path.join('.');
+  return path;
+}
+
+export function iteratePath(path: ControlPath): IterableIterator<string | number> {
+  if (Array.isArray(path)) return path[Symbol.iterator]();
+  else return path.split('.')[Symbol.iterator]();
 }

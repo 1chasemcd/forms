@@ -4,10 +4,8 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ServiceMethodService } from '../../service-method/service-method-service';
 import { CustomLabelValue } from '../label-value/label-value';
 import { ControlType, FormControlInfoContainer } from '../../api/api.g';
-import { FormModelService } from '../../form/form-services/form-model-service';
-import { MetadataLookupService } from '../../metadata/metadata-lookup-service';
+import { MetadataLookupService } from '../../metadata/metadata-lookup';
 import { ControlPath, joinPath } from '../../utils/form-utils';
-import { ControlValueService } from '../../form/form-services/control-value-service';
 import { pascalCaseToWords } from '../../utils/string-utils';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DateInput } from '../date-input/date-input';
+import { FormStackService } from '../../form/form-services/form-stack-service';
 
 @Component({
   selector: 'app-dynamic-control',
@@ -35,36 +34,38 @@ import { DateInput } from '../date-input/date-input';
   ],
 })
 export class DynamicControl implements OnInit {
-  private readonly formModelService = inject(FormModelService);
+  private readonly formStack = inject(FormStackService);
   private readonly metadataLookup = inject(MetadataLookupService);
-  private readonly controlValues = inject(ControlValueService);
   private readonly serviceMethodService = inject(ServiceMethodService);
 
   readonly controlInfo = input.required<FormControlInfoContainer>();
   readonly parentPath = input.required<ControlPath>();
 
-  private readonly path = computed(() =>
-    joinPath(this.parentPath(), this.controlInfo().propertyName),
-  );
+  readonly path = computed(() => joinPath(this.parentPath(), this.controlInfo().propertyName));
   readonly width = computed(() => widthToCss(this.controlInfo().width));
-  readonly control = computed(() => this.formModelService.get<FormControl>(this.path()));
+  readonly control = computed(() => this.formStack.activeModel.get<FormControl>(this.path()));
   readonly controlType = computed(
-    () => this.metadataLookup.getPropertyMetadata(this.path(), 'controlType') ?? ControlType.Text,
+    () =>
+      this.formStack.activeModel.valueRefAugmentor.getMetadataValue(this.path(), 'controlType') ??
+      ControlType.Text,
   );
   readonly visible = signal(true);
   readonly label = linkedSignal(() => pascalCaseToWords(this.controlInfo().propertyName));
 
   ngOnInit() {
-    this.controlValues
-      .observe<boolean>(this.path(), 'visible')
+    this.formStack.activeModel.valueRefAugmentor
+      .getMetadataValue<boolean>(this.path(), 'visible')
       ?.subscribe((v) => this.visible.set(v));
-    this.controlValues
-      .observeMetadata<string>(this.path(), 'label')
+    this.formStack.activeModel.valueRefAugmentor
+      .getMetadataValue<string>(this.path(), 'label')
       ?.subscribe((l) => this.label.set(l));
   }
 
   executeServiceMethod() {
-    const method = this.metadataLookup.getPropertyMetadata(this.path(), 'formServiceMethod');
+    const method = this.formStack.activeModel.valueRefAugmentor.getMetadataValue(
+      this.path(),
+      'formServiceMethod',
+    );
     if (method) this.serviceMethodService.runMethod(this.parentPath(), method);
   }
 }

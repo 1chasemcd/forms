@@ -1,16 +1,16 @@
 import { inject, Injectable } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { ServiceMethod, ServiceMethodClient } from '../api/api.g';
-import { FormModelService } from '../form/form-services/form-model-service';
 import { ControlPath } from '../utils/form-utils';
+import { FormStackService } from '../form/form-services/form-stack-service';
 
 @Injectable()
 export class ServiceMethodService {
   private serviceMethodClient = inject(ServiceMethodClient);
-  private formModelService = inject(FormModelService);
+  private formStack = inject(FormStackService);
 
   runMethod(modelPath: ControlPath, serviceMethod: ServiceMethod) {
-    const propertiesToSend = this.formModelService.toRecord(modelPath);
+    const propertiesToSend = this.formStack.activeModel.toRecord(modelPath);
 
     this.serviceMethodClient
       .runMethod(serviceMethod.service, serviceMethod.method, propertiesToSend)
@@ -21,7 +21,7 @@ export class ServiceMethodService {
         }),
       )
       .subscribe((result) => {
-        this.formModelService.patchValues(modelPath, result.model);
+        this.formStack.activeModel.patchValues(result.model, modelPath);
       });
   }
 }

@@ -1,11 +1,10 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Injector, signal } from '@angular/core';
 import { ControlPath } from '../../utils/form-utils';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { FileResponse, RepositoryClient } from '../../api/api.g';
+import { FormModel } from './form-model';
 
 type RepositoryFormStackEntry = {
   $type: 'repository';
-  model: Record<string, unknown>;
   view: number;
   type: string;
   id?: string;
@@ -13,28 +12,30 @@ type RepositoryFormStackEntry = {
 
 type SubpropertyFormStackEntry = {
   $type: 'subproperty';
-  model: Record<string, unknown>;
   view: number;
   path: ControlPath;
 };
 
 export type FormStackEntry = RepositoryFormStackEntry | SubpropertyFormStackEntry;
+type FormStackEntryWithModel = FormStackEntry & { model: FormModel };
 
 @Injectable()
 export class FormStackService {
-  private readonly formStack: FormStackEntry[] = [];
-  private readonly activeSubject = new BehaviorSubject<FormStackEntry | undefined>(undefined);
-
+  private readonly formStack: FormStackEntryWithModel[] = [];
   private readonly repositoryClient = inject(RepositoryClient);
+  private readonly injector = inject(Injector);
+  private _activeModel: FormModel | undefined;
 
-  active(): Observable<FormStackEntry | undefined> {
-    return this.activeSubject.asObservable();
+  activeEntry = signal<FormStackEntry | undefined>(undefined);
+  get activeModel() {
+    if (!this._activeModel) throw Error('Cannot access activeModel before pushing to Form Stack');
+    return this._activeModel;
   }
 
   pushRepository(viewId: number, type: string, id?: string) {
     this.formStack.push({
       $type: 'repository',
-      model: {},
+      model: new FormModel(type, this.injector),
       view: viewId,
       type: type,
       id: id,
@@ -46,21 +47,25 @@ export class FormStackService {
   }
 
   pushSubproperty(viewId: number, path: ControlPath = '') {
+    const last = this.formStack.at(-1);
+    if (!last) return;
     this.formStack.push({
       $type: 'subproperty',
-      model: structuredClone(this.formStack.at(-1)?.model ?? {}),
+      model: last.model.clone(),
       view: viewId,
       path: path,
     });
     this.updateActive();
   }
 
-  commitActive(modelToCommit: Record<string, unknown>) {
+  commitActive() {
     const active = this.formStack.pop();
-    if (active?.$type == 'repository') this.repositoryClient.save(active.type, modelToCommit);
+    if (!active) return;
+    if (active.$type == 'repository')
+      this.repositoryClient.save(active.type, active.model.toRecord());
     else {
       const current = this.formStack.at(-1);
-      if (current) current.model = modelToCommit;
+      if (current) current.model.patchValues(active.model.toRecord());
     }
 
     this.updateActive();
@@ -72,18 +77,17 @@ export class FormStackService {
   }
 
   private updateActive() {
-    const current = this.formStack.at(-1);
-    if (current) this.activeSubject.next(current);
-    else this.activeSubject.next(undefined);
+    this.activeEntry.set(this.formStack.at(-1));
+    this._activeModel = this.formStack.at(-1)?.model;
   }
 
   private handleRepositoryResponse(index: number, resp: FileResponse) {
     resp.data.text().then((text) => {
       const model = JSON.parse(text);
-      this.formStack[index].model = model;
+      this.formStack[index].model.patchValues(model);
       for (let i = index + 1; i < this.formStack.length; i++)
-        this.formStack[i].model = structuredClone(model);
-      this.updateActive();
+        this.formStack[i].model.patchValues(model);
+      this._activeModel = this.formStack.at(-1)?.model;
     });
   }
 }

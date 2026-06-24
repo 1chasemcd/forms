@@ -3,7 +3,7 @@
   (focusin)="startEdit($event)"
   [class]="
     'flex items-center border rounded border-transparent px-2 w-full h-10' +
-    ' [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden' +
+    ' [scrollbar-none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden' +
     (isEnabled()
       ? ' focus-within:hover:border-violet-600 focus-within:border-violet-600 hover:border-gray-400'
       : '')

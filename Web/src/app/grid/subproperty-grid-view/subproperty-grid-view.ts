@@ -4,8 +4,6 @@ import { GridCell } from '../grid-cell/grid-cell';
 import { GridSelectionType, SubPropertyGridView } from '../../api/api.g';
 import { CheckboxInput } from '../../dynamic-control/checkbox/checkbox-input';
 import { ControlPath, joinPath } from '../../utils/form-utils';
-import { FormModelService } from '../../form/form-services/form-model-service';
-import { ControlValueService } from '../../form/form-services/control-value-service';
 import { pascalCaseToWords } from '../../utils/string-utils';
 import { Icon } from '../../components/icon/icon';
 import { FormStackService } from '../../form/form-services/form-stack-service';
@@ -22,15 +20,15 @@ export class SubpropertyGridViewComponent implements OnInit {
   readonly GridSelectionType = GridSelectionType;
 
   readonly view = input.required<SubPropertyGridView>();
-  readonly modelPath = input.required<ControlPath>();
+  readonly path = input.required<ControlPath>();
 
-  private readonly modelService = inject(FormModelService);
-  private readonly controlValues = inject(ControlValueService);
   private readonly formStack = inject(FormStackService);
 
-  readonly arrayPath = computed(() => joinPath(this.modelPath(), this.view().subProperty));
+  readonly arrayPath = computed(() => joinPath(this.path(), this.view().subProperty));
   readonly labels: WritableSignal<string>[] = [];
-  readonly rows = computed(() => this.modelService.get<FormArray<FormGroup>>(this.arrayPath()));
+  readonly rows = computed(() =>
+    this.formStack.activeModel.get<FormArray<FormGroup>>(this.arrayPath()),
+  );
 
   readonly selectAllControl = new FormControl(false);
 
@@ -38,8 +36,8 @@ export class SubpropertyGridViewComponent implements OnInit {
     for (const controlInfo of this.view().controls) {
       const index = this.labels.push(signal(pascalCaseToWords(controlInfo.propertyName))) - 1;
       const controlPath = joinPath(this.arrayPath(), controlInfo.propertyName);
-      this.controlValues
-        .observe<string>(controlPath, 'label')
+      this.formStack.activeModel.valueRefAugmentor
+        .getMetadataValue<string>(controlPath, 'label')
         ?.subscribe((l) => this.labels[index].set(l));
     }
   }

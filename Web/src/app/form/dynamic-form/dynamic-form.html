@@ -1,8 +1,7 @@
-<form (ngSubmit)="onSubmit()" [formGroup]="model" class="flex-1 h-full p-4 rounded-lg bg-white">
-  <app-dynamic-view
-    [viewId]="viewId()"
-    ,
-    [modelPath]="modelPath()"
-    [parentIsUnified]="true"
-  ></app-dynamic-view>
+<form
+  (ngSubmit)="onSubmit()"
+  [formGroup]="formStack.activeModel.formGroup"
+  class="flex-1 h-full p-4 rounded-lg bg-white"
+>
+  <app-dynamic-view [viewId]="viewId()" [path]="path()" [parentIsUnified]="true"></app-dynamic-view>
 </form>
