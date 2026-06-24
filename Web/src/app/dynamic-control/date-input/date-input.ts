@@ -1,4 +1,4 @@
-import { Component, forwardRef, input } from '@angular/core';
+import { Component, forwardRef, input, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,7 +14,7 @@ import { formatAsDate, mapIndices } from '../../utils/string-utils';
       <input
         matInput
         [matDatepicker]="picker"
-        [value]="dateValue"
+        [value]="dateValue()"
         (input)="onInput($event)"
         (dateChange)="onDateChange($event.value)"
         [disabled]="disabled"
@@ -36,15 +36,14 @@ import { formatAsDate, mapIndices } from '../../utils/string-utils';
 })
 export class DateInput implements ControlValueAccessor {
   label = input.required<string>();
-  dateValue: Date | null = null;
+  dateValue = signal<Date | null>(null);
   disabled: boolean = false;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private onChange = (_: string | null) => {};
   onTouched = () => {};
 
   writeValue(value: string | null): void {
-    this.dateValue = value ? this.parseDateOnly(value) : null;
+    this.dateValue.set(value ? this.parseDateOnly(value) : null);
   }
 
   registerOnChange(fn: (value: string | null) => void): void {
@@ -77,7 +76,7 @@ export class DateInput implements ControlValueAccessor {
   }
 
   onDateChange(date: Date | null): void {
-    this.dateValue = date;
+    this.dateValue.set(date);
     this.onChange(date ? this.formatDateOnly(date) : null);
   }
 

@@ -2,7 +2,7 @@ import { Component, computed, inject, input, linkedSignal, OnInit, signal } from
 import { widthToCss } from '../../utils/width-utils';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ServiceMethodService } from '../../service-method/service-method-service';
-import { CustomLabelValue } from '../label-value/label-value';
+import { LabelValue } from '../label-value/label-value';
 import { ControlType, FormControlInfoContainer } from '../../api/api.g';
 import { MetadataLookupService } from '../../metadata/metadata-lookup';
 import { ControlPath, joinPath } from '../../utils/form-utils';
@@ -24,7 +24,7 @@ import { FormStackService } from '../../form/form-services/form-stack-service';
   templateUrl: './dynamic-control.html',
   imports: [
     ReactiveFormsModule,
-    CustomLabelValue,
+    LabelValue,
     MatCheckboxModule,
     MatButtonModule,
     MatFormFieldModule,
