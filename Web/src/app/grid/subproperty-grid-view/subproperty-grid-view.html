@@ -26,12 +26,12 @@
   @for (row of rows(); track getRowId(row)) {
     <div class="contents group">
       <div class="col-span-full h-0 border-t border-t-gray-200"></div>
-      @if (view().gridSelectionOptions; as opts) {
+      @if (getSelectionControl(row); as selectionControl) {
         <label
           class="flex items-center px-2 group-hover:bg-violet-50 group-focus-within:bg-violet-50"
         >
           <app-checkbox-input
-            [control]="getControlFromRow(row, opts.selectionProperty)"
+            [control]="selectionControl"
             (checkedChange)="selectionPropertyUpdated(row)"
           ></app-checkbox-input>
         </label>

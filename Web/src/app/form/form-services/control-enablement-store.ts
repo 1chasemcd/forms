@@ -18,7 +18,7 @@ export class ControlEnablementStore {
     subject.subscribe((value) => {
       if (value) {
         if (this.areParentsEnabled(control)) this.maybeEnableChildren(control);
-      } else control.disable();
+      } else control.disable({ emitEvent: false });
     });
   }
 

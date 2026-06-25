@@ -26,7 +26,7 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   readonly arrayPath = computed(() => joinPath(this.path(), this.view().subProperty));
   readonly labels: WritableSignal<string>[] = [];
-  readonly rows = signal<FormGroup[]>([]);
+  readonly rows = signal<Record<string, unknown>[]>([]);
 
   readonly selectAllControl = new FormControl(false);
 
@@ -38,9 +38,8 @@ export class SubpropertyGridViewComponent implements OnInit {
         .getMetadataValue<string>(controlPath, 'label')
         ?.subscribe((l) => this.labels[index].set(l));
     }
-    this.formStack.activeModel
-      .get<FormArray>(this.arrayPath())
-      ?.valueChanges.subscribe((x: FormArray) => this.rows.set(x.controls as FormGroup[]));
+    const formArray = this.formStack.activeModel.get<FormArray>(this.arrayPath());
+    formArray?.valueChanges.subscribe(() => this.rows.set(formArray.getRawValue()));
   }
 
   readonly gridTemplateColumns = computed(() => {
@@ -73,26 +72,26 @@ export class SubpropertyGridViewComponent implements OnInit {
     });
   });
 
-  getRowId(row: FormGroup) {
-    return row.get(this.view().idProperty)?.value;
+  getRowId(row: Record<string, unknown>) {
+    return row[this.view().idProperty];
   }
 
-  private getRowIndex(row: FormGroup) {
+  private getRowIndex(row: Record<string, unknown>) {
     const id = this.getRowId(row);
     return this.rows().findIndex((x) => this.getRowId(x) == id);
   }
 
-  createRowPath(row: FormGroup) {
+  createRowPath(row: Record<string, unknown>) {
     return joinPath(this.arrayPath(), this.getRowIndex(row));
   }
 
-  getControlFromRow(row: FormGroup, propertyName: string) {
-    return row.get(propertyName) as FormControl;
+  getControlFromRow(row: Record<string, unknown>, propertyName: string) {
+    return row[propertyName];
   }
 
-  selectionPropertyUpdated(row: FormGroup) {
+  selectionPropertyUpdated(row: Record<string, unknown>) {
     if (this.view().gridSelectionOptions?.selectionType == GridSelectionType.Single) {
-      if (!this.getSelectionControl(row).value) return;
+      if (!this.getSelectionControl(row)?.value) return;
       this.unselectAllOthers(this.getRowId(row));
     } else if (this.view().gridSelectionOptions?.selectionType == GridSelectionType.Multiple) {
       this.updateSelectAllState();
@@ -102,11 +101,11 @@ export class SubpropertyGridViewComponent implements OnInit {
   selectAllUpdated() {
     const value = this.selectAllControl.value;
     for (const row of this.rows()) {
-      this.getSelectionControl(row).setValue(value);
+      this.getSelectionControl(row)?.setValue(value);
     }
   }
 
-  startEdit(row: FormGroup) {
+  startEdit(row: Record<string, unknown>) {
     const viewId = this.view().editViewId;
     if (!viewId) return;
     this.formStack.pushSubproperty(viewId, this.createRowPath(row));
@@ -115,22 +114,25 @@ export class SubpropertyGridViewComponent implements OnInit {
   private unselectAllOthers(idToKeep: unknown) {
     for (const row of this.rows()) {
       if (this.getRowId(row) === idToKeep) continue;
-      this.getSelectionControl(row).setValue(false);
+      this.getSelectionControl(row)?.setValue(false);
     }
   }
 
   private updateSelectAllState() {
     let allSelected = true;
     for (const row of this.rows()) {
-      const value = this.getSelectionControl(row).value;
+      const value = this.getSelectionControl(row)?.value;
       if (!value) allSelected = false;
     }
     if (allSelected) this.selectAllControl.setValue(true);
     else this.selectAllControl.setValue(false);
   }
 
-  private getSelectionControl(row: FormGroup) {
-    const selectionProperty = this.view().gridSelectionOptions?.selectionProperty ?? '';
-    return this.getControlFromRow(row, selectionProperty);
+  getSelectionControl(row: Record<string, unknown>) {
+    const selectionProperty = this.view().gridSelectionOptions?.selectionProperty;
+    if (!selectionProperty) return null;
+    const group = this.formStack.activeModel.get<FormGroup>(this.createRowPath(row));
+    if (!group) return null;
+    return group.get(selectionProperty) as FormControl | null;
   }
 }

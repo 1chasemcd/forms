@@ -2,7 +2,7 @@ import { Injector } from '@angular/core';
 import { MetadataProcessorRegistryService } from '../../metadata/metadata-processor-registry-service';
 import { MetadataLookupService } from '../../metadata/metadata-lookup';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { ControlPath, joinPath, lastOfPath, parentPath } from '../../utils/form-utils';
+import { ControlPath, joinPath } from '../../utils/form-utils';
 import { ControlEnablementStore } from './control-enablement-store';
 import { ValueRefAugmentor } from './value-ref-augmentor';
 
@@ -26,7 +26,6 @@ export class FormModel {
 
     this.formGroup = this.createFormGroup(root);
     this.applyMetadata(this.formGroup, []);
-    this.formGroup.updateValueAndValidity();
   }
 
   private createFormGroup(type: string): FormGroup {
@@ -74,63 +73,60 @@ export class FormModel {
     return this.formGroup.get(path) as T;
   }
 
-  private getOrAdd<T extends AbstractControl>(path: ControlPath, toAdd: T): T {
-    const existing = this.get<T>(path);
-    if (existing) return existing;
-    const lastKey = lastOfPath(path);
-    if (typeof lastKey === 'number') {
-      const parent = this.getOrAdd(parentPath(path), new FormArray<T>([]));
-      parent.setControl(lastKey, toAdd, { emitEvent: false });
-    } else {
-      const parent = this.getOrAdd(parentPath(path), new FormGroup({}));
-      parent.addControl(lastKey, toAdd, { emitEvent: false });
-    }
-    return toAdd;
-  }
-
   patchValues(values: Record<string, unknown>, path: ControlPath = []) {
-    this.patchValuesImpl(values, path);
-    this.get(path)?.updateValueAndValidity();
+    const group = this.get<FormGroup>(path);
+    if (!group) return;
+    this.patchValuesImpl(values, group, path);
   }
 
-  private patchValuesImpl(values: Record<string, unknown>, path: ControlPath = []) {
+  private patchValuesImpl(
+    values: Record<string, unknown>,
+    group: FormGroup,
+    path: ControlPath = [],
+  ) {
     for (const [key, value] of Object.entries(values)) {
       const propPath = joinPath(path, key);
       const propMetadata = this.metadataLookup.lookupByPath(this.root, propPath);
+      let control = group.get(key);
+      const alreadyExists = !!control;
+
       if (propMetadata?.$type === 'enumerable') {
+        control ??= new FormArray([]);
         this.patchArrayValues(
           value as Record<string, unknown>[],
+          control as FormArray,
           propPath,
           propMetadata.enumeratedType,
         );
       } else if (propMetadata?.$type === 'subproperty') {
-        this.patchValuesImpl(value as Record<string, unknown>, propPath);
+        control ??= new FormGroup({});
+        this.patchValuesImpl(value as Record<string, unknown>, control as FormGroup, propPath);
       } else {
-        const control = this.getOrAdd(propPath, new FormControl());
-        control.setValue(value, { emitEvent: false });
+        control ??= new FormControl();
+        if (value !== control.value) control.setValue(value);
       }
+
+      if (!alreadyExists) group.addControl(key, control);
     }
   }
 
   private patchArrayValues(
     valuesArray: Record<string, unknown>[],
+    array: FormArray,
     path: ControlPath,
     gridType: string,
   ) {
-    const array = this.getOrAdd(path, new FormArray<FormGroup>([]));
     array.clear({ emitEvent: false });
 
-    if (!Array.isArray(valuesArray) || valuesArray.length == 0) {
-      return;
-    }
+    if (!Array.isArray(valuesArray) || valuesArray.length == 0) return;
 
     // TODO make this more efficient
     for (const [index, row] of valuesArray.entries()) {
       const rowPath = joinPath(path, index);
       const rowGroup = this.createFormGroup(gridType);
+      this.patchValuesImpl(row, rowGroup, rowPath);
+      array.push(rowGroup);
       this.applyMetadata(rowGroup, rowPath);
-      array.push(rowGroup, { emitEvent: false });
-      this.patchValuesImpl(row, rowPath);
     }
   }
 
