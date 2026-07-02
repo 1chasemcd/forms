@@ -1,6 +1,13 @@
-<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
-<div class="grid" [style.gridTemplateColumns]="gridTemplateColumns()">
-  <!-- Header -->
+<app-base-table
+  [dataSource]="dataSource()"
+  [view]="view()"
+  [modelType]="modelType()"
+  (selectionChangeToModel)="updateSelections($event)"
+  [modelToSelection]="getSelectionState()"
+>
+</app-base-table>
+
+<!-- <div class="grid" [style.gridTemplateColumns]="gridTemplateColumns()">
   <div class="contents">
     @if (view().gridSelectionOptions?.selectionType === GridSelectionType.Multiple) {
       <label class="flex items-center px-2">
@@ -22,7 +29,6 @@
     }
   </div>
 
-  <!-- Rows -->
   @for (row of rows(); track getRowId(row)) {
     <div class="contents group">
       <div class="col-span-full h-0 border-t border-t-gray-200"></div>
@@ -55,4 +61,4 @@
       }
     </div>
   }
-</div>
+</div> -->

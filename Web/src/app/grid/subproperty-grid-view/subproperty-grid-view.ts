@@ -1,138 +1,67 @@
-import { Component, computed, inject, input, OnInit, signal, WritableSignal } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { GridCell } from '../grid-cell/grid-cell';
-import { GridSelectionType, SubPropertyGridView } from '../../api/api.g';
-import { CheckboxInput } from '../../dynamic-control/checkbox/checkbox-input';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { FormArray, ReactiveFormsModule } from '@angular/forms';
+import { SubPropertyGridView } from '../../api/api.g';
 import { ControlPath, joinPath } from '../../utils/form-utils';
-import { pascalCaseToWords } from '../../utils/string-utils';
-import { Icon } from '../../components/icon/icon';
 import { FormStackService } from '../../form/form-services/form-stack-service';
+import { MatTableModule } from '@angular/material/table';
+import { SubpropertyGridDataSource } from './subproperty-grid-data-source';
+import { BaseTable } from '../base-table/base-table';
+import { MetadataLookupService } from '../../metadata/metadata-lookup';
+import { map, Observable, of, startWith } from 'rxjs';
+import { SelectionChange } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-subproperty-grid-view',
-  imports: [ReactiveFormsModule, GridCell, CheckboxInput, Icon],
+  imports: [MatTableModule, ReactiveFormsModule, BaseTable],
   templateUrl: './subproperty-grid-view.html',
   host: {
     class: 'col-span-12',
   },
 })
 export class SubpropertyGridViewComponent implements OnInit {
-  readonly GridSelectionType = GridSelectionType;
-
   readonly view = input.required<SubPropertyGridView>();
   readonly path = input.required<ControlPath>();
 
   private readonly formStack = inject(FormStackService);
+  private readonly metadata = inject(MetadataLookupService);
 
+  readonly modelType = signal<string>('');
   readonly arrayPath = computed(() => joinPath(this.path(), this.view().subProperty));
-  readonly labels: WritableSignal<string>[] = [];
-  readonly rows = signal<Record<string, unknown>[]>([]);
+  readonly columns = computed(() => this.view().controls.map((x) => x.propertyName));
+  readonly dataSource = computed(
+    () => new SubpropertyGridDataSource(this.arrayPath(), this.formStack),
+  );
 
-  readonly selectAllControl = new FormControl(false);
-
-  ngOnInit() {
-    for (const controlInfo of this.view().controls) {
-      const index = this.labels.push(signal(pascalCaseToWords(controlInfo.propertyName))) - 1;
-      const controlPath = joinPath(this.arrayPath(), controlInfo.propertyName);
-      this.formStack.activeModel.valueRefAugmentor
-        .getMetadataValue<string>(controlPath, 'label')
-        ?.subscribe((l) => this.labels[index].set(l));
-    }
-    const formArray = this.formStack.activeModel.get<FormArray>(this.arrayPath());
-    formArray?.valueChanges.subscribe(() => this.rows.set(formArray.getRawValue()));
+  ngOnInit(): void {
+    const arrayMetadata = this.metadata.lookupByPath(
+      this.formStack.activeModel.root,
+      this.arrayPath(),
+    );
+    if (arrayMetadata?.$type === 'enumerable') this.modelType.set(arrayMetadata.enumeratedType);
   }
 
-  readonly gridTemplateColumns = computed(() => {
-    let columns = this.columnSpans()
-      .map((span) => `minmax(max-content, ${span}fr)`)
-      .join(' ');
-
-    if (this.view().gridSelectionOptions) columns = 'max-content ' + columns;
-    if (this.view().editViewId !== undefined) columns += ' max-content';
-
-    return columns;
-  });
-
-  private readonly columnSpans = computed(() => {
-    const columns = this.view().controls;
-
-    const explicit = columns.map((c) => c.width);
-    const definedTotal = explicit.reduce((sum, w) => (sum ?? 0) + (w ?? 0), 0) ?? 0;
-
-    const undefinedCount = explicit.filter((w) => w == undefined).length;
-
-    const remaining = Math.max(12 - definedTotal, 0);
-
-    let autoWidth = undefinedCount > 0 ? remaining / undefinedCount : 0;
-    autoWidth = Math.max(autoWidth, 1);
-
-    return columns.map((c, i) => {
-      const w = explicit[i];
-      return w ?? autoWidth;
-    });
-  });
-
-  getRowId(row: Record<string, unknown>) {
-    return row[this.view().idProperty];
+  updateSelections(event: SelectionChange<unknown>) {
+    const array = this.formStack.activeModel.get(this.arrayPath()) as FormArray;
+    for (const id of event.added)
+      array.controls.find((x) => x.get(this.view().idProperty) === id)?.setValue(true);
+    for (const id of event.removed)
+      array.controls.find((x) => x.get(this.view().idProperty) === id)?.setValue(false);
   }
 
-  private getRowIndex(row: Record<string, unknown>) {
-    const id = this.getRowId(row);
-    return this.rows().findIndex((x) => this.getRowId(x) == id);
-  }
+  getSelectionState(): Observable<unknown[]> {
+    const array = this.formStack.activeModel.get(this.arrayPath()) as FormArray;
+    const selectionProp = this.view().gridSelectionOptions?.selectionProperty;
+    if (!array || !selectionProp) return of([]);
+    return array?.valueChanges.pipe(
+      startWith(array.getRawValue()),
+      map(() => {
+        const rows = array.controls;
+        const selected = rows
+          .filter((r) => r.get(selectionProp))
+          .map((r) => r.get(this.view().idProperty));
 
-  createRowPath(row: Record<string, unknown>) {
-    return joinPath(this.arrayPath(), this.getRowIndex(row));
-  }
-
-  getControlFromRow(row: Record<string, unknown>, propertyName: string) {
-    return row[propertyName];
-  }
-
-  selectionPropertyUpdated(row: Record<string, unknown>) {
-    if (this.view().gridSelectionOptions?.selectionType == GridSelectionType.Single) {
-      if (!this.getSelectionControl(row)?.value) return;
-      this.unselectAllOthers(this.getRowId(row));
-    } else if (this.view().gridSelectionOptions?.selectionType == GridSelectionType.Multiple) {
-      this.updateSelectAllState();
-    }
-  }
-
-  selectAllUpdated() {
-    const value = this.selectAllControl.value;
-    for (const row of this.rows()) {
-      this.getSelectionControl(row)?.setValue(value);
-    }
-  }
-
-  startEdit(row: Record<string, unknown>) {
-    const viewId = this.view().editViewId;
-    if (!viewId) return;
-    this.formStack.pushSubproperty(viewId, this.createRowPath(row));
-  }
-
-  private unselectAllOthers(idToKeep: unknown) {
-    for (const row of this.rows()) {
-      if (this.getRowId(row) === idToKeep) continue;
-      this.getSelectionControl(row)?.setValue(false);
-    }
-  }
-
-  private updateSelectAllState() {
-    let allSelected = true;
-    for (const row of this.rows()) {
-      const value = this.getSelectionControl(row)?.value;
-      if (!value) allSelected = false;
-    }
-    if (allSelected) this.selectAllControl.setValue(true);
-    else this.selectAllControl.setValue(false);
-  }
-
-  getSelectionControl(row: Record<string, unknown>) {
-    const selectionProperty = this.view().gridSelectionOptions?.selectionProperty;
-    if (!selectionProperty) return null;
-    const group = this.formStack.activeModel.get<FormGroup>(this.createRowPath(row));
-    if (!group) return null;
-    return group.get(selectionProperty) as FormControl | null;
+        return selected;
+      }),
+    );
   }
 }
