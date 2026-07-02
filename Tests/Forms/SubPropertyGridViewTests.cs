@@ -5,7 +5,7 @@ using FormsApi.Forms;
 namespace Tests.Forms;
 
 [TestFixture]
-public class SubPropertyGridViewTests
+public class SubPropertyTableViewTests
 {
     private sealed class TestModel
     {
@@ -13,99 +13,99 @@ public class SubPropertyGridViewTests
         public bool BoolProperty2 { get; set; }
         public bool BoolProperty3 { get; set; }
 
-        public IEnumerable<TestGridRowModel> Rows { get; set; } = [];
+        public IEnumerable<TestTableRowModel> Rows { get; set; } = [];
     }
-    private sealed class TestGridRowModel
+    private sealed class TestTableRowModel
     {
         public int Id { get; set; }
-        public bool GridRowBoolProperty1 { get; set; }
-        public bool GridRowBoolProperty2 { get; set; }
-        public bool GridRowBoolProperty3 { get; set; }
+        public bool TableRowBoolProperty1 { get; set; }
+        public bool TableRowBoolProperty2 { get; set; }
+        public bool TableRowBoolProperty3 { get; set; }
     }
 
-    private static SubPropertyGridViewBuilder<TestModel, TestGridRowModel> BasicGrid => new(x => x.Rows, x => x.Id);
+    private static SubPropertyTableViewBuilder<TestModel, TestTableRowModel> BasicTable => new(x => x.Rows, x => x.Id);
 
     [Test]
     public void WithFields_SetsFields()
     {
-        var view = new SubPropertyGridViewBuilder<TestModel, TestGridRowModel>(x => x.Rows, x => x.Id)
+        var view = new SubPropertyTableViewBuilder<TestModel, TestTableRowModel>(x => x.Rows, x => x.Id)
         {
-            {m => m.GridRowBoolProperty1, 6}
+            {m => m.TableRowBoolProperty1, 6}
         };
 
-        Assert.That(view.ControlList.Single(),
-            Has.Property(nameof(FormControlInfoContainer.PropertyName))
-            .EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1))
-            .And.Property(nameof(FormControlInfoContainer.Width))
+        Assert.That(view.FieldList.Single(),
+            Has.Property(nameof(FormFieldInfoContainer.Identifier))
+            .EqualTo(nameof(TestTableRowModel.TableRowBoolProperty1))
+            .And.Property(nameof(FormFieldInfoContainer.Width))
             .EqualTo(6));
     }
 
     [Test]
     public void EnableAdd_SetsCanAddToTrue()
     {
-        SubPropertyGridViewBuilder<TestModel, TestGridRowModel> grid = BasicGrid.EnableAdd();
-        Assert.That(grid.CanAdd.InnerValue(), Is.True);
+        SubPropertyTableViewBuilder<TestModel, TestTableRowModel> table = BasicTable.EnableAdd();
+        Assert.That(table.CanAdd.InnerValue(), Is.True);
     }
 
     [Test]
     public void CanAddWhen_SetsCanAdd()
     {
-        SubPropertyGridViewBuilder<TestModel, TestGridRowModel> grid = BasicGrid.CanAddWhen(m => m.BoolProperty1);
-        Assert.That(grid.CanAdd.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty1)));
+        SubPropertyTableViewBuilder<TestModel, TestTableRowModel> table = BasicTable.CanAddWhen(m => m.BoolProperty1);
+        Assert.That(table.CanAdd.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty1)));
     }
 
     [Test]
     public void EnableEdit_SetsCanEditToTrue()
     {
-        SubPropertyGridViewBuilder<TestModel, TestGridRowModel> grid = BasicGrid.EnableEdit();
-        Assert.That(grid.CanEdit.InnerValue(), Is.True);
+        SubPropertyTableViewBuilder<TestModel, TestTableRowModel> table = BasicTable.EnableEdit();
+        Assert.That(table.CanEdit.InnerValue(), Is.True);
     }
 
     [Test]
     public void CanEditWhen_SetsCanEdit()
     {
-        SubPropertyGridViewBuilder<TestModel, TestGridRowModel> grid = BasicGrid.CanEditWhen(m => m.BoolProperty1);
-        Assert.That(grid.CanEdit.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty1)));
+        SubPropertyTableViewBuilder<TestModel, TestTableRowModel> table = BasicTable.CanEditWhen(m => m.BoolProperty1);
+        Assert.That(table.CanEdit.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty1)));
     }
 
     [Test]
     public void EnableEditRow_SetsCanEditRowToTrue()
     {
-        SubPropertyGridViewBuilder<TestModel, TestGridRowModel> grid = BasicGrid.CanEditRowWhen(m => m.GridRowBoolProperty1);
-        Assert.That(grid.CanEditRow.InnerValue(), Is.EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1)));
+        SubPropertyTableViewBuilder<TestModel, TestTableRowModel> table = BasicTable.CanEditRowWhen(m => m.TableRowBoolProperty1);
+        Assert.That(table.CanEditRow.InnerValue(), Is.EqualTo(nameof(TestTableRowModel.TableRowBoolProperty1)));
     }
 
     [Test]
     public void EnableDelete_SetsCanDeleteToTrue()
     {
-        SubPropertyGridViewBuilder<TestModel, TestGridRowModel> grid = BasicGrid.EnableDelete();
-        Assert.That(grid.CanDelete.InnerValue(), Is.True);
+        SubPropertyTableViewBuilder<TestModel, TestTableRowModel> table = BasicTable.EnableDelete();
+        Assert.That(table.CanDelete.InnerValue(), Is.True);
     }
 
     [Test]
     public void CanDeleteWhen_SetsCanDelete()
     {
-        SubPropertyGridViewBuilder<TestModel, TestGridRowModel> grid = BasicGrid.CanDeleteWhen(m => m.BoolProperty1);
-        Assert.That(grid.CanDelete.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty1)));
+        SubPropertyTableViewBuilder<TestModel, TestTableRowModel> table = BasicTable.CanDeleteWhen(m => m.BoolProperty1);
+        Assert.That(table.CanDelete.InnerValue(), Is.EqualTo(nameof(TestModel.BoolProperty1)));
     }
 
     [Test]
     public void EnableDeleteRow_SetsCanDeleteRowToTrue()
     {
-        SubPropertyGridViewBuilder<TestModel, TestGridRowModel> grid = BasicGrid.CanDeleteRowWhen(m => m.GridRowBoolProperty1);
-        Assert.That(grid.CanDeleteRow.InnerValue(), Is.EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1)));
+        SubPropertyTableViewBuilder<TestModel, TestTableRowModel> table = BasicTable.CanDeleteRowWhen(m => m.TableRowBoolProperty1);
+        Assert.That(table.CanDeleteRow.InnerValue(), Is.EqualTo(nameof(TestTableRowModel.TableRowBoolProperty1)));
     }
 
     [Test]
     public void EnableSelection_SetsSelectionProperties()
     {
-        SubPropertyGridViewBuilder<TestModel, TestGridRowModel> grid = BasicGrid
-            .EnableSelection(m => m.GridRowBoolProperty1, GridSelectionType.Single);
+        SubPropertyTableViewBuilder<TestModel, TestTableRowModel> table = BasicTable
+            .EnableSelection(m => m.TableRowBoolProperty1, TableSelectionType.Single);
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(grid.SelectionProperty, Is.EqualTo(nameof(TestGridRowModel.GridRowBoolProperty1)));
-            Assert.That(grid.SelectionType, Is.EqualTo(GridSelectionType.Single));
+            Assert.That(table.SelectionProperty, Is.EqualTo(nameof(TestTableRowModel.TableRowBoolProperty1)));
+            Assert.That(table.SelectionType, Is.EqualTo(TableSelectionType.Single));
         }
 
     }

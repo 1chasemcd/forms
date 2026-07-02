@@ -13,15 +13,15 @@
     <app-dynamic-input
       (focusout)="stopEdit()"
       [control]="draft"
-      [controlType]="controlType()"
+      [fieldType]="fieldType()"
       class="flex-1"
     ></app-dynamic-input>
   } @else if (control(); as control) {
-    <app-grid-cell-content
+    <app-table-cell-content
       (mousedown)="maybeHandleCheckbox()"
       [value]="control.value"
-      [controlType]="controlType()"
+      [fieldType]="fieldType()"
       class="flex-1"
-    ></app-grid-cell-content>
+    ></app-table-cell-content>
   }
 </div>

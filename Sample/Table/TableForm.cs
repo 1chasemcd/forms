@@ -3,24 +3,24 @@ using FormsApi.Forms;
 using FormsApi.Metadata;
 using FormsApi.Repository.Handlers;
 
-namespace Sample.Grid;
+namespace Sample.Table;
 
-public class GridForm : Form<GridFormModel>
+public class TableForm : Form<TableFormModel>
 {
-    protected override IViewBuilder<GridFormModel> View => new CombinedViewBuilder<GridFormModel>()
+    protected override IViewBuilder<TableFormModel> View => new CombinedViewBuilder<TableFormModel>()
 {
-    new CombinedViewBuilder<GridFormModel>()
+    new CombinedViewBuilder<TableFormModel>()
     {
-        GridSettings(),
-        TransactionGrid(),
+        TableSettings(),
+        TransactionTable(),
     }.Unify(),
-    TransactionGrid2(),
-    UserGrid(),
+    TransactionTable2(),
+    UserTable(),
 };
 
-    private ControlViewBuilder<GridFormModel> GridSettings()
+    private FieldViewBuilder<TableFormModel> TableSettings()
     {
-        return new ControlViewBuilder<GridFormModel>()
+        return new FieldViewBuilder<TableFormModel>()
     {
         {x => x.AllowAdd, 3},
         {x => x.AllowEdit, 3},
@@ -28,9 +28,9 @@ public class GridForm : Form<GridFormModel>
     };
     }
 
-    private SubPropertyGridViewBuilder<GridFormModel, Transaction> TransactionGrid()
+    private SubPropertyTableViewBuilder<TableFormModel, Transaction> TransactionTable()
     {
-        return new SubPropertyGridViewBuilder<GridFormModel, Transaction>(x => x.Transactions, t => t.Id)
+        return new SubPropertyTableViewBuilder<TableFormModel, Transaction>(x => x.Transactions, t => t.Id)
         {
             {t => t.Date, 3},
             {t => t.Time, 3},
@@ -48,22 +48,22 @@ public class GridForm : Form<GridFormModel>
         .CanDeleteWhen(m => m.AllowDelete);
     }
 
-    private SubPropertyGridViewBuilder<GridFormModel, Transaction> TransactionGrid2()
+    private SubPropertyTableViewBuilder<TableFormModel, Transaction> TransactionTable2()
     {
-        return new SubPropertyGridViewBuilder<GridFormModel, Transaction>(x => x.Transactions2, t => t.Id)
+        return new SubPropertyTableViewBuilder<TableFormModel, Transaction>(x => x.Transactions2, t => t.Id)
         {
             t => t.Date,
             t => t.Time,
             t => t.Amount,
             t => t.Description,
         }
-        .EnableSelection(t => t.Selected, GridSelectionType.Single)
+        .EnableSelection(t => t.Selected, TableSelectionType.Single)
         .EnableEdit().WithEditForm(new TransactionEditForm());
     }
 
-    private SubPropertyGridViewBuilder<GridFormModel, BasicUserModel> UserGrid()
+    private SubPropertyTableViewBuilder<TableFormModel, BasicUserModel> UserTable()
     {
-        return new SubPropertyGridViewBuilder<GridFormModel, BasicUserModel>(x => x.Users, t => t.Id)
+        return new SubPropertyTableViewBuilder<TableFormModel, BasicUserModel>(x => x.Users, t => t.Id)
         {
             {u => u.Id, 1},
             u => u.UserName
@@ -75,7 +75,7 @@ public class GridForm : Form<GridFormModel>
 
 public class TransactionEditForm : Form<Transaction>
 {
-    protected override IViewBuilder<Transaction> View => new ControlViewBuilder<Transaction>
+    protected override IViewBuilder<Transaction> View => new FieldViewBuilder<Transaction>
     {
         {t => t.Date, 6},
         {t => t.Time, 6},
@@ -88,7 +88,7 @@ public class TransactionEditForm : Form<Transaction>
 
 public class UserEditForm : Form<User>
 {
-    protected override IViewBuilder<User> View => new ControlViewBuilder<User>
+    protected override IViewBuilder<User> View => new FieldViewBuilder<User>
     {
         u => u.Id ,
         u => u.UserName,
@@ -114,7 +114,7 @@ public class UserMetadata : Metadata<User>
     }
 }
 
-public class GridFormModel
+public class TableFormModel
 {
     public bool AllowAdd { get; set; } = true;
     public bool AllowEdit { get; set; } = true;

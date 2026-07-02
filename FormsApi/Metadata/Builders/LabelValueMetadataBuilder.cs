@@ -9,7 +9,7 @@ public class LabelValueMetadataBuilder<TModel> :
     ILabelable<LabelValueMetadataBuilder<TModel>, TModel>,
     IVisible<LabelValueMetadataBuilder<TModel>, TModel>
 {
-    public PropertyOrConstantBuilder<TModel, string?>? Label { get; set; }
-    public PropertyOrConstantBuilder<TModel, bool>? Visible { get; set; }
-    public ControlType GetControlType() => ControlType.LabelValue;
+    public FormValueRefBuilder<TModel, string?>? Label { get; set; }
+    public FormValueRefBuilder<TModel, bool>? Visible { get; set; }
+    public FieldType GetFieldType() => FieldType.LabelValue;
 }

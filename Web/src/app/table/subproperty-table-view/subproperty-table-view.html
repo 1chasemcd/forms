@@ -9,7 +9,7 @@
 
 <!-- <div class="grid" [style.gridTemplateColumns]="gridTemplateColumns()">
   <div class="contents">
-    @if (view().gridSelectionOptions?.selectionType === GridSelectionType.Multiple) {
+    @if (view().gridSelectionOptions?.selectionType === TableSelectionType.Multiple) {
       <label class="flex items-center px-2">
         <app-checkbox-input
           [control]="selectAllControl"
@@ -43,13 +43,13 @@
         </label>
       }
       @for (column of view().controls; track $index) {
-        <app-grid-cell
+        <app-table-cell
           class="group-hover:bg-violet-50 group-focus-within:bg-violet-50"
-          [controlInfo]="column"
+          [fieldInfo]="column"
           [rowModelPath]="createRowPath(row)"
           [parentView]="this.view()"
         >
-        </app-grid-cell>
+        </app-table-cell>
       }
       @if (view().editViewId !== undefined) {
         <button

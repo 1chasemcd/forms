@@ -11,7 +11,7 @@ internal sealed class MetadataProcessors
     public IEnumerable<Func<IMetadataBuilder<T>, PropertyMetadata?>> GetProcessors<T>()
     {
         yield return propertyMetadata =>
-            new ControlTypeMetadata() { Value = propertyMetadata.GetControlType() };
+            new FieldTypeMetadata() { Value = propertyMetadata.GetFieldType() };
 
         yield return propertyMetadata =>
             propertyMetadata is IEnablable<T> x && x.Enabled is not null
@@ -63,7 +63,7 @@ internal sealed class MetadataProcessors
             .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IValueRangable<,>));
 
         PropertyInfo? maxValueProperty = rangeInterface?.GetProperty(nameof(IValueRangable<,>.MaxValue));
-        if (maxValueProperty?.GetValue(propertyMetadata) is IPropertyOrConstantBuilder maxValue)
+        if (maxValueProperty?.GetValue(propertyMetadata) is IFormValueRefBuilder maxValue)
             return new MaxValueMetadata() { Value = maxValue.Build() };
         return null;
     }
@@ -74,7 +74,7 @@ internal sealed class MetadataProcessors
             .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IValueRangable<,>));
 
         PropertyInfo? minValueProperty = rangeInterface?.GetProperty(nameof(IValueRangable<,>.MinValue));
-        if (minValueProperty?.GetValue(propertyMetadata) is IPropertyOrConstantBuilder minValue)
+        if (minValueProperty?.GetValue(propertyMetadata) is IFormValueRefBuilder minValue)
             return new MinValueMetadata() { Value = minValue.Build() };
         return null;
     }

@@ -4,12 +4,12 @@ using System.Text.Json.Serialization;
 namespace FormsApi.Contract;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
-[JsonDerivedType(typeof(Property), "property")]
-[JsonDerivedType(typeof(Constant), "constant")]
-public abstract record PropertyOrConstant;
-public sealed record Property : PropertyOrConstant
+[JsonDerivedType(typeof(ModelValue), "model")]
+[JsonDerivedType(typeof(ConstantValue), "constant")]
+public abstract record FormValueRef;
+public sealed record ModelValue : FormValueRef
 {
-    public Property(string value)
+    public ModelValue(string value)
     {
         Value = value;
     }
@@ -17,9 +17,9 @@ public sealed record Property : PropertyOrConstant
     [Required]
     public string Value { get; init; }
 }
-public sealed record Constant : PropertyOrConstant
+public sealed record ConstantValue : FormValueRef
 {
-    public Constant(object value)
+    public ConstantValue(object value)
     {
         Value = value;
     }

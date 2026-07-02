@@ -17,11 +17,11 @@ public class MetadataTests : Metadata<MetadataTests.TestModel>
         public TimeOnly TimeProperty { get; set; }
     }
 
-    private void AssertControlWasAdded(IMetadataBuilder<TestModel> created, ControlType expectedInputType, string expectedPropertyName)
+    private void AssertFieldWasAdded(IMetadataBuilder<TestModel> created, FieldType expectedInputType, string expectedPropertyName)
     {
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(created.GetControlType(), Is.EqualTo(expectedInputType));
+            Assert.That(created.GetFieldType(), Is.EqualTo(expectedInputType));
             Assert.That(MetadataBuilders.TryGetValue(expectedPropertyName, out IMetadataBuilder<TestModel>? value), Is.True);
             Assert.That(value, Is.EqualTo(created));
         }
@@ -37,63 +37,63 @@ public class MetadataTests : Metadata<MetadataTests.TestModel>
     public void Button_AddsToMetadataDictionary()
     {
         ButtonMetadataBuilder<TestModel> result = Button(x => x.ObjectProperty);
-        AssertControlWasAdded(result, ControlType.Button, nameof(TestModel.ObjectProperty));
+        AssertFieldWasAdded(result, FieldType.Button, nameof(TestModel.ObjectProperty));
     }
 
     [Test]
     public void CheckBox_AddsToMetadataDictionary()
     {
         CheckBoxMetadataBuilder<TestModel> result = CheckBox(x => x.BoolProperty);
-        AssertControlWasAdded(result, ControlType.CheckBox, nameof(TestModel.BoolProperty));
+        AssertFieldWasAdded(result, FieldType.CheckBox, nameof(TestModel.BoolProperty));
     }
 
     [Test]
     public void Currency_AddsToMetadataDictionary()
     {
         CurrencyMetadataBuilder<TestModel> result = Currency(x => x.DecimalProperty);
-        AssertControlWasAdded(result, ControlType.Currency, nameof(TestModel.DecimalProperty));
+        AssertFieldWasAdded(result, FieldType.Currency, nameof(TestModel.DecimalProperty));
     }
 
     [Test]
     public void Date_AddsToMetadataDictionary()
     {
         DateMetadataBuilder<TestModel> result = Date(x => x.DateProperty);
-        AssertControlWasAdded(result, ControlType.Date, nameof(TestModel.DateProperty));
+        AssertFieldWasAdded(result, FieldType.Date, nameof(TestModel.DateProperty));
     }
 
     [Test]
     public void LabelValue_AddsToMetadataDictionary()
     {
         LabelValueMetadataBuilder<TestModel> result = LabelValue(x => x.StringProperty);
-        AssertControlWasAdded(result, ControlType.LabelValue, nameof(TestModel.StringProperty));
+        AssertFieldWasAdded(result, FieldType.LabelValue, nameof(TestModel.StringProperty));
     }
 
     [Test]
     public void Numeric_AddsToMetadataDictionary()
     {
         NumericMetadataBuilder<TestModel, decimal> result = Numeric(x => x.DecimalProperty);
-        AssertControlWasAdded(result, ControlType.Numeric, nameof(TestModel.DecimalProperty));
+        AssertFieldWasAdded(result, FieldType.Numeric, nameof(TestModel.DecimalProperty));
     }
 
     [Test]
     public void TextArea_AddsToMetadataDictionary()
     {
         TextAreaMetadataBuilder<TestModel> result = TextArea(x => x.StringProperty);
-        AssertControlWasAdded(result, ControlType.TextArea, nameof(TestModel.StringProperty));
+        AssertFieldWasAdded(result, FieldType.TextArea, nameof(TestModel.StringProperty));
     }
 
     [Test]
     public void Text_AddsToMetadataDictionary()
     {
         TextMetadataBuilder<TestModel> result = Text(x => x.StringProperty);
-        AssertControlWasAdded(result, ControlType.Text, nameof(TestModel.StringProperty));
+        AssertFieldWasAdded(result, FieldType.Text, nameof(TestModel.StringProperty));
     }
 
     [Test]
     public void Time_AddsToMetadataDictionary()
     {
         TimeMetadataBuilder<TestModel> result = Time(x => x.TimeProperty);
-        AssertControlWasAdded(result, ControlType.Time, nameof(TestModel.TimeProperty));
+        AssertFieldWasAdded(result, FieldType.Time, nameof(TestModel.TimeProperty));
     }
 
     [Test]

@@ -41,10 +41,10 @@ public class MetadataProcessorsTests
     public void InputTypeProcessor_ReturnsCorrectDto()
     {
         var builderMock = new Mock<IMetadataBuilder<TestModel>>();
-        builderMock.Setup(x => x.GetControlType()).Returns(ControlType.Text);
+        builderMock.Setup(x => x.GetFieldType()).Returns(FieldType.Text);
 
-        ControlTypeMetadata result = AssertProcessorApplied<ControlTypeMetadata>(builderMock.Object);
-        Assert.That(result.Value, Is.EqualTo(ControlType.Text));
+        FieldTypeMetadata result = AssertProcessorApplied<FieldTypeMetadata>(builderMock.Object);
+        Assert.That(result.Value, Is.EqualTo(FieldType.Text));
     }
 
     [Test]

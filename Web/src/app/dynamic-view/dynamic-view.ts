@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
-import { DynamicControl } from '../dynamic-control/dynamic-control/dynamic-control';
-import { SubpropertyGridViewComponent } from '../grid/subproperty-grid-view/subproperty-grid-view';
+import { DynamicField } from '../dynamic-control/dynamic-field/dynamic-field';
+import { SubPropertyTableViewComponent } from '../table/subproperty-table-view/subproperty-table-view';
 import { NgClass } from '@angular/common';
 import { ViewLookupService } from '../form/form-services/view-lookup-service';
 import { widthToCss } from '../utils/width-utils';
@@ -14,7 +14,7 @@ import { FormStackService } from '../form/form-services/form-stack-service';
     '[class]': 'width()',
     '[class.border]': '!parentIsUnified()',
   },
-  imports: [DynamicControl, SubpropertyGridViewComponent, NgClass],
+  imports: [DynamicField, SubPropertyTableViewComponent, NgClass],
   templateUrl: './dynamic-view.html',
 })
 export class DynamicView implements OnInit {
@@ -39,13 +39,13 @@ export class DynamicView implements OnInit {
     return view?.$type === 'combinedView' ? view : null;
   });
 
-  readonly controlView = computed(() => {
+  readonly fieldView = computed(() => {
     const view = this.view();
-    return view?.$type === 'controlView' ? view : null;
+    return view?.$type === 'fieldView' ? view : null;
   });
-  readonly subpropertyGridView = computed(() => {
+  readonly subpropertyTableView = computed(() => {
     const view = this.view();
-    return view?.$type == 'subPropertyGridView' ? view : null;
+    return view?.$type == 'subPropertyTableView' ? view : null;
   });
   readonly width = computed(() => widthToCss(this.view()?.width));
 }

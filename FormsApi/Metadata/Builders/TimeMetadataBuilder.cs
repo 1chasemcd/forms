@@ -13,12 +13,12 @@ public class TimeMetadataBuilder<TModel> :
     IValueRangable<DateMetadataBuilder<TModel>, TModel, TimeOnly>,
     IVisible<DateMetadataBuilder<TModel>, TModel>
 {
-    public PropertyOrConstantBuilder<TModel, bool>? Enabled { get; set; }
-    public PropertyOrConstantBuilder<TModel, string?>? Label { get; set; }
+    public FormValueRefBuilder<TModel, bool>? Enabled { get; set; }
+    public FormValueRefBuilder<TModel, string?>? Label { get; set; }
     public IServiceMethodBuilder<TModel>? ServiceMethod { get; set; }
-    public PropertyOrConstantBuilder<TModel, bool>? Required { get; set; }
-    public PropertyOrConstantBuilder<TModel, TimeOnly>? MinValue { get; set; }
-    public PropertyOrConstantBuilder<TModel, TimeOnly>? MaxValue { get; set; }
-    public PropertyOrConstantBuilder<TModel, bool>? Visible { get; set; }
-    public ControlType GetControlType() => ControlType.Time;
+    public FormValueRefBuilder<TModel, bool>? Required { get; set; }
+    public FormValueRefBuilder<TModel, TimeOnly>? MinValue { get; set; }
+    public FormValueRefBuilder<TModel, TimeOnly>? MaxValue { get; set; }
+    public FormValueRefBuilder<TModel, bool>? Visible { get; set; }
+    public FieldType GetFieldType() => FieldType.Time;
 }

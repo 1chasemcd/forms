@@ -14,11 +14,11 @@ public class TextMetadataBuilder<TModel> :
     IVisible<TextMetadataBuilder<TModel>, TModel>
 
 {
-    public PropertyOrConstantBuilder<TModel, bool>? Enabled { get; set; }
-    public PropertyOrConstantBuilder<TModel, string?>? Label { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? MaxLength { get; set; }
+    public FormValueRefBuilder<TModel, bool>? Enabled { get; set; }
+    public FormValueRefBuilder<TModel, string?>? Label { get; set; }
+    public FormValueRefBuilder<TModel, int>? MaxLength { get; set; }
     public IServiceMethodBuilder<TModel>? ServiceMethod { get; set; }
-    public PropertyOrConstantBuilder<TModel, bool>? Required { get; set; }
-    public PropertyOrConstantBuilder<TModel, bool>? Visible { get; set; }
-    public ControlType GetControlType() => ControlType.Text;
+    public FormValueRefBuilder<TModel, bool>? Required { get; set; }
+    public FormValueRefBuilder<TModel, bool>? Visible { get; set; }
+    public FieldType GetFieldType() => FieldType.Text;
 }

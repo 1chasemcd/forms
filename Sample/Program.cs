@@ -2,7 +2,7 @@ using FormsApi;
 using FormsApi.Contract;
 using NJsonSchema;
 using NJsonSchema.Generation.TypeMappers;
-using Sample.Grid;
+using Sample.Table;
 using Sample.Home;
 
 namespace Sample;
@@ -29,7 +29,7 @@ public static class Program
 
         builder.Services.AddForms(formsSetup => formsSetup
             .AddForm<HomeForm>("home")
-            .AddForm<GridForm>("grid")
+            .AddForm<TableForm>("table")
             .AddForm<UserEditForm>("user")
             .AddRepository<HomeService>()
             .AddRepository<UserRepository>()

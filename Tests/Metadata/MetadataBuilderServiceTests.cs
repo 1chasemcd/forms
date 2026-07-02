@@ -56,7 +56,7 @@ public class MetadataBuilderServiceTests
         // If it found the metadata definition, it should have the label "Test Name"
         var nameProperty = modelMetadata.PropertyMetadatas[nameof(TestModel.Name)] as PrimitivePropertyMetadataContainer;
         Assert.That(nameProperty, Is.Not.Null);
-        Assert.That(nameProperty!.Metadatas!.Any(m => m is LabelMetadata l && l.Value is Constant c && c.Value.ToString() == "Test Name"), Is.True);
+        Assert.That(nameProperty!.Metadatas!.Any(m => m is LabelMetadata l && l.Value is ConstantValue c && c.Value.ToString() == "Test Name"), Is.True);
     }
 
     [Test]
@@ -81,7 +81,7 @@ public class MetadataBuilderServiceTests
 
         var cityProperty = result.First().PropertyMetadatas[nameof(SubModel.City)] as PrimitivePropertyMetadataContainer;
         Assert.That(cityProperty, Is.Not.Null);
-        Assert.That(cityProperty!.Metadatas!.Any(m => m is ControlTypeMetadata i && i.Value == ControlType.Text), Is.True);
+        Assert.That(cityProperty!.Metadatas!.Any(m => m is FieldTypeMetadata i && i.Value == FieldType.Text), Is.True);
     }
 
     [Test]

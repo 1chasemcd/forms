@@ -6,7 +6,7 @@
 <div
   [ngClass]="{
     'grid grid-cols-12 gap-4 col-span-12 content-start': true,
-    'm-4': !parentIsUnified() && !subpropertyGridView(),
+    'm-4': !parentIsUnified() && !subpropertyTableView(),
   }"
 >
   @if (combinedView(); as view) {
@@ -17,11 +17,11 @@
         [parentIsUnified]="combinedView()?.unify ?? false"
       ></app-dynamic-view>
     }
-  } @else if (controlView(); as view) {
-    @for (control of view.controls; track $index) {
-      <app-dynamic-control [controlInfo]="control" [parentPath]="path()"></app-dynamic-control>
+  } @else if (fieldView(); as view) {
+    @for (control of view.fields; track $index) {
+      <app-dynamic-field [fieldInfo]="control" [parentPath]="path()"></app-dynamic-field>
     }
-  } @else if (subpropertyGridView(); as view) {
-    <app-subproperty-grid-view [view]="view" [path]="path()"></app-subproperty-grid-view>
+  } @else if (subpropertyTableView(); as view) {
+    <app-subproperty-table-view [view]="view" [path]="path()"></app-subproperty-table-view>
   }
 </div>

@@ -6,13 +6,13 @@ namespace FormsApi.Contract.View;
     TypeDiscriminatorPropertyName = "$type",
     UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor
 )]
-[JsonDerivedType(typeof(ControlView), "controlView")]
+[JsonDerivedType(typeof(FieldView), "fieldView")]
 [JsonDerivedType(typeof(CombinedView), "combinedView")]
-[JsonDerivedType(typeof(SubPropertyGridView), "subPropertyGridView")]
+[JsonDerivedType(typeof(SubPropertyTableView), "subPropertyTableView")]
 public abstract record View
 {
-    public PropertyOrConstant? Title { get; init; }
+    public FormValueRef? Title { get; init; }
     public int? Width { get; init; }
-    public PropertyOrConstant? Visible { get; init; }
+    public FormValueRef? Visible { get; init; }
 
 }

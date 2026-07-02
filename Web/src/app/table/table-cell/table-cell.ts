@@ -9,26 +9,26 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ControlType, FormControlInfoContainer, SubPropertyGridView } from '../../api/api.g';
+import { FieldType, FormFieldInfoContainer, SubPropertyTableView } from '../../api/api.g';
 import { MetadataLookupService } from '../../metadata/metadata-lookup';
 import { ControlPath, joinPath, parentPath } from '../../utils/form-utils';
-import { GridCellContent } from './grid-cell-content';
+import { TableCellContent } from './table-cell-content';
 import { ServiceMethodService } from '../../service-method/service-method-service';
 import { DynamicInput } from '../../dynamic-control/dynamic-input/dynamic-input';
 import { startWith } from 'rxjs';
 import { FormStackService } from '../../form/form-services/form-stack-service';
 
 @Component({
-  selector: 'app-grid-cell',
-  imports: [ReactiveFormsModule, GridCellContent, DynamicInput],
-  templateUrl: './grid-cell.html',
+  selector: 'app-table-cell',
+  imports: [ReactiveFormsModule, TableCellContent, DynamicInput],
+  templateUrl: './table-cell.html',
 })
-export class GridCell implements OnInit {
-  readonly ControlType = ControlType;
+export class TableCell implements OnInit {
+  readonly ControlType = FieldType;
 
-  readonly controlInfo = input.required<FormControlInfoContainer>();
+  readonly fieldInfo = input.required<FormFieldInfoContainer>();
   readonly rowModelPath = input.required<ControlPath>();
-  readonly parentView = input.required<SubPropertyGridView>();
+  readonly parentView = input.required<SubPropertyTableView>();
 
   private readonly metadataLookup = inject(MetadataLookupService);
   private readonly formStack = inject(FormStackService);
@@ -41,20 +41,20 @@ export class GridCell implements OnInit {
   readonly draft = signal<FormControl | null>(null);
 
   private readonly path = computed(() =>
-    joinPath(this.rowModelPath(), this.controlInfo().propertyName),
+    joinPath(this.rowModelPath(), this.fieldInfo().identifier),
   );
   readonly control = computed(() => this.formStack.activeModel.get<FormControl>(this.path()));
-  readonly controlType = computed(
+  readonly fieldType = computed(
     () =>
-      this.formStack.activeModel.valueRefAugmentor.getMetadataValue(this.path(), 'controlType') ??
-      ControlType.Text,
+      this.formStack.activeModel.valueRefAugmentor.getMetadataValue(this.path(), 'fieldType') ??
+      FieldType.Text,
   );
 
   readonly controlEnabled = signal(false);
   readonly rowEnabled = signal(true);
-  readonly gridEnabled = signal(false);
+  readonly tableEnabled = signal(false);
   readonly isEnabled = computed(
-    () => this.controlEnabled() && this.rowEnabled() && this.gridEnabled(),
+    () => this.controlEnabled() && this.rowEnabled() && this.tableEnabled(),
   );
 
   ngOnInit() {
@@ -67,7 +67,7 @@ export class GridCell implements OnInit {
     if (parentView.canEdit)
       this.formStack.activeModel.valueRefAugmentor
         .getValue(parentPath(parentPath(this.rowModelPath())), parentView.canEdit)
-        ?.subscribe((x) => this.gridEnabled.set(!!x));
+        ?.subscribe((x) => this.tableEnabled.set(!!x));
     if (parentView.canEdit?.$type === 'constant' && !parentView.canEdit.value) return;
     if (parentView.canEditRow)
       this.formStack.activeModel.valueRefAugmentor
@@ -111,7 +111,7 @@ export class GridCell implements OnInit {
   maybeHandleCheckbox() {
     if (!this.isEnabled()) return;
     if (this.draft()) return;
-    if (this.controlType() !== ControlType.CheckBox) return;
+    if (this.fieldType() !== FieldType.CheckBox) return;
     const current = this.control()?.value;
     this.control()?.setValue(!current);
     this.executeServiceMethod();

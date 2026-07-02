@@ -14,10 +14,10 @@ public class FormBuilderServiceTests
         public string? Name { get; set; }
         public int Age { get; set; }
         public bool IsActive { get; set; }
-        public List<GridRowModel> SubRows { get; set; } = [];
+        public List<TableRowModel> SubRows { get; set; } = [];
     }
 
-    public sealed class GridRowModel
+    public sealed class TableRowModel
     {
         public int Id { get; set; }
         public string? Description { get; set; }
@@ -38,36 +38,36 @@ public class FormBuilderServiceTests
     }
 
     [Test]
-    public void BuildFormIntoViews_WithControlView_MapsCorrectly()
+    public void BuildFormIntoViews_WithFieldView_MapsCorrectly()
     {
-        ControlViewBuilder<TestModel> controlView = new ControlViewBuilder<TestModel>()
-            .WithTitle("Basic Control Info")
+        FieldViewBuilder<TestModel> fieldView = new FieldViewBuilder<TestModel>()
+            .WithTitle("Basic Field Info")
             .WithWidth(12)
             .VisibleWhen(m => m.IsActive);
 
-        controlView.Add(m => m.Name, 6);
-        controlView.Add(m => m.Age, 6);
+        fieldView.Add(m => m.Name, 6);
+        fieldView.Add(m => m.Age, 6);
 
-        var form = new TestForm<TestModel>(controlView);
+        var form = new TestForm<TestModel>(fieldView);
         IReadOnlyList<View> result = _sut.BuildFormIntoViews(form);
         Assert.That(result, Has.Count.EqualTo(1));
-        var dto = result[0] as ControlView;
+        var dto = result[0] as FieldView;
         Assert.That(dto, Is.Not.Null);
 
         using (Assert.EnterMultipleScope())
         {
             Assert.That(dto.Width, Is.EqualTo(12));
-            Assert.That(dto.Title.InnerValue(), Is.EqualTo("Basic Control Info"));
+            Assert.That(dto.Title.InnerValue(), Is.EqualTo("Basic Field Info"));
             Assert.That(dto.Visible.InnerValue(), Is.EqualTo(nameof(TestModel.IsActive)));
-            Assert.That(dto.Controls, Has.Count.EqualTo(2));
+            Assert.That(dto.Fields, Has.Count.EqualTo(2));
         }
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(dto.Controls[0].PropertyName, Is.EqualTo(nameof(TestModel.Name)));
-            Assert.That(dto.Controls[0].Width, Is.EqualTo(6));
-            Assert.That(dto.Controls[1].PropertyName, Is.EqualTo(nameof(TestModel.Age)));
-            Assert.That(dto.Controls[1].Width, Is.EqualTo(6));
+            Assert.That(dto.Fields[0].Identifier, Is.EqualTo(nameof(TestModel.Name)));
+            Assert.That(dto.Fields[0].Width, Is.EqualTo(6));
+            Assert.That(dto.Fields[1].Identifier, Is.EqualTo(nameof(TestModel.Age)));
+            Assert.That(dto.Fields[1].Width, Is.EqualTo(6));
         }
 
     }
@@ -75,10 +75,10 @@ public class FormBuilderServiceTests
     [Test]
     public void BuildFormIntoViews_WithCombinedView_FlattensAndMaintainsIndices()
     {
-        ControlViewBuilder<TestModel> subView1 = new ControlViewBuilder<TestModel>().WithTitle("Sub 1");
+        FieldViewBuilder<TestModel> subView1 = new FieldViewBuilder<TestModel>().WithTitle("Sub 1");
         subView1.Add(m => m.Name);
 
-        ControlViewBuilder<TestModel> subView2 = new ControlViewBuilder<TestModel>().WithTitle("Sub 2");
+        FieldViewBuilder<TestModel> subView2 = new FieldViewBuilder<TestModel>().WithTitle("Sub 2");
         subView2.Add(m => m.Age);
 
         CombinedViewBuilder<TestModel> combinedView = new CombinedViewBuilder<TestModel>()
@@ -97,98 +97,98 @@ public class FormBuilderServiceTests
         Assert.That(combinedDto.Unify, Is.True);
         Assert.That(combinedDto.ViewIds, Is.EquivalentTo(new[] { 1, 2 }));
 
-        var sub1Dto = result[1] as ControlView;
+        var sub1Dto = result[1] as FieldView;
         Assert.That(sub1Dto, Is.Not.Null);
         Assert.That(sub1Dto.Title.InnerValue(), Is.EqualTo("Sub 1"));
 
-        var sub2Dto = result[2] as ControlView;
+        var sub2Dto = result[2] as FieldView;
         Assert.That(sub2Dto, Is.Not.Null);
         Assert.That(sub2Dto.Title.InnerValue(), Is.EqualTo("Sub 2"));
     }
 
     [Test]
-    public void BuildFormIntoViews_WithSubPropertyGridView_MapsProperties()
+    public void BuildFormIntoViews_WithSubPropertyTableView_MapsProperties()
     {
-        SubPropertyGridViewBuilder<TestModel, GridRowModel> gridView = new SubPropertyGridViewBuilder<TestModel, GridRowModel>(m => m.SubRows, r => r.Id)
-            .WithTitle("Sub-Rows Grid")
+        SubPropertyTableViewBuilder<TestModel, TableRowModel> tableView = new SubPropertyTableViewBuilder<TestModel, TableRowModel>(m => m.SubRows, r => r.Id)
+            .WithTitle("Sub-Rows Table")
             .EnableAdd()
             .CanEditWhen(m => m.IsActive)
             .CanEditRowWhen(r => r.Selected)
             .CanDeleteWhen(m => m.IsActive)
             .CanDeleteRowWhen(r => r.Selected);
 
-        gridView.Add(r => r.Description);
+        tableView.Add(r => r.Description);
 
-        var form = new TestForm<TestModel>(gridView);
+        var form = new TestForm<TestModel>(tableView);
         IReadOnlyList<View> result = _sut.BuildFormIntoViews(form);
         Assert.That(result, Has.Count.EqualTo(1));
-        var gridDto = result[0] as SubPropertyGridView;
-        Assert.That(gridDto, Is.Not.Null);
+        var tableDto = result[0] as SubPropertyTableView;
+        Assert.That(tableDto, Is.Not.Null);
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(gridDto.Title.InnerValue(), Is.EqualTo("Sub-Rows Grid"));
-            Assert.That(gridDto.SubProperty, Is.EqualTo(nameof(TestModel.SubRows)));
-            Assert.That(gridDto.IdProperty, Is.EqualTo(nameof(GridRowModel.Id)));
+            Assert.That(tableDto.Title.InnerValue(), Is.EqualTo("Sub-Rows Table"));
+            Assert.That(tableDto.SubProperty, Is.EqualTo(nameof(TestModel.SubRows)));
+            Assert.That(tableDto.IdProperty, Is.EqualTo(nameof(TableRowModel.Id)));
 
-            Assert.That(gridDto.CanAdd.InnerValue(), Is.True);
-            Assert.That(gridDto.CanEdit.InnerValue(), Is.EqualTo(nameof(TestModel.IsActive)));
-            Assert.That(gridDto.CanEditRow.InnerValue(), Is.EqualTo(nameof(GridRowModel.Selected)));
-            Assert.That(gridDto.CanDelete.InnerValue(), Is.EqualTo(nameof(TestModel.IsActive)));
-            Assert.That(gridDto.CanDeleteRow.InnerValue(), Is.EqualTo(nameof(GridRowModel.Selected)));
+            Assert.That(tableDto.CanAdd.InnerValue(), Is.True);
+            Assert.That(tableDto.CanEdit.InnerValue(), Is.EqualTo(nameof(TestModel.IsActive)));
+            Assert.That(tableDto.CanEditRow.InnerValue(), Is.EqualTo(nameof(TableRowModel.Selected)));
+            Assert.That(tableDto.CanDelete.InnerValue(), Is.EqualTo(nameof(TestModel.IsActive)));
+            Assert.That(tableDto.CanDeleteRow.InnerValue(), Is.EqualTo(nameof(TableRowModel.Selected)));
 
-            Assert.That(gridDto.Controls, Has.Count.EqualTo(1));
+            Assert.That(tableDto.Fields, Has.Count.EqualTo(1));
         }
 
-        Assert.That(gridDto.Controls[0].PropertyName, Is.EqualTo(nameof(GridRowModel.Description)));
+        Assert.That(tableDto.Fields[0].Identifier, Is.EqualTo(nameof(TableRowModel.Description)));
     }
 
     [Test]
-    public void BuildFormIntoViews_WithSubPropertyGridView_MapsSelectionOptions()
+    public void BuildFormIntoViews_WithSubPropertyTableView_MapsSelectionOptions()
     {
-        SubPropertyGridViewBuilder<TestModel, GridRowModel> gridView =
-            new SubPropertyGridViewBuilder<TestModel, GridRowModel>(m => m.SubRows, r => r.Id)
-            .EnableSelection(r => r.Selected, GridSelectionType.Single);
+        SubPropertyTableViewBuilder<TestModel, TableRowModel> tableView =
+            new SubPropertyTableViewBuilder<TestModel, TableRowModel>(m => m.SubRows, r => r.Id)
+            .EnableSelection(r => r.Selected, TableSelectionType.Single);
 
-        var form = new TestForm<TestModel>(gridView);
+        var form = new TestForm<TestModel>(tableView);
         IReadOnlyList<View> result = _sut.BuildFormIntoViews(form);
         Assert.That(result, Has.Count.EqualTo(1));
-        var gridDto = result[0] as SubPropertyGridView;
-        Assert.That(gridDto, Is.Not.Null);
-        Assert.That(gridDto.GridSelectionOptions, Is.Not.Null);
+        var table = result[0] as SubPropertyTableView;
+        Assert.That(table, Is.Not.Null);
+        Assert.That(table.TableSelectionOptions, Is.Not.Null);
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(gridDto.GridSelectionOptions.SelectionProperty, Is.EqualTo(nameof(GridRowModel.Selected)));
-            Assert.That(gridDto.GridSelectionOptions.SelectionType, Is.EqualTo(GridSelectionType.Single));
+            Assert.That(table.TableSelectionOptions.SelectionProperty, Is.EqualTo(nameof(TableRowModel.Selected)));
+            Assert.That(table.TableSelectionOptions.SelectionType, Is.EqualTo(TableSelectionType.Single));
         }
 
     }
 
     [Test]
-    public void BuildFormIntoViews_WithSubPropertyGridView_AndEditForm_FlattensEditFormViewsRecursively()
+    public void BuildFormIntoViews_WithSubPropertyTableView_AndEditForm_FlattensEditFormViewsRecursively()
     {
-        ControlViewBuilder<GridRowModel> editFormView = new ControlViewBuilder<GridRowModel>().WithTitle("Edit Form Row View");
+        FieldViewBuilder<TableRowModel> editFormView = new FieldViewBuilder<TableRowModel>().WithTitle("Edit Form Row View");
         editFormView.Add(r => r.Description);
-        var editForm = new TestForm<GridRowModel>(editFormView);
+        var editForm = new TestForm<TableRowModel>(editFormView);
 
-        SubPropertyGridViewBuilder<TestModel, GridRowModel> gridView =
-            new SubPropertyGridViewBuilder<TestModel, GridRowModel>(m => m.SubRows, r => r.Id)
-            .WithTitle("Main Grid")
+        SubPropertyTableViewBuilder<TestModel, TableRowModel> tableView =
+            new SubPropertyTableViewBuilder<TestModel, TableRowModel>(m => m.SubRows, r => r.Id)
+            .WithTitle("Main Table")
             .WithEditForm(editForm);
 
-        var form = new TestForm<TestModel>(gridView);
+        var form = new TestForm<TestModel>(tableView);
         IReadOnlyList<View> result = _sut.BuildFormIntoViews(form);
         Assert.That(result, Has.Count.EqualTo(2));
 
-        var gridDto = result[0] as SubPropertyGridView;
-        Assert.That(gridDto, Is.Not.Null);
-        Assert.That(gridDto.EditViewId, Is.EqualTo(1)); // Points to index 1
+        var table = result[0] as SubPropertyTableView;
+        Assert.That(table, Is.Not.Null);
+        Assert.That(table.EditViewId, Is.EqualTo(1)); // Points to index 1
 
-        var editFormDto = result[1] as ControlView;
+        var editFormDto = result[1] as FieldView;
         Assert.That(editFormDto, Is.Not.Null);
         Assert.That(editFormDto.Title.InnerValue(), Is.EqualTo("Edit Form Row View"));
-        Assert.That(editFormDto.Controls.Single().PropertyName, Is.EqualTo(nameof(GridRowModel.Description)));
+        Assert.That(editFormDto.Fields.Single().Identifier, Is.EqualTo(nameof(TableRowModel.Description)));
     }
 
     [Test]

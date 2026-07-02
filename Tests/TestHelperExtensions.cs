@@ -5,16 +5,16 @@ namespace Tests;
 
 public static class TestHelperExensions
 {
-    public static object? InnerValue(this IPropertyOrConstantBuilder? poc)
+    public static object? InnerValue(this IFormValueRefBuilder? valueRef)
     {
-        if (poc is null) return null;
-        PropertyOrConstant build = poc.Build();
-        return build is Property p ? p.Value : ((Constant)build).Value;
+        if (valueRef is null) return null;
+        FormValueRef build = valueRef.Build();
+        return build is ModelValue p ? p.Value : ((ConstantValue)build).Value;
     }
 
-    public static object? InnerValue(this PropertyOrConstant? poc)
+    public static object? InnerValue(this FormValueRef? valueRef)
     {
-        if (poc is null) return null;
-        return poc is Property p ? p.Value : ((Constant)poc).Value;
+        if (valueRef is null) return null;
+        return valueRef is ModelValue p ? p.Value : ((ConstantValue)valueRef).Value;
     }
 }

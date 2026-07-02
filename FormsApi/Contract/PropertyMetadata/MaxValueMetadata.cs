@@ -5,5 +5,5 @@ namespace FormsApi.Contract.PropertyMetadata;
 public sealed record MaxValueMetadata : PropertyMetadata
 {
     [Required]
-    public required PropertyOrConstant Value { get; init; }
+    public required FormValueRef Value { get; init; }
 }

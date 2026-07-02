@@ -1,5 +1,5 @@
 @if (visible() && control(); as control) {
-  @switch (controlType()) {
+  @switch (fieldType()) {
     @case ('button') {
       <button matButton="outlined" [disabled]="!control.enabled" (click)="executeServiceMethod()">
         {{ label() }}

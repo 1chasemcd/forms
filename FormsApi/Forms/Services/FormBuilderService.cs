@@ -26,8 +26,8 @@ internal sealed class FormBuilderService : IFormBuilderService
         View resultView = view switch
         {
             CombinedViewBuilder<TModel> combined => ProcessCombinedView(combined, accumulatedResult),
-            ControlViewBuilder<TModel> control => ProcessControlView(control),
-            ISubPropertyGridViewBuilder<TModel> spGrid => ProcessSubPropertyGridView(spGrid, accumulatedResult),
+            FieldViewBuilder<TModel> field => ProcessFieldView(field),
+            ISubPropertyTableViewBuilder<TModel> spTable => ProcessSubPropertyTableView(spTable, accumulatedResult),
             _ => throw new UnreachableException($"Unable to process view type: {view.GetType()}")
         };
 
@@ -57,15 +57,15 @@ internal sealed class FormBuilderService : IFormBuilderService
         return currentView;
     }
 
-    private ControlView ProcessControlView<TModel>(ControlViewBuilder<TModel> view)
+    private FieldView ProcessFieldView<TModel>(FieldViewBuilder<TModel> view)
     {
-        return new ControlView
+        return new FieldView
         {
-            Controls = view.ControlList
+            Fields = view.FieldList
         };
     }
 
-    private SubPropertyGridView ProcessSubPropertyGridView<TModel>(ISubPropertyGridViewBuilder<TModel> view, List<View> accumulatedResult)
+    private SubPropertyTableView ProcessSubPropertyTableView<TModel>(ISubPropertyTableViewBuilder<TModel> view, List<View> accumulatedResult)
     {
         int? editViewId = null;
         if (view.EditForm is { } editForm)
@@ -75,7 +75,7 @@ internal sealed class FormBuilderService : IFormBuilderService
             accumulatedResult.AddRange(additionalViews);
         }
 
-        GridSelectionOptions? selectionOptions = null;
+        TableSelectionOptions? selectionOptions = null;
         if (view.SelectionProperty is not null)
             selectionOptions = new()
             {
@@ -83,9 +83,9 @@ internal sealed class FormBuilderService : IFormBuilderService
                 SelectionType = view.SelectionType
             };
 
-        return new SubPropertyGridView
+        return new SubPropertyTableView
         {
-            Controls = view.ControlList,
+            Fields = view.FieldList,
             SubProperty = view.SubProperty,
             IdProperty = view.IdProperty,
             CanAdd = view.CanAdd?.Build(),
@@ -94,7 +94,7 @@ internal sealed class FormBuilderService : IFormBuilderService
             CanDelete = view.CanDelete?.Build(),
             CanDeleteRow = view.CanDeleteRow?.Build(),
             EditViewId = editViewId,
-            GridSelectionOptions = selectionOptions
+            TableSelectionOptions = selectionOptions
         };
     }
 }

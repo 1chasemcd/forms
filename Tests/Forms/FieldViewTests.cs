@@ -14,29 +14,29 @@ public class FieldViewTests
     [Test]
     public void WithConstantTitle_SetsTitle()
     {
-        var view = new ControlViewBuilder<TestModel>("Test");
+        var view = new FieldViewBuilder<TestModel>("Test");
         Assert.That(view.Title.InnerValue(), Is.EqualTo("Test"));
     }
 
     [Test]
     public void WithPropertyTitle_SetsTitle()
     {
-        var view = new ControlViewBuilder<TestModel>(m => m.TitleProperty);
+        var view = new FieldViewBuilder<TestModel>(m => m.TitleProperty);
         Assert.That(view.Title.InnerValue(), Is.EqualTo(nameof(TestModel.TitleProperty)));
     }
 
     [Test]
     public void WithFields_SetsFields()
     {
-        var view = new ControlViewBuilder<TestModel>()
+        var view = new FieldViewBuilder<TestModel>()
         {
             { m => m.TitleProperty, 6 }
         };
 
-        Assert.That(view.ControlList.Single(),
-            Has.Property(nameof(FormControlInfoContainer.PropertyName))
+        Assert.That(view.FieldList.Single(),
+            Has.Property(nameof(FormFieldInfoContainer.Identifier))
             .EqualTo(nameof(TestModel.TitleProperty))
-            .And.Property(nameof(FormControlInfoContainer.Width))
+            .And.Property(nameof(FormFieldInfoContainer.Width))
             .EqualTo(6));
     }
 }

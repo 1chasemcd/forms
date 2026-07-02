@@ -1,5 +1,5 @@
 import { Observable, of, startWith } from 'rxjs';
-import { ControlType, PropertyOrConstant, ServiceMethod } from '../../api/api.g';
+import { FieldType, FormValueRef, ServiceMethod } from '../../api/api.g';
 import { MetadataLookupService } from '../../metadata/metadata-lookup';
 import { MetadataType } from '../../utils/api-utils';
 import { ControlPath, joinPath, parentPath } from '../../utils/form-utils';
@@ -13,7 +13,7 @@ export class ValueRefAugmentor {
 
   getValue<T>(
     relativeTo: ControlPath,
-    valueRef: PropertyOrConstant | undefined,
+    valueRef: FormValueRef | undefined,
   ): Observable<T> | undefined {
     if (!valueRef) return undefined;
     if (valueRef.$type === 'constant') return of(valueRef.value);
@@ -21,17 +21,17 @@ export class ValueRefAugmentor {
     return control?.valueChanges.pipe(startWith(control.value));
   }
 
-  getMetadataValue(path: ControlPath, metadataType: 'controlType'): ControlType | undefined;
+  getMetadataValue(path: ControlPath, metadataType: 'fieldType'): FieldType | undefined;
   getMetadataValue(path: ControlPath, metadataType: 'formServiceMethod'): ServiceMethod | undefined;
   getMetadataValue<T>(
     path: ControlPath,
-    metadataType: Exclude<MetadataType, 'controlType' | 'formServiceMethod'>,
+    metadataType: Exclude<MetadataType, 'fieldType' | 'formServiceMethod'>,
   ): Observable<T> | undefined;
   getMetadataValue<T>(
     path: ControlPath,
     metadataType: MetadataType,
-  ): Observable<T> | ServiceMethod | ControlType | undefined {
-    if (metadataType === 'controlType' || metadataType === 'formServiceMethod') {
+  ): Observable<T> | ServiceMethod | FieldType | undefined {
+    if (metadataType === 'fieldType' || metadataType === 'formServiceMethod') {
       return this.metadata.getPropertyMetadata(this.model.root, path, metadataType);
     }
     const valueRef = this.metadata.getPropertyMetadata(this.model.root, path, metadataType);

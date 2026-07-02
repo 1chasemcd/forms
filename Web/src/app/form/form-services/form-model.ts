@@ -114,7 +114,7 @@ export class FormModel {
     valuesArray: Record<string, unknown>[],
     array: FormArray,
     path: ControlPath,
-    gridType: string,
+    tableType: string,
   ) {
     array.clear({ emitEvent: false });
 
@@ -123,7 +123,7 @@ export class FormModel {
     // TODO make this more efficient
     for (const [index, row] of valuesArray.entries()) {
       const rowPath = joinPath(path, index);
-      const rowGroup = this.createFormGroup(gridType);
+      const rowGroup = this.createFormGroup(tableType);
       this.patchValuesImpl(row, rowGroup, rowPath);
       array.push(rowGroup);
       this.applyMetadata(rowGroup, rowPath);

@@ -16,14 +16,14 @@ public class NumericMetadataBuilder<TModel, TNumber> :
     IVisible<NumericMetadataBuilder<TModel, TNumber>, TModel>
     where TNumber : INumber<TNumber>
 {
-    public PropertyOrConstantBuilder<TModel, bool>? Enabled { get; set; }
-    public PropertyOrConstantBuilder<TModel, string?>? Label { get; set; }
+    public FormValueRefBuilder<TModel, bool>? Enabled { get; set; }
+    public FormValueRefBuilder<TModel, string?>? Label { get; set; }
     public IServiceMethodBuilder<TModel>? ServiceMethod { get; set; }
-    public PropertyOrConstantBuilder<TModel, bool>? Required { get; set; }
-    public PropertyOrConstantBuilder<TModel, TNumber>? MinValue { get; set; }
-    public PropertyOrConstantBuilder<TModel, TNumber>? MaxValue { get; set; }
-    public PropertyOrConstantBuilder<TModel, bool>? Visible { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? Precision { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? Scale { get; set; }
-    public ControlType GetControlType() => ControlType.Numeric;
+    public FormValueRefBuilder<TModel, bool>? Required { get; set; }
+    public FormValueRefBuilder<TModel, TNumber>? MinValue { get; set; }
+    public FormValueRefBuilder<TModel, TNumber>? MaxValue { get; set; }
+    public FormValueRefBuilder<TModel, bool>? Visible { get; set; }
+    public FormValueRefBuilder<TModel, int>? Precision { get; set; }
+    public FormValueRefBuilder<TModel, int>? Scale { get; set; }
+    public FieldType GetFieldType() => FieldType.Numeric;
 }

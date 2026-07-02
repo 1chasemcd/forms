@@ -16,15 +16,15 @@ public class MockMetadataBuilder<TModel> :
     IValueRangable<MockMetadataBuilder<TModel>, TModel, int>,
     IVisible<MockMetadataBuilder<TModel>, TModel>
 {
-    public PropertyOrConstantBuilder<TModel, bool>? Enabled { get; set; }
-    public PropertyOrConstantBuilder<TModel, string?>? Label { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? MaxLength { get; set; }
+    public FormValueRefBuilder<TModel, bool>? Enabled { get; set; }
+    public FormValueRefBuilder<TModel, string?>? Label { get; set; }
+    public FormValueRefBuilder<TModel, int>? MaxLength { get; set; }
     public IServiceMethodBuilder<TModel>? ServiceMethod { get; set; }
-    public PropertyOrConstantBuilder<TModel, bool>? Required { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? MinValue { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? MaxValue { get; set; }
-    public PropertyOrConstantBuilder<TModel, bool>? Visible { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? Precision { get; set; }
-    public PropertyOrConstantBuilder<TModel, int>? Scale { get; set; }
-    public ControlType GetControlType() => ControlType.Text;
+    public FormValueRefBuilder<TModel, bool>? Required { get; set; }
+    public FormValueRefBuilder<TModel, int>? MinValue { get; set; }
+    public FormValueRefBuilder<TModel, int>? MaxValue { get; set; }
+    public FormValueRefBuilder<TModel, bool>? Visible { get; set; }
+    public FormValueRefBuilder<TModel, int>? Precision { get; set; }
+    public FormValueRefBuilder<TModel, int>? Scale { get; set; }
+    public FieldType GetFieldType() => FieldType.Text;
 }

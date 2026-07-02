@@ -1,25 +1,25 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
-import { SubPropertyGridView } from '../../api/api.g';
+import { SubPropertyTableView } from '../../api/api.g';
 import { ControlPath, joinPath } from '../../utils/form-utils';
 import { FormStackService } from '../../form/form-services/form-stack-service';
 import { MatTableModule } from '@angular/material/table';
-import { SubpropertyGridDataSource } from './subproperty-grid-data-source';
+import { SubpropertyTableDataSource } from './subproperty-table-data-source';
 import { BaseTable } from '../base-table/base-table';
 import { MetadataLookupService } from '../../metadata/metadata-lookup';
 import { map, Observable, of, startWith } from 'rxjs';
 import { SelectionChange } from '@angular/cdk/collections';
 
 @Component({
-  selector: 'app-subproperty-grid-view',
+  selector: 'app-subproperty-table-view',
   imports: [MatTableModule, ReactiveFormsModule, BaseTable],
-  templateUrl: './subproperty-grid-view.html',
+  templateUrl: './subproperty-table-view.html',
   host: {
     class: 'col-span-12',
   },
 })
-export class SubpropertyGridViewComponent implements OnInit {
-  readonly view = input.required<SubPropertyGridView>();
+export class SubPropertyTableViewComponent implements OnInit {
+  readonly view = input.required<SubPropertyTableView>();
   readonly path = input.required<ControlPath>();
 
   private readonly formStack = inject(FormStackService);
@@ -27,9 +27,9 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   readonly modelType = signal<string>('');
   readonly arrayPath = computed(() => joinPath(this.path(), this.view().subProperty));
-  readonly columns = computed(() => this.view().controls.map((x) => x.propertyName));
+  readonly columns = computed(() => this.view().fields.map((x) => x.identifier));
   readonly dataSource = computed(
-    () => new SubpropertyGridDataSource(this.arrayPath(), this.formStack),
+    () => new SubpropertyTableDataSource(this.arrayPath(), this.formStack),
   );
 
   ngOnInit(): void {
@@ -50,7 +50,7 @@ export class SubpropertyGridViewComponent implements OnInit {
 
   getSelectionState(): Observable<unknown[]> {
     const array = this.formStack.activeModel.get(this.arrayPath()) as FormArray;
-    const selectionProp = this.view().gridSelectionOptions?.selectionProperty;
+    const selectionProp = this.view().tableSelectionOptions?.selectionProperty;
     if (!array || !selectionProp) return of([]);
     return array?.valueChanges.pipe(
       startWith(array.getRawValue()),

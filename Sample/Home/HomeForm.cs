@@ -9,12 +9,12 @@ public class HomeForm : Form<TestModel>
         { TopLeftView(), 4 },
         { TopRightView(), 8 },
         NestedCombinedView(),
-        GridView()
+        TableView()
     };
 
-    private static ControlViewBuilder<TestModel> TopLeftView()
+    private static FieldViewBuilder<TestModel> TopLeftView()
     {
-        return new ControlViewBuilder<TestModel>("Top left view")
+        return new FieldViewBuilder<TestModel>("Top left view")
         {
             { m => m.TextField, 6 },
             { m => m.DateField, 6 },
@@ -23,9 +23,9 @@ public class HomeForm : Form<TestModel>
         };
     }
 
-    private static ControlViewBuilder<TestModel> TopRightView()
+    private static FieldViewBuilder<TestModel> TopRightView()
     {
-        return new ControlViewBuilder<TestModel>(title: "Additional Fields")
+        return new FieldViewBuilder<TestModel>(title: "Additional Fields")
         {
             m => m.CurrencyField,
             m => m.TextFieldWithInitialValue
@@ -41,9 +41,9 @@ public class HomeForm : Form<TestModel>
         }.Unify();
     }
 
-    private static ControlViewBuilder<TestModel> BottomView()
+    private static FieldViewBuilder<TestModel> BottomView()
     {
-        return new ControlViewBuilder<TestModel>()
+        return new FieldViewBuilder<TestModel>()
         {
             { m => m.NumericField, 6 },
             { m => m.ResultNumberPlus1, 6 },
@@ -53,9 +53,9 @@ public class HomeForm : Form<TestModel>
         };
     }
 
-    private static ControlViewBuilder<TestModel> BottomViewRight()
+    private static FieldViewBuilder<TestModel> BottomViewRight()
     {
-        return new ControlViewBuilder<TestModel>("Inner View")
+        return new FieldViewBuilder<TestModel>("Inner View")
         {
             m => m.CheckBox,
             m => m.StaticTextAtTheBottom,
@@ -63,14 +63,14 @@ public class HomeForm : Form<TestModel>
         };
     }
 
-    private static SubPropertyGridViewBuilder<TestModel, Movie> GridView()
+    private static SubPropertyTableViewBuilder<TestModel, Movie> TableView()
     {
-        return new SubPropertyGridViewBuilder<TestModel, Movie>(m => m.Movies, r => r.Name)
+        return new SubPropertyTableViewBuilder<TestModel, Movie>(m => m.Movies, r => r.Name)
         {
             { m => m.Name, 6},
             { m => m.ReleaseDate },
             { m => m.DirectorName },
             m => m.MyPersonalRating
-        }.WithTitle("A Grid View").EnableEdit();
+        }.WithTitle("A Table View").EnableEdit();
     }
 }

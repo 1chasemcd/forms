@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, OnInit, output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FormControlInfoContainer, GridSelectionType, SubPropertyGridView } from '../../api/api.g';
+import { FormFieldInfoContainer, TableSelectionType, SubPropertyTableView } from '../../api/api.g';
 import { pascalCaseToWords } from '../../utils/string-utils';
 import { FormStackService } from '../../form/form-services/form-stack-service';
 import { MatTableModule } from '@angular/material/table';
@@ -16,18 +16,18 @@ import { SelectionChange, SelectionModel } from '@angular/cdk/collections';
   templateUrl: './base-table.html',
 })
 export class BaseTable implements OnInit {
-  readonly GridSelectionType = GridSelectionType;
+  readonly TableSelectionType = TableSelectionType;
   readonly SELECTION = '$SELECTION';
 
   readonly dataSource = input.required<DataSource<FormGroup>>();
-  readonly view = input.required<SubPropertyGridView>();
+  readonly view = input.required<SubPropertyTableView>();
   readonly modelType = input.required<string>();
   readonly selectionChangeToModel = output<SelectionChange<unknown>>();
   readonly modelToSelection = input<Observable<unknown[]>>();
 
   private readonly formStack = inject(FormStackService);
   private readonly metadata = inject(MetadataLookupService);
-  readonly columns = computed(() => this.view().controls.map((x) => x.propertyName));
+  readonly columns = computed(() => this.view().fields.map((x) => x.identifier));
   get selection() {
     return this._selection;
   }
@@ -38,10 +38,10 @@ export class BaseTable implements OnInit {
   }
 
   private setupSelection() {
-    const selectionOptions = this.view().gridSelectionOptions;
+    const selectionOptions = this.view().tableSelectionOptions;
     if (!selectionOptions) return;
     this._selection = new SelectionModel<unknown>(
-      selectionOptions.selectionType === GridSelectionType.Multiple,
+      selectionOptions.selectionType === TableSelectionType.Multiple,
     );
     this.modelToSelection()?.subscribe((x) => {
       this.selection.clear(false);
@@ -50,10 +50,10 @@ export class BaseTable implements OnInit {
     this.selection.changed.subscribe((x) => this.selectionChangeToModel.emit(x));
   }
 
-  getLabel(column: FormControlInfoContainer) {
+  getLabel(column: FormFieldInfoContainer) {
     // TODO how do we do path?
-    const label = this.metadata.getPropertyMetadata(this.modelType(), column.propertyName, 'label');
+    const label = this.metadata.getPropertyMetadata(this.modelType(), column.identifier, 'label');
     if (label?.$type === 'constant') return label.value as string;
-    return pascalCaseToWords(column.propertyName);
+    return pascalCaseToWords(column.identifier);
   }
 }

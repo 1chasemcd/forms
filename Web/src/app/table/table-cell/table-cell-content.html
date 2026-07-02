@@ -1,4 +1,4 @@
-@switch (controlType()) {
+@switch (fieldType()) {
   @case (ControlType.Button) {}
   @case (ControlType.LabelValue) {}
   @case (ControlType.CheckBox) {
@@ -8,7 +8,7 @@
     <span
       [class]="'whitespace-nowrap overflow-hidden' + (shouldFloatRight() ? ' float-right' : '')"
     >
-      @switch (controlType()) {
+      @switch (fieldType()) {
         @case (ControlType.TextArea) {
           {{ valueAsString().split('\n').at(0) }}
         }

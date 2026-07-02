@@ -3,7 +3,7 @@ import { widthToCss } from '../../utils/width-utils';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ServiceMethodService } from '../../service-method/service-method-service';
 import { LabelValue } from '../label-value/label-value';
-import { ControlType, FormControlInfoContainer } from '../../api/api.g';
+import { FieldType, FormFieldInfoContainer } from '../../api/api.g';
 import { MetadataLookupService } from '../../metadata/metadata-lookup';
 import { ControlPath, joinPath } from '../../utils/form-utils';
 import { pascalCaseToWords } from '../../utils/string-utils';
@@ -16,12 +16,12 @@ import { DateInput } from '../date-input/date-input';
 import { FormStackService } from '../../form/form-services/form-stack-service';
 
 @Component({
-  selector: 'app-dynamic-control',
+  selector: 'app-dynamic-field',
   host: {
     class: 'content-center',
     '[class]': 'width()',
   },
-  templateUrl: './dynamic-control.html',
+  templateUrl: './dynamic-field.html',
   imports: [
     ReactiveFormsModule,
     LabelValue,
@@ -33,24 +33,24 @@ import { FormStackService } from '../../form/form-services/form-stack-service';
     DateInput,
   ],
 })
-export class DynamicControl implements OnInit {
+export class DynamicField implements OnInit {
   private readonly formStack = inject(FormStackService);
   private readonly metadataLookup = inject(MetadataLookupService);
   private readonly serviceMethodService = inject(ServiceMethodService);
 
-  readonly controlInfo = input.required<FormControlInfoContainer>();
+  readonly fieldInfo = input.required<FormFieldInfoContainer>();
   readonly parentPath = input.required<ControlPath>();
 
-  readonly path = computed(() => joinPath(this.parentPath(), this.controlInfo().propertyName));
-  readonly width = computed(() => widthToCss(this.controlInfo().width));
+  readonly path = computed(() => joinPath(this.parentPath(), this.fieldInfo().identifier));
+  readonly width = computed(() => widthToCss(this.fieldInfo().width));
   readonly control = computed(() => this.formStack.activeModel.get<FormControl>(this.path()));
-  readonly controlType = computed(
+  readonly fieldType = computed(
     () =>
-      this.formStack.activeModel.valueRefAugmentor.getMetadataValue(this.path(), 'controlType') ??
-      ControlType.Text,
+      this.formStack.activeModel.valueRefAugmentor.getMetadataValue(this.path(), 'fieldType') ??
+      FieldType.Text,
   );
   readonly visible = signal(true);
-  readonly label = linkedSignal(() => pascalCaseToWords(this.controlInfo().propertyName));
+  readonly label = linkedSignal(() => pascalCaseToWords(this.fieldInfo().identifier));
 
   ngOnInit() {
     this.formStack.activeModel.valueRefAugmentor

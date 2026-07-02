@@ -2,7 +2,7 @@ import { Component, ElementRef, input, output, viewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { StandardInputDirective } from '../standard-input/standard-input-directive';
 import { NumberFormatDirective } from '../../formatters/number-format-directive';
-import { ControlType } from '../../api/api.g';
+import { FieldType } from '../../api/api.g';
 import { CheckboxInput } from '../checkbox/checkbox-input';
 
 @Component({
@@ -15,8 +15,8 @@ import { CheckboxInput } from '../checkbox/checkbox-input';
   },
 })
 export class DynamicInput {
-  readonly ControlType = ControlType;
-  readonly controlType = input.required<ControlType>();
+  readonly ControlType = FieldType;
+  readonly fieldType = input.required<FieldType>();
   readonly control = input.required<FormControl>();
   readonly valueChange = output();
   private initialValue = '';

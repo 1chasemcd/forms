@@ -6,7 +6,7 @@ namespace FormsApi.Contract.PropertyMetadata;
     TypeDiscriminatorPropertyName = "$type",
     UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor
 )]
-[JsonDerivedType(typeof(ControlTypeMetadata), "controlType")]
+[JsonDerivedType(typeof(FieldTypeMetadata), "fieldType")]
 [JsonDerivedType(typeof(EnabledMetadata), "enabled")]
 [JsonDerivedType(typeof(ServiceMethodMetadata), "formServiceMethod")]
 [JsonDerivedType(typeof(LabelMetadata), "label")]

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FormsApi.Contract.PropertyMetadata;
 
-public enum ControlType
+public enum FieldType
 {
     Button,
     CheckBox,
@@ -16,8 +16,8 @@ public enum ControlType
 }
 
 
-public sealed record ControlTypeMetadata : PropertyMetadata
+public sealed record FieldTypeMetadata : PropertyMetadata
 {
     [Required]
-    public ControlType Value { get; init; }
+    public FieldType Value { get; init; }
 }

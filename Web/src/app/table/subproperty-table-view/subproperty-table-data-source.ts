@@ -4,7 +4,7 @@ import { ControlPath } from '../../utils/form-utils';
 import { FormStackService } from '../../form/form-services/form-stack-service';
 import { FormArray, FormGroup } from '@angular/forms';
 
-export class SubpropertyGridDataSource extends DataSource<FormGroup> {
+export class SubpropertyTableDataSource extends DataSource<FormGroup> {
   private readonly formArray: FormArray | null;
 
   constructor(

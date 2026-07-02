@@ -101,7 +101,7 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
             {
                 Metadatas = new[]
                 {
-                    new ControlTypeMetadata() { Value = GetDefaultInputType(prop.PropertyType) }
+                    new FieldTypeMetadata() { Value = GetDefaultInputType(prop.PropertyType) }
                 }
             };
 
@@ -116,17 +116,17 @@ internal sealed class MetadataBuilderService(MetadataProcessors metadataProcesso
         return new PrimitivePropertyMetadataContainer() { Metadatas = metadatas };
     }
 
-    private static ControlType GetDefaultInputType(Type type)
+    private static FieldType GetDefaultInputType(Type type)
     {
         type = Nullable.GetUnderlyingType(type) ?? type;
 
-        if (type == typeof(bool)) return ControlType.CheckBox;
-        if (type == typeof(DateOnly)) return ControlType.Date;
-        if (type == typeof(TimeOnly)) return ControlType.Time;
-        if (type == typeof(string)) return ControlType.Text;
-        if (type.IsAssignableFrom(typeof(INumber<>))) return ControlType.Numeric;
+        if (type == typeof(bool)) return FieldType.CheckBox;
+        if (type == typeof(DateOnly)) return FieldType.Date;
+        if (type == typeof(TimeOnly)) return FieldType.Time;
+        if (type == typeof(string)) return FieldType.Text;
+        if (type.IsAssignableFrom(typeof(INumber<>))) return FieldType.Numeric;
 
-        return ControlType.Text;
+        return FieldType.Text;
     }
 
     private static Type? GetElementType(Type type)
